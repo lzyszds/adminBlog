@@ -1,0 +1,32 @@
+.tableSearch {
+  height: 50px;
+  width:1300px;:deep(.searchInput) {
+    width: 200px;
+    margin: 10px 0 0 20px;
+
+    .el-input__wrapper {
+      border-radius: 15px 0 0 15px;
+
+      &.is-focus {
+        box-shadow: 0 0 0 1px var(--themeColor) inset
+      }
+    }
+  }
+
+  :deep(.btn) {
+    margin-top: 10px;
+    border-radius: 0 15px 15px 0;
+    background-color: var(--themeColor);
+    border-color: transparent;
+  }
+}
+
+.example-demonstration {
+  font-size: 12px;
+  // 不换行
+  white-space: nowrap;
+  // 超出部分隐藏
+  transform: translateY(-10px);
+  padding-left: 32px;
+
+}
