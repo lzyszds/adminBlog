@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref, h, onBeforeUnmount } from 'vue'
-import { ElMessageBox, ElNotification } from 'element-plus'
+import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
 import http from '@/http/http'
 import dayjs from 'dayjs'
 import load from '@/uiComponents/loader/loadings'
@@ -24,26 +24,26 @@ const setTime: any = (time: number) => {
   return formatted
 }
 
-//分页事件、切换页码时提供load效果
+//分页事件、切换页码时提供load效果 
 const handleCurrentChange = async (val: number, number?) => {
-  if (number != 0) load.show('#loadings')
+  /* 此处有一个巨大的坑，接口如果没有返回toal就会导致此处的方法初始触发两次。 */
   total.value = val
-
+  if (number != 1) load.show('#loadings')
   const pagePara = '/adminApi/articleList?pages=' + total.value + '&limit=' + pageSize.value
+  console.log(`lzy  pagePara:`, pagePara)
   data.value = await http('get', pagePara) as httpData
-
-
   //数据处理 时间格式化 
   data.value.data.forEach((item: Article) => {
     item.createTime = setTime(item.createTime)
     item.modified = setTime(item.modified)
   })
-  tableData.value = (data.value.data)
+  tableData.value = data.value.data
   setTimeout(() => {
     load.hide('#loadings')
   }, 1000)
 }
-handleCurrentChange(1, 0)
+handleCurrentChange(1, 1)
+
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
 const formatter = () => {
   return 0
@@ -193,8 +193,8 @@ onBeforeUnmount(() => {
     </el-dialog>
     <div class="example-pagination-block lzyColor">
       <div class="example-demonstration" v-if="data.total != 1">When you have more than
-        {{ data.total! / pageSize >> 0 }}
-        pages
+        {{ data.total! % pageSize == 0 ? data.total! / pageSize : (data.total! / pageSize >> 0) + 1 }}
+        pages of data, use a pagination.
       </div>
       <el-pagination small v-model="total" :currentPage="total" v-model:page-size="pageSize" background
         :total="data.total" @current-change="handleCurrentChange" :hide-on-single-page="data.total != 1" />

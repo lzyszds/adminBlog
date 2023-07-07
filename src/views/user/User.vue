@@ -21,6 +21,7 @@ const data = ref<httpData>({ code: 0, data: [], total: 0, })
 
 //分页事件、切换页码时提供load效果
 const handleCurrentChange = async (_val: number, number?) => {
+  /* 此处有一个巨大的坑，接口如果没有返回toal就会导致此处的方法初始触发两次。 */
   total.value = _val
   if (number != 1) load.show('#loadings')
   // if (!number) total.value = val
@@ -113,7 +114,6 @@ const searchHandle = () => {
 
 const lookPwd = (val) => {
   LNotification("密码：" + val)
-  console.log(`lzy  val:`, val)
 }
 </script>
 
