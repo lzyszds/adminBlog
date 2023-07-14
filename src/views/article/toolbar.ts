@@ -20,7 +20,7 @@ const toolbar = {
   },
   music: {
     title: '音乐',
-    icon: 'fa fa-yc-square',
+    icon: 'iconfont icon-1_music93',
     action(editor) {
       editor.insert(function (selected) {
         const prefix = '(((:';
@@ -35,8 +35,8 @@ const toolbar = {
     },
   },
   test: {
-    title: '音乐',
-    icon: 'fa fa-yc-square',
+    title: '音乐-暂不可用',
+    icon: 'iconfont icon-1_music93',
     action(editor) {
       editor.insert(function (selected) {
         const prefix = '(((:';

@@ -1,30 +1,11 @@
 <script setup lang='ts'>
-import http from '@/http/http';
 import { ref } from 'vue';
-// import { httpData } from '../children/user/type'
-const emit = defineEmits(['searchData'])
-const props = defineProps({
-  type: {
-    type: String,
-    default: 'default'
-  },
-  url: {
-    type: String,
-    default: 'default'
-  }
-})
+const emit = defineEmits(['searchVal'])
 //搜索框内容
-const searchInput = ref('')
+const searchInput = ref<string>('')
 
 const search = () => {
-  switch (props.type) {
-    case 'user':
-      const pagePara = `/adminApi/${props.url}?search=` + searchInput.value
-      http('get', pagePara).then((res: any) => {
-        emit('searchData', { data: res.data, searchInput: searchInput.value })
-      })
-      break;
-  }
+  emit('searchVal', searchInput.value)
 }
 </script>
 
@@ -36,4 +17,28 @@ const search = () => {
 </template>
 
 <style lang="less" scoped>
+.search {
+  height: 50px;
+  width: 1300px;
+
+  :deep(.searchInput) {
+    width: 200px;
+    margin: 10px 0 0 20px;
+
+    .el-input__wrapper {
+      border-radius: 15px 0 0 15px;
+
+      &.is-focus {
+        box-shadow: 0 0 0 1px var(--themeColor) inset
+      }
+    }
+  }
+
+  :deep(.btn) {
+    margin-top: 10px;
+    border-radius: 0 15px 15px 0;
+    background-color: var(--themeColor);
+    border-color: transparent;
+  }
+}
 </style>

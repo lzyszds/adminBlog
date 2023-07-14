@@ -91,7 +91,7 @@ const activefn = (index) => {
 //处理用户详情数据
 const infoData: any = ref()
 const data: any = []
-const res = await http('get', '/adminApi/getUserInfo') as any// httpData
+const res = await http('get', '/getUserInfo') as any// httpData
 //检验token是存在 401是token过期
 if (res.code == 401) {
   // 销毁token

@@ -1,38 +1,22 @@
 <script setup lang='ts'>
-import { ref, reactive, defineProps, defineEmits, h, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, h, onMounted, onBeforeUnmount } from 'vue'
 import { dayjs, ElMessageBox } from 'element-plus'
 import { useEventListener } from '@vueuse/core'
 import http from '@/http/http'
 import toolbar from './toolbar'
 import { compressPic } from '@/utils/common'
+import { TagType, Props, Informationtypes } from "./type";
 
 const emit = defineEmits(['switchMod', 'switchAdd'])
 const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  test |left center right ul ol table hr | link image code tip music| save tips`
-const props = defineProps({
-  type: String,
-  data: Object,
-  tableheight: Number,
-})
+const props = defineProps<Props>()
 
-
-interface storageType {
-  text: string,
-  html: string,
-}
-interface informationTypes {
-  storage: storageType,
-  text: any,
-  html: any,
-  title: string,
-  cover: string,
-}
-
-const information = reactive<informationTypes>({
+const information = reactive<Informationtypes>({
   storage: { text: '', html: '' },
   text: props.data?.content,
-  html: props.data?.html,
+  html: props.data?.main,
   title: props.data?.title || '',
-  cover: props.data?.coverImg || '/public/img/articleImages/upload-image1667660540602.jpeg',
+  cover: props.data?.coverImg ? ('/adminStatic' + props.data?.coverImg) : "/adminGetApi/getRandArticleImg",
 })
 //确认提交
 const submitForm = () => {
@@ -43,15 +27,15 @@ const submitForm = () => {
     coverContent: document.querySelector('.vuepress-markdown-body')?.firstElementChild?.innerHTML,
     content: information.storage.text,
     main: information.storage.html,
-    coverImg: information.cover || props.data!.coverImg,
+    coverImg: (information.cover || props.data?.coverImg)?.replace('/adminStatic', ''),
     aid: props.type === 'modify' ? props.data?.aid : null,
     modified: dayjs().unix(),
     wtype: tagData.value,
   }
-  const url = props.type === 'modify' ? 'updateArticle' : 'addArticle'
+  const url = props.type === 'modify' ? '/updateArticle' : '/addArticle'
   //当前是否保存
   if (information.storage.text === information.text || information.storage.html === information.html) {
-    http('post', `/adminApi/${url}`, data).then((res: any) => {
+    http('post', url, data).then((res: any) => {
       if (res.code === 200) {
         emit('switchMod', false)
         emit('switchAdd', false)
@@ -81,8 +65,11 @@ const resetForm = () => {
 //本地图片上传到线上，并返回当前文件在线上的path
 const handleUploadImage = (event, insertImage, files) => {
   console.log(event);
+
+  //如果文件大小小于300kb，不进行压缩，按比例压缩
+  const scale = files[0].size < 300 * 1024 ? 1 : 0.5
   //对图片进行压缩
-  compressPic(files[0], 0.5).then(({ fileCompress }) => {
+  compressPic(files[0], scale).then(({ fileCompress }) => {
     // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
     let formData = new FormData();
     formData.append('upload-image', fileCompress);
@@ -91,11 +78,11 @@ const handleUploadImage = (event, insertImage, files) => {
       'Content-Type': 'multipart/form-data',
     }
     // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    http('post', '/adminApi/uploadArticleImg', formData, headers)
+    http('post', '/uploadArticleImg', formData, headers)
       .then((res: { code: Number, message }) => {
         if (res.code === 200) {
           insertImage({
-            url: '/adminApi' + res.message,
+            url: '' + res.message,
             desc: '点击放大',
           });
         }
@@ -122,7 +109,7 @@ onMounted(() => {
         'Content-Type': 'multipart/form-data',
       }
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-      http('post', '/adminApi/uploadArticleImg', formData, headers)
+      http('post', '/uploadArticleImg', formData, headers)
         .then((res: { code: Number, message }) => {
           if (res.code === 200) {
             information.cover = res.message
@@ -138,25 +125,28 @@ const coverUpdate = () => {
   coverFile.click()
 }
 
-interface TagType {
-  code?: string,
-  data?: [
-    {
-      isUse: string,
-      name: string,
-      tId: number
-    }
-  ]
-}
+
+//标签弹窗控制flag
 const visible = ref<boolean>(false)
+//全部标签数据
 const tagData: any = ref([])
+//当前文章的标签数据 当前文章的标签数据 是否已经有标签
 tagData.value = props.data?.wtype ? props.data?.wtype.split(',') : []
+//临时存储数据
 const tagDataTem: any = ref(tagData.value)
+//标签列表
 const tagList = ref<TagType>({})
 
-tagList.value = await http('get', '/adminApi/articleType') as TagType
+try {
+  //获取标签列表
+  tagList.value = await http('get', '/articleType') as TagType
+} catch (e) {
+  console.log(e);
+}
 
 const tagActive = (tag) => {
+  //数量不能超过4个
+  if (tagDataTem.value.length >= 4) return
   if (tagDataTem.value.includes(tag)) {
     tagDataTem.value = tagDataTem.value.filter(item => item !== tag) as any
   } else {
@@ -173,18 +163,23 @@ const addTag = (flag: boolean) => {
 
 }
 const typeInput = ref('')
+//添加文章分类小标题
 const addArticleType = () => {
+  //非空判断
+  if (!typeInput.value) return
+
+  //获取当前所有的文章分类
   const data = tagList.value.data?.map(res => {
     return res.name
   })
+  //判断当前输入的类型是否已经存在 如果不存在 则添加
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value)
   }
-  if (!typeInput.value) return
-  const result = http('post', '/adminApi/addArticleType', { name: typeInput.value })
+  const result = http('post', '/addArticleType', { name: typeInput.value })
   result.then(async (res: any) => {
     if (res.code == 200) {
-      tagList.value = await http('get', '/adminApi/articleType') as TagType
+      tagList.value = await http('get', '/articleType') as TagType
     }
   })
 }
@@ -203,25 +198,14 @@ onBeforeUnmount(() => {
   <div>
     <div class="headelement">
       <div class="markDowmInput">
-        <span>封面图片：</span>
-        <div @click="coverUpdate" class="coverImg">
-          <img :src="'/adminApi' + information.cover" alt="">
-          <input type="file" id="coverFile">
-        </div>
-        <span>文章标题：</span>
-        <input class="title" type="text" v-model="information.title" />
         <span>类别：</span>
-        <div class="boxType">
-          <el-tag class="ml-1" type="info" v-for="(item, index) in tagData" :key="index">{{ item }}</el-tag>
-        </div>
-
-        <el-popover :width="380" placement="left" :visible="visible" trigger="click">
+        <el-popover :width="380" placement="bottom" :visible="visible" trigger="click">
           <template #reference>
-            <div @click="visible = true">
-              <el-tooltip class="box-item" effect="dark" content="分类选择" placement="top">
-                <i class="fa fa-folder-open"></i>
-              </el-tooltip>
+            <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
+            <div class="boxType" @click="visible = true">
+              <el-tag class="ml-1" type="info" v-for="(item, index) in tagData" :key="index">{{ item }}</el-tag>
             </div>
+            <!-- </el-tooltip> -->
           </template>
           <template #default>
             <div class="typePopover">
@@ -243,6 +227,13 @@ onBeforeUnmount(() => {
             </div>
           </template>
         </el-popover>
+        <span>封面图片：</span>
+        <div @click="coverUpdate" class="coverImg">
+          <img :src="information.cover" alt="">
+          <input type="file" id="coverFile">
+        </div>
+        <span>文章标题：</span>
+        <input class="title" type="text" v-model="information.title" />
       </div>
       <v-md-editor class="markDowmLzy" v-model="information.text" :disabled-menus="[]" :left-toolbar="orderTool"
         @save="clicks" @upload-image="handleUploadImage" :height="(tableheight! * 0.9) + 'px'" :toolbar="toolbar">
@@ -334,12 +325,14 @@ onBeforeUnmount(() => {
       white-space: nowrap;
       margin: 0 30px 0 0;
       line-height: 35px;
+      cursor: pointer;
 
       &:deep(.el-tag.el-tag--info) {
         background-color: var(--themeColor);
         color: #fff;
         border: 2px solid #000;
         margin-right: 5px;
+        font-size: 12px;
       }
     }
   }

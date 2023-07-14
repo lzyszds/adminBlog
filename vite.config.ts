@@ -49,10 +49,15 @@ export default defineConfig(({ command, mode }): any => {
       host: '0.0.0.0',
       port: 8088,
       proxy: {
-        '/adminApi': {
+        '/adminGetApi': {
           target: _baseUrl + ':8089/overtApis/',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域
-          rewrite: path => path.replace(/^\/adminApi/, '')
+          rewrite: path => path.replace(/^\/adminGetApi/, '')
+        },
+        '/adminPostApi': {
+          target: _baseUrl + ':8089/privateApis/',//这里是域名，不是完整地址
+          changeOrigin: true,//是否跨域
+          rewrite: path => path.replace(/^\/adminPostApi/, '')
         },
         '/adminStatic': {
           target: _baseUrl + ':8089/public',//这里是域名，不是完整地址

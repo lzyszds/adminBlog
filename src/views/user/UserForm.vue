@@ -52,7 +52,7 @@ const rules = reactive<FormRules>({
 
 const onAddUser = () => {
   ruleForm.value.headImg = ruleForm.value.headImg.replace('/adminStatic', '');
-  http('POST', '/adminApi/addUserLzy', ruleForm.value)
+  http('post', '/addUserLzy', ruleForm.value)
     .then(() => {
       emit('switchAdd', false)
     })
@@ -63,7 +63,7 @@ const onAddUser = () => {
 const onmodifyUser = () => {
   console.log(ruleForm.value);
   // ruleForm.value.setHeadImg = ruleForm.value.headImg.replace('http://localhost:1027', '');
-  http('POST', '/adminApi/updateUserLzy', ruleForm.value)
+  http('post', '/updateUserLzy', ruleForm.value)
     .then(() => {
       emit('switchMod', false)
     })
@@ -93,7 +93,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 const handleExceed = async () => {
   ruleForm.value.headImg = '';
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  http('get', '/adminApi/getRandHeadImg')
+  http('get', '/getRandHeadImg')
     .then((res: { code: Number, msg, data: string }) => {
       ruleForm.value.headImg = "/adminStatic" + res.data;
     })
@@ -118,7 +118,7 @@ const submitUpload = () => {
       'Content-Type': 'multipart/form-data',
     }
     //给后台上传头像图片，并获取后台返回新的图片地址
-    http('post', '/adminApi/uploadHead', formData, headers)
+    http('post', '/uploadHead', formData, headers)
       .then((res: { code: Number, msg, data: string }) => {
         if (res.code === 200) {
           // const objectURL = URL.createObjectURL(blob);
@@ -167,16 +167,16 @@ const submitUpload = () => {
       <el-input v-model="ruleForm.password" type="password" show-password />
     </el-form-item>
     <el-form-item label="power(权限)" prop="power">
-      <el-select v-model="ruleForm.power" placeholder="Activity power">
+      <el-select style="width: 100%;" v-model="ruleForm.power" placeholder="Activity power">
         <el-option label="admin" value="admin" />
         <el-option label="user" value="user" />
       </el-select>
     </el-form-item>
     <el-form-item label="create(创建)" prop="date">
-      <el-date-picker v-model="ruleForm.date" type="date" placeholder="Pick a day" disabled />
+      <el-date-picker style="width: 100%;" v-model="ruleForm.date" type="date" placeholder="Pick a day" disabled />
     </el-form-item>
-    <el-form-item label="perSign(个性签名)" prop="delivery">
-      <el-input v-model="ruleForm.perSign" :autosize="{ minRows: 2, maxRows: 2 }" type="textarea" />
+    <el-form-item class="pertextarea" style="flex-direction: column;" prop="delivery">
+      <el-input v-model="ruleForm.perSign" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button class="card-button" type="primary" @click="submitForm(ruleFormRef)">Create</el-button>
@@ -195,12 +195,23 @@ const submitUpload = () => {
 
   :deep(textarea) {
     resize: none;
-    border: 2px solid transparent;
 
     &:focus {
       box-shadow: none;
       border: 2px solid var(--themeColor);
     }
+  }
+
+  :deep(.el-form-item--default) {
+    margin-bottom: 15px;
+  }
+}
+
+.pertextarea {
+  :deep(.el-form-item__content) {
+    margin: 0 !important;
+    border: 1px solid var(--themeColor);
+    border-radius: 5px;
   }
 }
 
@@ -209,6 +220,7 @@ const submitUpload = () => {
 
   :deep(.el-form-item__content) {
     display: block;
+
   }
 
   .text-red {
@@ -265,5 +277,7 @@ const submitUpload = () => {
   .el-form-item--default .el-form-item__label {
     flex-direction: row-reverse;
   }
+
+
 }
 </style>

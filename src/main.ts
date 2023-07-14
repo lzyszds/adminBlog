@@ -1,5 +1,6 @@
 import 'highlight.js/styles/atom-one-dark.css'
 import 'highlight.js/lib/common'
+import "@fancyapps/ui/dist/fancybox.css";
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/base.css'
 

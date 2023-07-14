@@ -50,7 +50,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.validate(async (valid, fields) => {
       if (valid) {
-        const res = await http('post', '/adminApi/login', ruleForm) as getLoginData;
+        const res = await http('post', '/login', ruleForm) as getLoginData;
         setTimeout(() => {
           if (res.error === 0 || res.code === 200) {
             localStorage.setItem('lzy_token', res.data);

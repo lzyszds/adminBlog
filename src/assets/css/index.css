@@ -1,6 +1,7 @@
 :root {
   --themeColor: #5161ce;
   --bgcolor: #fff !important;
+  --themeGreen: #00CE3E;
   --darkBgcolor: rgb(27, 28, 37);
   --darkColor: rgb(255, 255, 255, .8);
   --textcolor: #fe9600;
@@ -104,6 +105,7 @@ a {
   font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
+  vertical-align: bottom;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

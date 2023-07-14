@@ -105,7 +105,7 @@ export function compressPic(file, quality) {
   })
 }
 
-//提示弹窗
+// 默认弹窗
 export const LNotification = (val: string, time: number = 2000, postion: any = 'bottom-right') => {
   ElNotification.closeAll()
   ElNotification({
@@ -123,10 +123,19 @@ import { useEventListener } from "@vueuse/core";
 export const copyTip = () => {
   useEventListener(window, 'keydown', e => {
     if (e.ctrlKey && e.key === 'c') {
-      LNotification(`<i class="fa fa-copy"></i> 复制成功,转载请声明来源！`)
+      LNotification(`<i class="iconfont icon-tishi"></i> 复制成功,转载请声明来源！`)
     }
   })
 }
+
+// 提示通知
+export const tipNotify = (val: string) => {
+  const style = `color: var(--themeColor); font-size: 16px;`
+  const icon = `<i class="iconfont icon-tongzhi" style="${style}"></i>`
+  LNotification(`${icon} ${val}`)
+}
+
+
 
 //获取cookie
 export const getCookie = (name: string) => {
@@ -193,6 +202,7 @@ export default {
   getBase64,//二进制流转换为base64 格式。
   compressPic,//上传图片，图片太大，如何在前端实现图片压缩后上传
   copyTip,//复制内容提示版权信息
+  tipNotify,//提示通知
   LNotification,//提示弹窗
   getCookie,//获取cookie
   setCookie,//设置cookie

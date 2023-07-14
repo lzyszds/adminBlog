@@ -5,7 +5,8 @@ import { reactive } from 'vue';
 import http from '@/http/http';
 import { dayjs } from 'element-plus';
 import { LNotification } from '@/utils/common';
-const { data } = await http('get', '/adminApi/getComments') as any
+const { data } = await http('get', `/getComments`) as any
+// ? pages = ${ total.value }& limit=${ pageSize.value }& search=${ search.value }
 interface getComType {
   article_id: Number, //文章id
   comId: Number //评论id
@@ -21,17 +22,20 @@ interface getComType {
 const tableData = reactive<getComType[]>(data)
 const deleteCom = (row: getComType) => {
   LNotification('success')
-  http('post', '/adminApi/deleteComment', { comId: row.comId })
+  http('post', '/deleteComment', { comId: row.comId })
 }
 const topCom = (_row: getComType) => {
   // 置顶评论
   //没想明白，先不写了
-  // http('post', '/adminApi/topComment', { comId: row.comId })
+  // http('post', '/topComment', { comId: row.comId })
+}
+const searchValfn = (val: string) => {
+  console.log(val)
 }
 </script>
 
 <template>
-  <Search type='user' @searchData="" />
+  <Search @searchVal="searchValfn" />
   <div>
     <el-table class="tableuser" :data="tableData" style="width: 100%">
       <el-table-column prop="" label="头像" width="65">
@@ -41,10 +45,10 @@ const topCom = (_row: getComType) => {
       </el-table-column>
       <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="content" label="评论内容" width="240" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="time" label="评论时间" width="130" show-overflow-tooltip>
+      <el-table-column prop="content" label="评论内容" width="220" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="time" label="评论时间" width="150" show-overflow-tooltip>
         <template #default="{ row }">
-          <span>{{ dayjs.unix(row.time).format('YYYY.MM.DD HH:mm') }}</span>
+          <span style="font-size: 12px !important;">{{ dayjs.unix(row.time).format('YYYY.MM.DD HH:mm') }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="comId" label="评论id" width="70"></el-table-column>

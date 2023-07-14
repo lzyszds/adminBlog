@@ -1,24 +1,5 @@
-.tableSearch {
-  height: 50px;
-  width:1300px;:deep(.searchInput) {
-    width: 200px;
-    margin: 10px 0 0 20px;
-
-    .el-input__wrapper {
-      border-radius: 15px 0 0 15px;
-
-      &.is-focus {
-        box-shadow: 0 0 0 1px var(--themeColor) inset
-      }
-    }
-  }
-
-  :deep(.btn) {
-    margin-top: 10px;
-    border-radius: 0 15px 15px 0;
-    background-color: var(--themeColor);
-    border-color: transparent;
-  }
+.mainTem {
+  height: 100%;
 }
 
 .example-demonstration {
@@ -27,6 +8,21 @@
   white-space: nowrap;
   // 超出部分隐藏
   transform: translateY(-10px);
-  padding-left: 32px;
+}
 
+.empty {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+
+// 旋转一圈，使用动画
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

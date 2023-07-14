@@ -52,6 +52,13 @@ export default function (method = 'get', url = '', data = {}, headers?: any) {
   }
   if (Authorization) headers['Authorization'] = Authorization
   if (isHeadPara) headers['Content-Type'] = 'multipart/form-data'
+  //不需要拼接的接口
+  const noMontage = ['/getIp/info']
+  if (!noMontage.includes(url)) {
+    if (method == 'get') url = "/adminGetApi" + url
+    else if (method == 'post') url = "/adminPostApi" + url
+  }
+
   return new Promise((resolve, reject) => {
     instance({ method, url, data, headers })
       .then((res: any) => {
