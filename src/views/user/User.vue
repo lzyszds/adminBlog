@@ -11,7 +11,7 @@ import { httpData, User } from './type'
 const isClear = ref<boolean>(true)
 
 const total = ref(1) //分页页数
-const pageSize = ref(10) //分页大小
+const pageSize = ref(11) //分页大小
 const tableheight = ref<number>(740) //表格高度
 
 
@@ -105,6 +105,7 @@ const switchMod = (boolean: boolean) => {
   handleCurrentChange(total.value)
 }
 
+
 //删除用户
 const deleteUser = (event) => {
   http('post', '/deleteUserLzy', { id: event.uid }).then((res: httpData) => {
@@ -148,12 +149,17 @@ onBeforeUnmount(() => {
         </template>
         <!-- <el-table-column type="selection" width="55" /> -->
         <el-table-column property="uid" label="Id" sortable width="80" align="center"> </el-table-column>
-        <el-table-column label="uname" width="200" show-overflow-tooltip>
+
+        <el-table-column label="头像" width="70" show-overflow-tooltip>
           <template #default="scope">
             <div class="headImg">
               <el-avatar :src="setheadImg(scope.row.headImg)" alt=""></el-avatar>
-              {{ scope.row.uname }}
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户名" width="150" show-overflow-tooltip>
+          <template #default="scope">
+            {{ scope.row.uname }}
           </template>
         </el-table-column>
         <el-table-column property="username" label="登陆账号" width="180" />

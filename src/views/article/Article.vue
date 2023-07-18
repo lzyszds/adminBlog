@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
         <el-table-column label="文章封面" sortable width="180" align="center">
           <template #default="scopre">
             <div>
-              <img data-fancybox="gallery" :src="'/adminStatic' + scopre.row.coverImg" alt="">
+              <img v-Loading data-fancybox="gallery" :src="'/adminStatic' + scopre.row.coverImg" alt="">
             </div>
           </template>
         </el-table-column>

@@ -6,7 +6,7 @@
   --darkColor: rgb(255, 255, 255, .8);
   --textcolor: #fe9600;
   --borderColor: #ffe14d;
-  --delColor: rgb(220, 20, 60);
+  --delColor: #dc143c;
   --normalCup: url('../icon/Normal.png'), auto;
   --linkCup: url('../icon/Link.png'), auto;
   --verticalCup: url('../icon/Vertical.png'), auto;

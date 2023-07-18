@@ -1,6 +1,6 @@
 .el-table .el-table__cell.lzyCell {
   color: #000 !important;
-  padding: 7.4px 0 !important;
+  padding: 7.8px 0 !important;
 }
 
 
@@ -75,6 +75,7 @@
     font-size: 1.5rem;
     font-family: 'almama';
     align-items: center;
+    padding: 3px 0;
 
     .el-avatar--circle {
       border: 1px solid var(--themeColor);
@@ -102,13 +103,20 @@
     display: flex;
     justify-content: center;
     cursor: pointer;
+    user-select: none;
+
+    &:active {
+      backface-visibility: hidden;
+      transform: scale(0.95) translateZ(0);
+      transition: 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
 
     span {
       width: 70%;
       text-align: center;
-      line-height: 30px;
+      line-height: 25px;
       font-size: 12px;
-      padding: 0 6px;
+      padding: 0 2px;
       border-radius: 5px;
       background-color: var(--themeColor);
       border: 2px solid #000;

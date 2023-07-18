@@ -15,13 +15,19 @@ import transition from '@/utils/transition'
 import { createPinia } from 'pinia' //状态管理
 import VueMarkdownEditor from '@/utils/markDownCreate'; //markdown配置
 import lzyIcon from '@/components/lzyIcon.vue'
+import Imgloading from "@/utils/lazy";
+
 
 const pinia = createPinia()
 const app = createApp(App)
 
 app.config.globalProperties.$fancyapps = { Fancybox, }
+// 添加vue指令
+app.directive('Loading', Imgloading)
+
 app.directive('transition', transition)
 app.component('lzyicon', lzyIcon)
+
 app.use(ElementPlus)
 app.use(hljsVuePlugin)
 app.use(router)

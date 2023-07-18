@@ -1,14 +1,18 @@
 <script setup lang='ts' name="lzyIcon">
 import { Icon } from '@iconify/vue';
-const props = defineProps<{
+
+interface Props {
   name: string,
   height?: string,
   style?: string | Object,
-}>()
+}
+
+const props = defineProps<Props>()
+
 </script>
 
 <template>
-  <Icon class="lzyIcon" :icon="name" width="20px" :height="props.height" :style="props.style"></Icon>
+  <Icon class="lzyIcon" :icon="name" width="20px" :height="props.height ?? '20px'" :style="props.style"></Icon>
 </template>
 
 <style lang='less' scoped>
