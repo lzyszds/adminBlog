@@ -1,49 +1,49 @@
-<script setup lang='ts'>
-import { reactive, ref } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import { useThrottleFn } from '@vueuse/core'
-import { getIpWeather } from "@/utils/common";
-import { NowWeatherData } from '@/types/NowWeatherData';
+<script setup lang="ts">
+import { reactive, ref } from "vue";
+import type { FormInstance, FormRules } from "element-plus";
+import { useThrottleFn } from "@vueuse/core";
+import { getIpWeather } from "@/utils/utils";
+import { NowWeatherData } from "@/types/NowWeatherData";
 
-import { dayjs } from 'element-plus'
-import http from '@/http/http'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { dayjs } from "element-plus";
+import http from "@/http/http";
+import { useRouter } from "vue-router";
+const router = useRouter();
 //进入页面先判断是否登陆着,localStorage.getItem('token')是登陆时候存的token
-if (localStorage.getItem('lzy_token')) {
+if (localStorage.getItem("lzy_token")) {
   //路由重定向
-  router.replace('/user')
+  router.replace("/user");
 }
 interface getLoginData {
-  error: number
-  data: string
-  message: string
-  code: number
+  error: number;
+  data: string;
+  message: string;
+  code: number;
 }
-const tipsText = ref('')
-const load = ref(false)
+const tipsText = ref("");
+const load = ref(false);
 
 // 表单验证 需要捆绑的ref项，需要验证的表单项
-const ruleFormRef = ref<FormInstance>()
+const ruleFormRef = ref<FormInstance>();
 // 账号密码数据，用于提交
 const ruleForm = reactive({
-  username: '',
-  password: '',
-})
+  username: "",
+  password: "",
+});
 // 表单验证规则
 const rules = reactive<FormRules>({
   username: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
-    { min: 3, max: 16, message: '账号长度应该是6到16', trigger: 'blur' },
+    { required: true, message: "请输入账号", trigger: "blur" },
+    { min: 3, max: 16, message: "账号长度应该是6到16", trigger: "blur" },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 16, message: '密码长度应该是6到16', trigger: 'blur' },
-  ]
-})
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 16, message: "密码长度应该是6到16", trigger: "blur" },
+  ],
+});
 const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   try {
-    tipsText.value = '';
+    tipsText.value = "";
     load.value = true;
     setTimeout(() => {
       load.value = false;
@@ -52,50 +52,63 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.validate(async (valid, fields) => {
       if (valid) {
-        const res = await http('post', '/login', ruleForm) as getLoginData;
+        const res = (await http("post", "/login", ruleForm)) as getLoginData;
         setTimeout(() => {
           if (res.error === 0 || res.code === 200) {
-            localStorage.setItem('lzy_token', res.data);
+            localStorage.setItem("lzy_token", res.data);
             //设置cookie，cookie过期时间为14天，如果过期则需要重新登陆，销毁localStorage中token
-            const date14: any = dayjs().add(7, 'day');
-            const date = date14.diff(dayjs(), 'day');
+            const date14: any = dayjs().add(7, "day");
+            const date = date14.diff(dayjs(), "day");
             document.cookie = `token_remderDay=${date};expires=${date14};path=/`;
             //获取ip天气 用于首页展示
-            const weather = getIpWeather() as Promise<NowWeatherData>
-            weather.then(res => {
+            const weather = getIpWeather() as Promise<NowWeatherData>;
+            weather.then((res) => {
               //将个人信息存入localStorage，避免每次刷新都要请求接口
-              localStorage.setItem('nowWeatherData', JSON.stringify(res))
-              router.push('/user');
-            })
+              localStorage.setItem("nowWeatherData", JSON.stringify(res));
+              router.push("/user");
+            });
           } else {
-            tipsText.value = '账号或密码错误';
+            tipsText.value = "账号或密码错误";
           }
         }, 2000);
       } else {
-        console.log('error submit!', fields);
+        console.log("error submit!", fields);
       }
     });
   } catch (e) {
     console.error(e);
   }
 }, 1000);
-
-</script>   
+</script>
 
 <template>
   <div class="login">
     <div class="card">
-
-      <div class="item center" :class="{ 'loadBtn': load }">
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
+      <div class="item center" :class="{ loadBtn: load }">
+        <el-form
+          ref="ruleFormRef"
+          :model="ruleForm"
+          :rules="rules"
+          class="demo-ruleForm"
+          status-icon
+        >
           <el-form-item prop="username">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
+            <el-input
+              @keydown.enter="submitForm(ruleFormRef)"
+              class="input"
+              v-model="ruleForm.username"
+            >
               <template #prepend>账号</template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" type="password" v-model="ruleForm.password"
-              show-password>
+            <el-input
+              @keydown.enter="submitForm(ruleFormRef)"
+              class="input"
+              type="password"
+              v-model="ruleForm.password"
+              show-password
+            >
               <template #prepend>密码</template>
             </el-input>
           </el-form-item>
@@ -108,7 +121,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
           </el-form-item>
         </el-form>
       </div>
-      <p class="pwdTips" :class="{ 'error': tipsText.length }">{{ tipsText }}</p>
+      <p class="pwdTips" :class="{ error: tipsText.length }">{{ tipsText }}</p>
     </div>
   </div>
 </template>
@@ -117,7 +130,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 .login {
   width: 100vw;
   height: 100vh;
-  background: url('@/assets/image/login/dark-l1.png') center; //var(--themeColor);
+  background: url("@/assets/image/login/dark-l1.png") center; //var(--themeColor);
   background-position: center;
   display: flex;
   justify-content: center;
@@ -129,22 +142,22 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   .card {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, .3);
+    background-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(3px);
     border-radius: 10px;
-    box-shadow: 0 1px 8px 10px rgba(0, 0, 0, .2);
-    transition: .6s;
+    box-shadow: 0 1px 8px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.6s;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    font-family: 'almama';
+    font-family: "almama";
 
     &:focus-within {
-      box-shadow: 0 10px 10px rgba(0, 0, 0, .1),
-        0px -30px 4px -10px rgba(255, 255, 255, .3),
-        0px -60px 4px -20px rgba(255, 255, 255, .2),
-        0px -90px 4px -30px rgba(255, 255, 255, .1),
+      box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1),
+        0px -30px 4px -10px rgba(255, 255, 255, 0.3),
+        0px -60px 4px -20px rgba(255, 255, 255, 0.2),
+        0px -90px 4px -30px rgba(255, 255, 255, 0.1);
     }
 
     .item {
@@ -156,7 +169,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 
       &.loadBtn {
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           left: 0;
@@ -216,8 +229,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
             border-radius: 15px 0 0 15px;
             color: #fff;
             user-select: none;
-            transition: .6s;
-
+            transition: 0.6s;
           }
 
           .el-input__wrapper {
@@ -228,7 +240,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 
             input {
               font-weight: 600;
-              font-family: 'firaCode';
+              font-family: "firaCode";
               color: #000;
             }
           }
@@ -246,9 +258,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
             border: none;
           }
         }
-
       }
-
     }
 
     .pwdTips {
@@ -260,14 +270,13 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
       bottom: 0;
 
       &.error {
-        animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+        animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       }
     }
   }
 }
 
 @keyframes shake {
-
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
@@ -291,7 +300,6 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 }
 
 @keyframes animate_line {
-
   0%,
   100% {
     top: 0;
@@ -302,4 +310,4 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   }
 }
 </style>
-@/types/NowWeatherData
+@/types/NowWeatherData @/utils/utils

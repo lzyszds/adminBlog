@@ -1,7 +1,7 @@
 // 一、配置axios
 import axios, { AxiosResponse } from 'axios'
 import { ElMessageBox } from 'element-plus'
-import { getCookie } from '@/utils/common'
+import { getCookie } from '@/utils/utils'
 export interface HttpResonse<T> {
   code: number
   data: T,

@@ -55,15 +55,15 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  width: 2em;
+  width: 4em;
   position: absolute;
   left: 50%;
   transform: translateX(-81%);
 }
 
 .html2 span {
-  width: 0.3em;
-  height: 1em;
+  width: 0.5em;
+  height: 1.5em;
   background-color: var(--themeColor);
 }
 
@@ -208,6 +208,42 @@
   animation-delay: .3s;
 }
 
+#loadingDiv #over {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  opacity: 1;
+  z-index: 999;
+}
+
+#loadingDiv #layout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+#loadingDiv #layout .loading-text {
+  margin: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206);
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 
 @keyframes slide-out-blurred-top {

@@ -14,24 +14,10 @@ const hide = (id) => {
 const show = (id, text?) => {
   //在页面未加载完毕之前显示的loading Html自定义内容
   var _LoadingHtml = `
-  <div id="over" style="position:absolute;position: fixed;top: 0;left: 0; width: 100%;height: 100%; background-color: #fff;opacity:1;z-index: 2;">
-  </div>
-  <div id="layout"
-   style="position:absolute;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 2;
-    text-align: center;
-    transform: translate(-50%, -50%);
-  }">
-  ${html4}
-  <div style="margin: 40px;
-    text-align: center;
-    font-weight: 600;
-    color: #fff;
-    text-shadow: 1px 1px 3px rgb(81,97,206);
-    font-size: 16px;">${text == null ? text = "加载中..." : text = text}</div>
+  <div id="over" style=""></div>
+  <div id="layout">
+    ${html2}
+    <div class="loading-text ">${text == null ? text = "加载中..." : text = text}</div>
   </div>
   `;
   var div = document.createElement('div');

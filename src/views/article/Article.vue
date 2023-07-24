@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref, h, onBeforeUnmount } from 'vue'
-import Search from '../../components/Search.vue'
+import Search from '@/components/Search.vue'
 import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
 import http from '@/http/http'
 import type { HttpResonse } from '@/http/http'
@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import load from '@/uiComponents/loader/loadings'
 import { Article } from '@/types/ArticleType'
 import ArticleForm from './ArticleForm.vue'
+import TipCard from '@/components/TipCard.vue'
 
 const isClear = ref<boolean>(true)
 
@@ -48,7 +49,7 @@ const handleCurrentChange = async (val: number, number?) => {
   tableData.value = data.value.data
   setTimeout(() => {
     load.hide('#loadings')
-  }, 500)
+  }, 50)
 }
 handleCurrentChange(1, 1)
 
@@ -108,24 +109,22 @@ const switchMod = (boolean: boolean) => {
 
 //删除文章
 const deleteArticle = async (event) => {
-  const res = await http('post', '/deleteArticle', { id: event.aid })
-  ElNotification({
-    title: res.code == 200 ? '成功' : '失败',
-    message: '用户' + res.message,
-    type: res.code == 200 ? 'success' : 'error',
-  })
-  if (res.code != 200) console.log(`lzy ~ res`, res.err)
-  handleCurrentChange(total.value)
+  
+
+  // const res = await http('post', '/deleteArticle', { id: event.aid })
+  // ElNotification({
+  //   title: res.code == 200 ? '成功' : '失败',
+  //   message: '用户' + res.message,
+  //   type: res.code == 200 ? 'success' : 'error',
+  // })
+  // if (res.code != 200) console.log(`lzy ~ res`, res.err)
+  // handleCurrentChange(total.value)
 }
 //搜索框
 const searchHandle = (val: string) => {
   search.value = val
   handleCurrentChange(1)
 }
-//监听窗口大小变化
-// watch(height, (val) => {
-//   tableheight.value = val * 0.75
-// })
 onBeforeUnmount(() => {
   //组件卸载时清除数据
   data.value = { code: 0, data: [], total: 0, }
@@ -142,7 +141,7 @@ onBeforeUnmount(() => {
     <Search @searchVal="searchHandle" />
     <div class="tableuser" id="loadings">
 
-      <el-table :data="tableData" cell-class-name="lzyCell" :height="tableheight" style="width: 100%">
+      <el-table :data="tableData" cell-class-name="lzyCell" style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="">

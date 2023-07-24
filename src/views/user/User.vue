@@ -2,7 +2,7 @@
 import { ref, h, onBeforeUnmount } from 'vue'
 import Search from '../../components/Search.vue'
 import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
-import { setTime, tipNotify } from '@/utils/common'
+import { setTime, tipNotify } from '@/utils/utils'
 import http from '@/http/http'
 import type { HttpResonse } from '@/http/http'
 import UserForm from './UserForm.vue'
@@ -13,7 +13,7 @@ const isClear = ref<boolean>(true)
 
 const total = ref(1) //分页页数
 const pageSize = ref(11) //分页大小
-const tableheight = ref<number>(740) //表格高度
+// const tableheight = ref<number>(740) //表格高度
 
 
 //表格数据（前页数据展示进表格中）
@@ -45,7 +45,7 @@ const handleCurrentChange = async (_val: number, number?) => {
   tableData.value = (data.value.data)
   setTimeout(() => {
     load.hide('#loadings')
-  }, 500)
+  }, 50)
 }
 handleCurrentChange(1, 1)
 //设置所有图片的地址 
@@ -138,9 +138,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="mainTem" v-if="isClear">
     <Search @searchVal="searchHandle" />
-    <div class="tableuser">
-      <el-table id="loadings" :data="tableData" cell-class-name="lzyCell" :height="tableheight" style="width: 100%" stripe
-        tooltip-effect="light">
+    <div class="tableuser" id="loadings">
+      <el-table :data="tableData" cell-class-name="lzyCell" style="width: 100%" stripe tooltip-effect="light">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="">
@@ -311,3 +310,4 @@ onBeforeUnmount(() => {
 </style>
 ./UserYype
 @/LTypes/UserType
+@/utils/utils

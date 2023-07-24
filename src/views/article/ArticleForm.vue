@@ -4,7 +4,7 @@ import { dayjs, ElMessageBox } from 'element-plus'
 import { useEventListener } from '@vueuse/core'
 import http, { HttpResonse } from '@/http/http'
 import toolbar from '@/utils/toolbar'
-import { compressPic } from '@/utils/common'
+import { compressPic } from '@/utils/utils'
 import { TagDataType, Props, Informationtypes } from "@/types/ArticleType";
 
 const emit = defineEmits(['switchMod', 'switchAdd'])
@@ -30,7 +30,7 @@ const submitForm = () => {
     coverImg: (information.cover || props.data?.coverImg)?.replace('http://localhost:8089/public', ''),
     aid: props.type === 'modify' ? props.data?.aid : null,
     modified: dayjs().unix(),
-    wtype: JSON.stringify(tagData.value),
+    wtype: tagData.value.join(',')
   }
   const url = props.type === 'modify' ? '/updateArticle' : '/addArticle'
   //当前是否保存
@@ -81,7 +81,7 @@ const handleUploadImage = (event, insertImage, files) => {
     const res = await http<string>('post', '/uploadArticleImg', formData, headers)
     if (res.code === 200) {
       insertImage({
-        url: '' + res.message,
+        url: '' + res.data,
         desc: '点击放大',
       });
     }
@@ -445,3 +445,4 @@ onBeforeUnmount(() => {
 ../../types/type
 ../../types/toolbar
 @/LTypes/ArticleType
+@/utils/utils
