@@ -114,7 +114,7 @@ infoData.value = data
   <div class="setleft">
     <div class="logo"> Lzyszds </div>
     <div class="userinfo">
-      <div class="headPortrait"><img :src="'/adminStatic' + infoData[0].headImg" alt=""> </div>
+      <div class="headPortrait"><img :src="'http://localhost:8089/public' + infoData[0].headImg" alt=""> </div>
       <h3>{{ infoData[0].uname }}</h3>
       <p>「{{ infoData.perSign[0] }}」</p>
       <p>{{ infoData.perSign[1] }}</p>
@@ -407,3 +407,4 @@ infoData.value = data
   }
 }
 </style>
+@/types/NowWeatherData

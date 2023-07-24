@@ -2,6 +2,15 @@
 import axios, { AxiosResponse } from 'axios'
 import { ElMessageBox } from 'element-plus'
 import { getCookie } from '@/utils/common'
+export interface HttpResonse<T> {
+  code: number
+  data: T,
+  msg?: string,
+  total?: number,
+  message?: string,
+  err?: object
+}
+
 const instance = axios.create({
   baseURL: window.location.origin,
   // timeout: 5000,
@@ -35,39 +44,44 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
     return Promise.reject(identifyCode(response.status, response))
   }
 })
+//导出ts接口
+
+
 
 // 2、封装请求方式
 // @param method(必须)  请求方法
 // @param url(必须)  接口地址
 // @param data(可选)  携带参数
 // @param headers(可选) 请求头可以自己设置，也可以使用默认的（不传）
-export default function (method = 'get', url = '', data = {}, headers?: any) {
-  const Authorization = headers?.Authorization ? headers?.Authorization : ''
-  const isHeadPara = headers ? true : false
-  headers = {
+export default async function http<T>(method = 'get', url = '', data = {}, headers = {}): Promise<HttpResonse<T>> {
+  // 设置默认头部信息
+  const defaultHeaders: any = {
     'access-control-allow-origin': '*',
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin-Type': '*',
-    'Authorization': localStorage.getItem('lzy_token') as string
-  }
-  if (Authorization) headers['Authorization'] = Authorization
-  if (isHeadPara) headers['Content-Type'] = 'multipart/form-data'
-  //不需要拼接的接口
-  const noMontage = ['/getIp/info']
-  if (!noMontage.includes(url)) {
-    if (method == 'get') url = "/adminGetApi" + url
-    else if (method == 'post') url = "/adminPostApi" + url
+    'Authorization': localStorage.getItem('lzy_token') || '',
+  };
+
+  // 将默认头部与自定义头部合并
+  headers = { ...defaultHeaders, ...headers };
+
+  // 判断是否为多部分请求
+  const isMultipart = headers['Content-Type'] === 'multipart/form-data';
+
+  // 定义不需要前缀的端点
+  const noPrefixEndpoints = ['/getIp/info'];
+
+  // 如果需要前缀，添加前缀到URL
+  if (!noPrefixEndpoints.includes(url)) {
+    url = method === 'get' ? '/adminGetApi' + url : '/adminPostApi' + url;
   }
 
-  return new Promise((resolve, reject) => {
-    instance({ method, url, data, headers })
-      .then((res: any) => {
-        resolve(res.data)
-      })
-      .catch((err: any) => {
-        reject(err)
-      })
-  })
+  try {
+    const response = await instance({ method, url, data, headers });
+    return response.data as HttpResonse<T>; // 假设响应数据为getComType[]类型
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 function identifyCode(code: number | string, err: any) {

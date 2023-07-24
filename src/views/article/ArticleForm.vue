@@ -2,10 +2,10 @@
 import { ref, reactive, h, onMounted, onBeforeUnmount } from 'vue'
 import { dayjs, ElMessageBox } from 'element-plus'
 import { useEventListener } from '@vueuse/core'
-import http from '@/http/http'
-import toolbar from './toolbar'
+import http, { HttpResonse } from '@/http/http'
+import toolbar from '@/utils/toolbar'
 import { compressPic } from '@/utils/common'
-import { TagType, Props, Informationtypes } from "./type";
+import { TagDataType, Props, Informationtypes } from "@/types/ArticleType";
 
 const emit = defineEmits(['switchMod', 'switchAdd'])
 const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  test |left center right ul ol table hr | link image code tip music| save tips`
@@ -16,7 +16,7 @@ const information = reactive<Informationtypes>({
   text: props.data?.content,
   html: props.data?.main,
   title: props.data?.title || '',
-  cover: props.data?.coverImg ? ('/adminStatic' + props.data?.coverImg) : "/adminGetApi/getRandArticleImg",
+  cover: props.data?.coverImg ? ('http://localhost:8089/public' + props.data?.coverImg) : "/adminGetApi/getRandArticleImg",
 })
 //确认提交
 const submitForm = () => {
@@ -27,10 +27,10 @@ const submitForm = () => {
     coverContent: document.querySelector('.vuepress-markdown-body')?.firstElementChild?.innerHTML,
     content: information.storage.text,
     main: information.storage.html,
-    coverImg: (information.cover || props.data?.coverImg)?.replace('/adminStatic', ''),
+    coverImg: (information.cover || props.data?.coverImg)?.replace('http://localhost:8089/public', ''),
     aid: props.type === 'modify' ? props.data?.aid : null,
     modified: dayjs().unix(),
-    wtype: tagData.value,
+    wtype: JSON.stringify(tagData.value),
   }
   const url = props.type === 'modify' ? '/updateArticle' : '/addArticle'
   //当前是否保存
@@ -69,7 +69,7 @@ const handleUploadImage = (event, insertImage, files) => {
   //如果文件大小小于300kb，不进行压缩，按比例压缩
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5
   //对图片进行压缩
-  compressPic(files[0], scale).then(({ fileCompress }) => {
+  compressPic(files[0], scale).then(async ({ fileCompress }) => {
     // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
     let formData = new FormData();
     formData.append('upload-image', fileCompress);
@@ -78,15 +78,13 @@ const handleUploadImage = (event, insertImage, files) => {
       'Content-Type': 'multipart/form-data',
     }
     // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    http('post', '/uploadArticleImg', formData, headers)
-      .then((res: { code: Number, message }) => {
-        if (res.code === 200) {
-          insertImage({
-            url: '' + res.message,
-            desc: '点击放大',
-          });
-        }
-      })
+    const res = await http<string>('post', '/uploadArticleImg', formData, headers)
+    if (res.code === 200) {
+      insertImage({
+        url: '' + res.message,
+        desc: '点击放大',
+      });
+    }
   })
 }
 const clicks = (text, html) => {
@@ -110,9 +108,11 @@ onMounted(() => {
       }
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
       http('post', '/uploadArticleImg', formData, headers)
-        .then((res: { code: Number, message }) => {
+        .then((res: HttpResonse<string>) => {
           if (res.code === 200) {
-            information.cover = res.message
+            information.cover = res.data
+          } else {
+            console.log(res.msg);
           }
         })
     })
@@ -135,11 +135,12 @@ tagData.value = props.data?.wtype ? props.data?.wtype.split(',') : []
 //临时存储数据
 const tagDataTem: any = ref(tagData.value)
 //标签列表
-const tagList = ref<TagType>({})
+const tagList = ref<TagDataType[]>()
 
 try {
   //获取标签列表
-  tagList.value = await http('get', '/articleType') as TagType
+  const { data } = await http<TagDataType[]>('get', '/articleType')
+  tagList.value = data
 } catch (e) {
   console.log(e);
 }
@@ -164,30 +165,29 @@ const addTag = (flag: boolean) => {
 }
 const typeInput = ref('')
 //添加文章分类小标题
-const addArticleType = () => {
+const addArticleType = async () => {
   //非空判断
   if (!typeInput.value) return
 
   //获取当前所有的文章分类
-  const data = tagList.value.data?.map(res => {
+  const data = tagList.value!.map(res => {
     return res.name
   })
   //判断当前输入的类型是否已经存在 如果不存在 则添加
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value)
   }
-  const result = http('post', '/addArticleType', { name: typeInput.value })
-  result.then(async (res: any) => {
-    if (res.code == 200) {
-      tagList.value = await http('get', '/articleType') as TagType
-    }
-  })
+  const result = await http<null>('post', '/addArticleType', { name: typeInput.value })
+  if (result.code == 200) {
+    const { data } = await http<TagDataType[]>('get', '/articleType')
+    tagList.value = data
+  }
 }
 onBeforeUnmount(() => {
   Object.keys(information).map(item => {
     information[item] = ''
   })
-  tagList.value = {}
+  tagList.value = []
   tagData.value = []
   tagDataTem.value = []
   typeInput.value = ''
@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
                 <button @click="addArticleType">添加</button>
               </div>
               <div class="item-box">
-                <el-tag type="info" v-for="(item, index) in tagList?.data" :key="index" @click="tagActive(item.name)"
+                <el-tag type="info" v-for="(item, index) in tagList" :key="index" @click="tagActive(item.name)"
                   :class="tagActiveClass(item.name)">{{
                     item.name
                   }}
@@ -442,3 +442,6 @@ onBeforeUnmount(() => {
 }
 </style>
 
+../../types/type
+../../types/toolbar
+@/LTypes/ArticleType

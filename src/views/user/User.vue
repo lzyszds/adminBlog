@@ -4,9 +4,10 @@ import Search from '../../components/Search.vue'
 import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
 import { setTime, tipNotify } from '@/utils/common'
 import http from '@/http/http'
+import type { HttpResonse } from '@/http/http'
 import UserForm from './UserForm.vue'
 import load from '@/uiComponents/loader/loadings'
-import { httpData, User } from './type'
+import { User } from '@/types/UserType'
 
 const isClear = ref<boolean>(true)
 
@@ -19,7 +20,7 @@ const tableheight = ref<number>(740) //表格高度
 const tableData = ref<User[]>()
 const search = ref<string>('')
 //定义分页size以及当前页数据
-const data = ref<httpData>({ code: 0, data: [], total: 0, })
+const data = ref<any>({ code: 0, data: [], total: 0, })
 
 
 //分页事件、切换页码时提供load效果
@@ -29,7 +30,7 @@ const handleCurrentChange = async (_val: number, number?) => {
   if (number != 1) load.show('#loadings')
   // if (!number) total.value = val
   const pagePara = `/getUserList?pages=${total.value}&limit=${pageSize.value}&search=${search.value}`
-  data.value = await http('get', pagePara) as httpData
+  data.value = await http<HttpResonse<User[]>>('get', pagePara)
   //数据为空
   if (data.value.total == 0) {
     // 数据清空
@@ -48,8 +49,8 @@ const handleCurrentChange = async (_val: number, number?) => {
 }
 handleCurrentChange(1, 1)
 //设置所有图片的地址 
-const setheadImg = (headImg: User) => {
-  return '/adminStatic' + headImg
+const setheadImg = (headImg: User['setHeadImg']) => {
+  return 'http://localhost:8089/public' + headImg
 }
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
 const formatter = () => {
@@ -107,16 +108,15 @@ const switchMod = (boolean: boolean) => {
 
 
 //删除用户
-const deleteUser = (event) => {
-  http('post', '/deleteUserLzy', { id: event.uid }).then((res: httpData) => {
-    ElNotification({
-      title: res.code == 200 ? '成功' : '失败',
-      message: '用户' + res.msg,
-      type: res.code == 200 ? 'success' : 'error',
-    })
-    if (res.code != 200) console.log(`lzy ~ res`, res.err)
-    handleCurrentChange(total.value)
+const deleteUser = async (event) => {
+  const res = await http('post', '/deleteUserLzy', { id: event.uid })
+  ElNotification({
+    title: res.code == 200 ? '成功' : '失败',
+    message: '用户' + res.msg,
+    type: res.code == 200 ? 'success' : 'error',
   })
+  if (res.code != 200) console.log(`lzy ~ res`, res.err)
+  handleCurrentChange(total.value)
 }
 const searchHandle = (val: string) => {
   search.value = val
@@ -309,3 +309,5 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+./UserYype
+@/LTypes/UserType

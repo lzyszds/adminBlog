@@ -1,10 +1,3 @@
-export interface httpData {
-  code: number
-  data: [],
-  total?: number,
-  message?: string,
-  err?: object
-}
 
 export interface Article {
   aid: string
@@ -19,16 +12,12 @@ export interface Article {
   title: string,
   wtype: string,
 }
-export interface TagType {
-  code?: string,
-  data?: [
-    {
-      isUse: string,
-      name: string,
-      tId: number
-    }
-  ]
+export interface TagDataType {
+  isUse: string,
+  name: string,
+  tId: number
 }
+
 
 export interface Props {
   type: string,

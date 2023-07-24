@@ -1,36 +1,33 @@
 <script setup lang='ts'>
 import Search from '../../components/Search.vue'
-import { reactive } from 'vue';
+import { ref } from 'vue';
 // import { getComType } from './commentType'
 import http from '@/http/http';
 import { dayjs } from 'element-plus';
 import { LNotification } from '@/utils/common';
-const { data } = await http('get', `/getComments`) as any
+const { data } = await http('get', `/getAllComment`) as any
+import { getComType } from '@/types/CommentType';
 // ? pages = ${ total.value }& limit=${ pageSize.value }& search=${ search.value }
-interface getComType {
-  article_id: Number, //文章id
-  comId: Number //评论id
-  content: String //评论内容
-  email: String //邮箱
-  ground_id: Number //评论楼层
-  head_img: String //头像
-  reply_id: Number //回复id
-  time: Number //时间
-  user_ip: String //用户ip
-  user_name: String //用户名
-}
-const tableData = reactive<getComType[]>(data)
-const deleteCom = (row: getComType) => {
+
+const tableData = ref<getComType[]>(data)
+const deleteCom = async (row: getComType) => {
   LNotification('success')
-  http('post', '/deleteComment', { comId: row.comId })
+  const res: any = await http('post', '/deleteComment', { comId: row.comId, aid: row.article_id })
+  if (res.data === '删除成功') {
+    const { data } = await http('get', `/getAllComment`) as any
+    tableData.value = data
+  }
 }
 const topCom = (_row: getComType) => {
   // 置顶评论
   //没想明白，先不写了
   // http('post', '/topComment', { comId: row.comId })
 }
-const searchValfn = (val: string) => {
-  console.log(val)
+const searchValfn = async (val: string) => {
+  // 搜索
+  // console.log(val)
+  const { data } = await http<getComType[]>('get', `/getAllComment?search=${val}`)
+  tableData.value = data
 }
 </script>
 
@@ -38,6 +35,12 @@ const searchValfn = (val: string) => {
   <Search @searchVal="searchValfn" />
   <div>
     <el-table class="tableuser" :data="tableData" style="width: 100%">
+      <template #empty>
+        <div class="empty">
+          <img src="@/assets/image/暂无文档.svg" alt="">
+          <span>暂无数据</span>
+        </div>
+      </template>
       <el-table-column prop="" label="头像" width="65">
         <template #default="{ row }">
           <el-avatar :src="row.head_img" style="width: 40px; height: 40px"></el-avatar>
@@ -77,5 +80,6 @@ const searchValfn = (val: string) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
+@import url('@/assets/css/headSearch.less');
 </style>

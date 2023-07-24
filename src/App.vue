@@ -1,12 +1,4 @@
-<script setup lang='ts'>
-import { getIpWeather } from "@/utils/common"
-import { NowWeatherData } from './types/nowWeatherData';
-const weather = getIpWeather() as Promise<NowWeatherData>
-weather.then(res => {
-  //将个人信息存入localStorage，避免每次刷新都要请求接口
-  localStorage.setItem('nowWeatherData', JSON.stringify(res))
-})
-</script>
+<script setup lang='ts'></script>
 
 <template>
   <div class="base">

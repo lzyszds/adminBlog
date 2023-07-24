@@ -2,6 +2,8 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useThrottleFn } from '@vueuse/core'
+import { getIpWeather } from "@/utils/common";
+import { NowWeatherData } from '@/types/NowWeatherData';
 
 import { dayjs } from 'element-plus'
 import http from '@/http/http'
@@ -58,8 +60,13 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
             const date14: any = dayjs().add(7, 'day');
             const date = date14.diff(dayjs(), 'day');
             document.cookie = `token_remderDay=${date};expires=${date14};path=/`;
-            router.push('/user');
-            // window.location.reload();
+            //获取ip天气 用于首页展示
+            const weather = getIpWeather() as Promise<NowWeatherData>
+            weather.then(res => {
+              //将个人信息存入localStorage，避免每次刷新都要请求接口
+              localStorage.setItem('nowWeatherData', JSON.stringify(res))
+              router.push('/user');
+            })
           } else {
             tipsText.value = '账号或密码错误';
           }
@@ -295,3 +302,4 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   }
 }
 </style>
+@/types/NowWeatherData

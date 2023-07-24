@@ -3,9 +3,10 @@ import { ref, h, onBeforeUnmount } from 'vue'
 import Search from '../../components/Search.vue'
 import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
 import http from '@/http/http'
+import type { HttpResonse } from '@/http/http'
 import dayjs from 'dayjs'
 import load from '@/uiComponents/loader/loadings'
-import { httpData, Article } from './type'
+import { Article } from '@/types/ArticleType'
 import ArticleForm from './ArticleForm.vue'
 
 const isClear = ref<boolean>(true)
@@ -19,7 +20,7 @@ const tableheight = ref<number>(740) //表格高度
 const tableData = ref<Article[]>()
 const search = ref<string>('')
 //定义分页size以及当前页数据
-const data = ref<httpData>({ code: 0, data: [], total: 0, })
+const data = ref<any>({ code: 0, data: [], total: 0, })
 
 //时间格式化处理
 const setTime: any = (time: number) => {
@@ -33,7 +34,7 @@ const handleCurrentChange = async (val: number, number?) => {
   total.value = val
   if (number != 1) load.show('#loadings')
   const pagePara = `/articleList?pages=${total.value}&limit=${pageSize.value}&search=${search.value}`
-  data.value = await http('get', pagePara) as httpData
+  data.value = await http<HttpResonse<Article[]>>('get', pagePara)
   if (data.value.total == 0) {
     // 数据清空
     tableData.value = []
@@ -106,16 +107,15 @@ const switchMod = (boolean: boolean) => {
 }
 
 //删除文章
-const deleteArticle = (event) => {
-  http('post', '/deleteArticle', { id: event.aid }).then((res: httpData) => {
-    ElNotification({
-      title: res.code == 200 ? '成功' : '失败',
-      message: '用户' + res.message,
-      type: res.code == 200 ? 'success' : 'error',
-    })
-    if (res.code != 200) console.log(`lzy ~ res`, res.err)
-    handleCurrentChange(total.value)
+const deleteArticle = async (event) => {
+  const res = await http('post', '/deleteArticle', { id: event.aid })
+  ElNotification({
+    title: res.code == 200 ? '成功' : '失败',
+    message: '用户' + res.message,
+    type: res.code == 200 ? 'success' : 'error',
   })
+  if (res.code != 200) console.log(`lzy ~ res`, res.err)
+  handleCurrentChange(total.value)
 }
 //搜索框
 const searchHandle = (val: string) => {
@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
         <el-table-column label="文章封面" sortable width="180" align="center">
           <template #default="scopre">
             <div>
-              <img v-Loading data-fancybox="gallery" :src="'/adminStatic' + scopre.row.coverImg" alt="">
+              <img v-Loading data-fancybox="gallery" :src="'http://localhost:8089/public' + scopre.row.coverImg" alt="">
             </div>
           </template>
         </el-table-column>
@@ -284,3 +284,4 @@ div :deep(img[data-fancybox="gallery"]) {
   }
 }
 </style>
+../../types/type

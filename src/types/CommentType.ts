@@ -10,3 +10,4 @@ export interface getComType {
   user_ip: String //用户ip
   user_name: String //用户名
 }
+

@@ -1,10 +1,3 @@
-export interface httpData {
-  code: number
-  data?: [],
-  total?: number,
-  msg?: string,
-  err?: object
-}
 
 export interface User {
   uid: string

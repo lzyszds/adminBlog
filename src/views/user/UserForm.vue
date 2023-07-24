@@ -14,7 +14,7 @@ const ruleForm: any = ref()
 //修改
 if (props.type == 'modify') {
   ruleForm.value = {
-    headImg: '/adminStatic' + props.data?.headImg,
+    headImg: 'http://localhost:8089/public' + props.data?.headImg,
     name: props.data?.uname,
     username: props.data?.username,
     password: props.data?.password,
@@ -26,7 +26,7 @@ if (props.type == 'modify') {
 } else {
   //新增
   ruleForm.value = {
-    headImg: '/adminStatic/img/updateImg/put7.jpg',
+    headImg: 'http://localhost:8089/public/img/updateImg/put7.jpg',
     name: '',
     username: '',
     password: '',
@@ -51,7 +51,7 @@ const rules = reactive<FormRules>({
 })
 
 const onAddUser = () => {
-  ruleForm.value.headImg = ruleForm.value.headImg.replace('/adminStatic', '');
+  ruleForm.value.headImg = ruleForm.value.headImg.replace('http://localhost:8089/public', '');
   http('post', '/addUserLzy', ruleForm.value)
     .then(() => {
       emit('switchAdd', false)
@@ -93,10 +93,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
 const handleExceed = async () => {
   ruleForm.value.headImg = '';
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  http('get', '/getRandHeadImg')
-    .then((res: { code: Number, msg, data: string }) => {
-      ruleForm.value.headImg = "/adminStatic" + res.data;
-    })
+  const { data } = await http<string>('get', '/getRandHeadImg')
+  ruleForm.value.headImg = "http://localhost:8089/public" + data;
 }
 const messagetxt = ref('limit 1 file, new file will cover the old file')
 const upClick = () => {
@@ -109,7 +107,7 @@ const submitUpload = () => {
   const xFile: any = document.getElementById('xFile') as HTMLInputElement
   let reader = new FileReader();
   reader.readAsDataURL(xFile.files[0]);
-  reader.onload = function () {
+  reader.onload = async function () {
     //e代表事件,可以通过e.target获取FileReader对象然后在获取readAsDataURL读取的base64字符
     //下面是将blob转换为file 用于上传
     let formData = new FormData();
@@ -118,17 +116,15 @@ const submitUpload = () => {
       'Content-Type': 'multipart/form-data',
     }
     //给后台上传头像图片，并获取后台返回新的图片地址
-    http('post', '/uploadHead', formData, headers)
-      .then((res: { code: Number, msg, data: string }) => {
-        if (res.code === 200) {
-          // const objectURL = URL.createObjectURL(blob);
-          ruleForm.value.headImg = res.data;//显示的头像blob转化为可图片显示的src
-          // ruleForm.value.setHeadImg = res.message; //放入数据库中的图片路径
-          messagetxt.value = 'limit 1 file, new file will cover the old file'
-        } else {
-          messagetxt.value = res.msg
-        }
-      })
+    const res = await http('post', '/uploadHead', formData, headers)
+    if (res.code === 200) {
+      // const objectURL = URL.createObjectURL(blob);
+      ruleForm.value.headImg = res.data;//显示的头像blob转化为可图片显示的src
+      // ruleForm.value.setHeadImg = res.message; //放入数据库中的图片路径
+      messagetxt.value = 'limit 1 file, new file will cover the old file'
+    } else {
+      messagetxt.value = res.msg!
+    }
   }
 }
 </script>
