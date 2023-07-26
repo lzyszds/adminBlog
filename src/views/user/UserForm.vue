@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue'
 import { FormInstance, FormRules } from 'element-plus'
 import http from '@/http/http';
-const emit = defineEmits(['switchAdd', 'switchMod'])
+const emit = defineEmits(['switchMod'])
 const props = defineProps({
   type: String,
   data: Object,
@@ -26,7 +26,7 @@ if (props.type == 'modify') {
 } else {
   //新增
   ruleForm.value = {
-    headImg: 'http://localhost:8089/public/img/updateImg/put7.jpg',
+    headImg: 'http://localhost:8089/public/img/updateImg/put7.webp',
     name: '',
     username: '',
     password: '',
@@ -50,44 +50,34 @@ const rules = reactive<FormRules>({
   ],
 })
 
-const onAddUser = () => {
-  ruleForm.value.headImg = ruleForm.value.headImg.replace('http://localhost:8089/public', '');
-  http('post', '/addUserLzy', ruleForm.value)
-    .then(() => {
-      emit('switchAdd', false)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-const onmodifyUser = () => {
-  console.log(ruleForm.value);
-  // ruleForm.value.setHeadImg = ruleForm.value.headImg.replace('http://localhost:1027', '');
-  http('post', '/updateUserLzy', ruleForm.value)
-    .then(() => {
-      emit('switchMod', false)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+const operateUser = async () => {
+  const isAdd = props.type == 'add'
+  if (isAdd) {
+    ruleForm.value.headImg = ruleForm.value.headImg.replace('http://localhost:8089/public', '');
+  }
+  try {
+    await http('post', isAdd ? '/privateApis/addUserLzy' : '/privateApis/updateUserLzy', ruleForm.value)
+    emit('switchMod', false, isAdd ? '用户添加成功' : '用户修改成功')
+  } catch (e) {
+    emit('switchMod', false, isAdd ? '用户添加失败' : '用户修改失败')
+  }
 }
 
 //提交表单入后台
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
+const submitForm = async (formInstance: FormInstance | undefined) => {
+  if (!formInstance) return
+  await formInstance.validate(async (valid, fields) => {
     if (valid) {
-      if (props.type === 'modify') onmodifyUser() //修改用户数据
-      else onAddUser()  //新增用户
+      await operateUser()
     } else {
       console.log('error submit!', fields)
     }
   })
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
+const resetForm = (formInstance: FormInstance | undefined) => {
+  if (!formInstance) return
+  formInstance.resetFields()
 }
 
 const handleExceed = async () => {
@@ -116,7 +106,7 @@ const submitUpload = () => {
       'Content-Type': 'multipart/form-data',
     }
     //给后台上传头像图片，并获取后台返回新的图片地址
-    const res = await http('post', '/uploadHead', formData, headers)
+    const res = await http('post', '/privateApis/uploadHead', formData, headers)
     if (res.code === 200) {
       // const objectURL = URL.createObjectURL(blob);
       ruleForm.value.headImg = res.data;//显示的头像blob转化为可图片显示的src

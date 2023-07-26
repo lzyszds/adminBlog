@@ -5,38 +5,18 @@ import 'nprogress/nprogress.css' // 引入样式
 const routes = [
     {
         path: '/',
-        redirect: '/login'
+        name: 'userAdmin',
+        component: () => import('@/views/index.vue'),
     },
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/views/login/index.vue'),
+        component: () => import('@/views/login/login.vue'),
     },
-    {
-        path: '/userAdmin',
-        name: 'userAdmin',
-        component: () => import('@/views/index.vue'),
-        children: [
-            {
-                path: '/user',
-                name: 'user',
-                component: () => import('@/views/user/User.vue')
-            }, {
-                path: '/article',
-                name: 'article',
-                component: () => import('@/views/article/Article.vue')
-            }, {
-                path: '/comments',
-                name: 'comments',
-                component: () => import('@/views/comments/index.vue')
-            }
-        ]
-    }
-
     // {
-    // path: "/:catchAll(.*)",
-    // name: 'undefind404',
-    // component: undefind404 // 注意，没有重定向就会出现两个一模一样的home页面
+    //     path: "/:catchAll(.*)",
+    //     name: 'undefind404',
+    //     component: undefind404 // 注意，没有重定向就会出现两个一模一样的home页面
     // },
 ]
 const router = createRouter({

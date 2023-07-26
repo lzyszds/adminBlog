@@ -1,47 +1,38 @@
 <script setup lang='ts'>
 import SetLeft from '@/components/SetLeft.vue'
+import { ref, } from 'vue'
+import Article from '@/views/article/Article.vue'
+import Comment from '@/views/comment/Comment.vue'
+import User from '@/views/user/User.vue'
+
+const loading = ref(false)
+
+const currentView = ref('User')
+const components = {
+  Comment,
+  Article,
+  User
+}
+const changeComponent = (componentName: string) => {
+  loading.value = true
+  currentView.value = componentName
+  setTimeout(() => {
+    loading.value = false
+  }, 500)
+}
 </script>
 
 <template>
-  <div class="base">
-    <div class="admin">
-      <div class="tool">
-        <Suspense>
-          <SetLeft />
-        </Suspense>
-      </div>
-      <div class="content">
-        <router-view />
-      </div>
+  <div class="admin">
+    <div class="tool">
+      <Suspense>
+        <SetLeft @component-name="changeComponent" :currentView="currentView" />
+      </Suspense>
+    </div>
+    <div class="content" id="content" v-zyloading="loading">
+      <Suspense>
+        <component :is="components[currentView]" v-if="!loading" />
+      </Suspense>
     </div>
   </div>
 </template>
-
-<style lang="less"  >
-/* 路由切换动画 */
-/* fade-transform */
-.fade-leave-active,
-.fade-enter-active {
-  transition: all 0.5s;
-}
-
-/* 可能为enter失效，拆分为 enter-from和enter-to */
-.fade-enter-from {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-.fade-enter-to {
-  opacity: 1;
-  transform: translateY(0px);
-}
-
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-</style>
-
-<style lang="less">
-@import url('@/assets/css/admin.less');
-</style>

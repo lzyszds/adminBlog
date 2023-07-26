@@ -73,7 +73,7 @@ export default async function http<T>(method = 'get', url = '', data = {}, heade
 
   // 如果需要前缀，添加前缀到URL
   if (!noPrefixEndpoints.includes(url)) {
-    url = method === 'get' ? '/adminGetApi' + url : '/adminPostApi' + url;
+    url = '/api' + url;
   }
 
   try {

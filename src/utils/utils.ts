@@ -42,7 +42,7 @@ export function getIpWeather() {
     'X-User-Token': 'iwKIaV2WP/9pLVldKr7qSFoeqAvBCO/n'
   }
   return new Promise((resolve, reject) => {
-    http('get', '/getIp/info', headers).then((res: any) => {
+    http('get', '/overtApis/getIp/info', headers).then((res: any) => {
       if (res.status = 'success') {
         resolve(res.data)
       } else {
@@ -188,6 +188,8 @@ export const setTime: any = (time: string) => {
   const formatted = dayjs(time).format('YYYY-MM-DD')
   return formatted
 }
+
+
 
 export default {
   splitArray,//把一个数组拆分成几个数组

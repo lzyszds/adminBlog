@@ -49,6 +49,11 @@ export default defineConfig(({ command, mode }): any => {
       host: '0.0.0.0',
       port: 8088,
       proxy: {
+        "/api": {
+          target: _baseUrl + ':8089',//这里是域名，不是完整地址
+          changeOrigin: true,//是否跨域
+          rewrite: path => path.replace(/^\/api/, '')
+        },
         '/adminGetApi': {
           target: _baseUrl + ':8089/overtApis/',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域

@@ -2,16 +2,18 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 import http from '@/http/http';
+import load from '@/uiComponents/loader/loadings'
 import { NowWeatherData, IWeather } from '@/types/nowWeatherData';
+interface Props {
+  currentView: string
+}
 
-
-// import { httpData } from "@/views/admin/children/user/type";
-// import dayjs from 'dayjs'
-
+const emit = defineEmits(['componentName'])
+const props = defineProps<Props>()
 const router = useRouter()
 
-const datalist = ref<IWeather>()
-const cip = ref<string>()
+const datalist = ref<IWeather>() //天气数据
+const cip = ref<string>() //ip
 // data:天气数据   cid:城市id 
 const weather: NowWeatherData = JSON.parse(localStorage.getItem("nowWeatherData")!)
 //获取请求天气的数据
@@ -22,7 +24,7 @@ cip.value = weather.ip
 type Items = {
   name: string;
   uicon: string;
-  path: string;
+  component: string;
 }[]
 
 //左侧菜单栏
@@ -30,68 +32,67 @@ const items: Items = [
   {
     name: '用户管理',
     uicon: '<i class="iconfont">&#xe612;</i>',
-    path: '/user'
+    component: 'User'
   },
   {
     name: '文章管理',
     uicon: '<i class="iconfont">&#xe606;</i>',
-    path: '/article'
+    component: 'Article'
   },
   {
     name: '评论管理',
     uicon: '<i class="iconfont">&#xe607;</i>',
-    path: '/comments'
+    component: 'Comment'
   },
   {
     name: '分类管理',
     uicon: '<i class="iconfont">&#xe60e;</i>',
-    path: '/categoryAdmin'
+    component: '/categoryAdmin'
   },
   {
     name: '标签管理',
     uicon: '<i class="iconfont">&#xe64d;</i>',
-    path: '/tagAdmin'
+    component: '/tagAdmin'
   },
   {
     name: '友链管理',
     uicon: '<i class="iconfont">&#xe609;</i>',
-    path: '/linkAdmin'
+    component: '/linkAdmin'
   },
   {
     name: '网站设置',
     uicon: '<i class="iconfont">&#xe60a;</i>',
-    path: '/settingAdmin'
+    component: '/settingAdmin'
   }, {
     name: '退出登陆',
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    path: '/login'
+    component: '/login'
   },
   {
     name: '返回首页',
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    path: '/home/index'
+    component: '/home/index'
   },
 ]
 
 const activeIndex = ref(0)
+//判断当前激活的组件，设置左侧菜单栏的激活状态
 items.forEach((item, index) => {
-  if (item.path === router.currentRoute.value.path) {
+  if (item.component === props.currentView) {
     activeIndex.value = index
   }
 })
-
-const activefn = (index) => {
-  if (items[index].name == '退出登陆') {
-    localStorage.removeItem('lzy_token')
-  }
+//点击左侧菜单栏，切换组件
+const changeComponent = async (index) => {
   activeIndex.value = index
-  //避免返回首页时，页面只刷新，却不跳转 push返回的是一个promise
-  router.push(items[index].path)
+  // await load.show('#content')
+  emit('componentName', items[index].component)
 }
+
 //处理用户详情数据
 const infoData: any = ref()
 const data: any = []
-const res = await http('get', '/getUserInfo') as any// httpData
+const res = await http('get', '/overtApis/getUserInfo') as any// httpData
 //检验token是存在 401是token过期
 if (res.code == 401) {
   // 销毁token
@@ -124,7 +125,7 @@ infoData.value = data
       </p> -->
     </div>
     <div class="list">
-      <div class="list_item" v-for="(item, index) in items" :key="index" @click="activefn(index)"
+      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(index)"
         :class="{ 'active': activeIndex == index }">
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>

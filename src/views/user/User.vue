@@ -1,313 +1,170 @@
 <script setup lang='ts'>
-import { ref, h, onBeforeUnmount } from 'vue'
-import Search from '../../components/Search.vue'
-import { ElMessageBox, ElNotification, ElPagination } from 'element-plus'
-import { setTime, tipNotify } from '@/utils/utils'
-import http from '@/http/http'
-import type { HttpResonse } from '@/http/http'
-import UserForm from './UserForm.vue'
-import load from '@/uiComponents/loader/loadings'
+import { ref, reactive } from 'vue'
+import SetRight from '@/components/SetRight.vue';
+import http from "@/http/http";
+import { ElTableColumn, dayjs } from 'element-plus';
+
+import { ElNotification } from 'element-plus'
 import { User } from '@/types/UserType'
+import UserForm from '@/views/user/UserForm.vue'
 
-const isClear = ref<boolean>(true)
+import { useStore } from '@/store/store';
+import { Popup, Requirement } from '@/types/SetRightType';
+import { tipNotify } from 'lzyutils';
+const state = useStore()
 
-const total = ref(1) //分页页数
-const pageSize = ref(11) //分页大小
-// const tableheight = ref<number>(740) //表格高度
+//页面配置
+const requirement = reactive<Requirement>({
+  search: '', //搜索内容
+  currentPage: 1, //当前页数
+  pageSize: 10, //每页显示条数
+  api: '/overtApis/getUserList'
+})
+//自动加载数据
+await state.handleCurrentChange(requirement)
 
-
-//表格数据（前页数据展示进表格中）
-const tableData = ref<User[]>()
-const search = ref<string>('')
-//定义分页size以及当前页数据
-const data = ref<any>({ code: 0, data: [], total: 0, })
-
-
-//分页事件、切换页码时提供load效果
-const handleCurrentChange = async (_val: number, number?) => {
-  /* 此处有一个巨大的坑，接口如果没有返回toal就会导致此处的方法初始触发两次。 */
-  total.value = _val
-  if (number != 1) load.show('#loadings')
-  // if (!number) total.value = val
-  const pagePara = `/getUserList?pages=${total.value}&limit=${pageSize.value}&search=${search.value}`
-  data.value = await http<HttpResonse<User[]>>('get', pagePara)
-  //数据为空
-  if (data.value.total == 0) {
-    // 数据清空
-    tableData.value = []
-    return load.hide('#loadings')
-  }
-  //数据处理 时间格式化 
-  data.value.data!.forEach((item: User) => {
-    item.createDate = setTime(item.createDate)
-    item.lastLoginDate = setTime(item.lastLoginDate)
-  })
-  tableData.value = (data.value.data)
-  setTimeout(() => {
-    load.hide('#loadings')
-  }, 50)
-}
-handleCurrentChange(1, 1)
-//设置所有图片的地址 
+//设置头像图片
 const setheadImg = (headImg: User['setHeadImg']) => {
   return 'http://localhost:8089/public' + headImg
 }
+//查看密码
+const lookPwd = (val) => {
+  tipNotify("密码：" + val)
+}
+
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
 const formatter = () => {
   return 0
 }
 
-//新增用户按钮，点击后弹出form表单
-const centVisible = ref(false)
-const addUser = () => {
-  centVisible.value = true
-}
 //修改用户按钮，点击后弹出确认框
-const modifyTheVis = ref(false)
 const modifyData = ref<User>()
+
 const modifyThe = (event: User) => {
   modifyData.value = event
-  modifyTheVis.value = true
+  popup.modifyVisible = true
 }
-//开启表单时点击空白地方 关闭form表单时的提示
-const handleClose = (done: () => void) => {
-  ElMessageBox({
-    title: '提示',
-    message: h('p', null, [
-      h('span', null, '你确定关闭该对话框吗 '),
-    ]),
-    showCancelButton: true,
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-  })
-    .then(() => {
-      done()
-    })
-}
-//子组件传来的参数 关闭form表单
-const switchAdd = (boolean: boolean) => {
-  centVisible.value = boolean
-  ElNotification({
-    title: '成功',
-    message: '用户新增成功',
-    type: 'success',
-  })
-
-  handleCurrentChange(total.value)
-}
-//子组件传来的参数 关闭form表单
-const switchMod = (boolean: boolean) => {
-  modifyTheVis.value = boolean
-  ElNotification({
-    title: '成功',
-    message: '用户修改成功',
-    type: 'success',
-  })
-  handleCurrentChange(total.value)
-}
-
 
 //删除用户
-const deleteUser = async (event) => {
-  const res = await http('post', '/deleteUserLzy', { id: event.uid })
+const _delete = async (event) => {
+  const res = await http('post', '/privateApis/deleteUserLzy', { id: event.uid })
   ElNotification({
     title: res.code == 200 ? '成功' : '失败',
     message: '用户' + res.msg,
     type: res.code == 200 ? 'success' : 'error',
   })
   if (res.code != 200) console.log(`lzy ~ res`, res.err)
-  handleCurrentChange(total.value)
-}
-const searchHandle = (val: string) => {
-  search.value = val
-  handleCurrentChange(1)
+  state.handleCurrentChange(requirement)
 }
 
-const lookPwd = (val) => {
-  tipNotify("密码：" + val)
-}
-onBeforeUnmount(() => {
-  data.value = { code: 0, data: [], total: 0, }
-  isClear.value = false
-  tableData.value = []
-  search.value = ''
-  total.value = 1
+const popup = reactive<Popup>({
+  addName: '新增用户',
+  modifyName: '修改用户',
+  addVisible: false,
+  modifyVisible: false,
+  addWidth: '26%',
+  modifyWidth: '26%',
+  addLeft: '0px',
+  modifyLeft: '0px',
+  addTop: '0px',
+  modifyTop: '0px',
 })
+//子组件传来的参数 关闭form表单
+const switchMod = (boolean: boolean, message: string) => {
+  popup.modifyVisible = boolean
+  ElNotification({
+    title: '成功',
+    message: message,
+    type: 'success',
+  })
+  state.handleCurrentChange(requirement)
+}
+
 </script>
 
 <template>
-  <div class="mainTem" v-if="isClear">
-    <Search @searchVal="searchHandle" />
-    <div class="tableuser" id="loadings">
-      <el-table :data="tableData" cell-class-name="lzyCell" style="width: 100%" stripe tooltip-effect="light">
-        <template #empty>
-          <div class="empty">
-            <img src="@/assets/image/暂无文档.svg" alt="">
-            <span>暂无数据</span>
+  <SetRight :popup="popup" :requirement="requirement">
+    <template #table>
+      <el-table-column property="uid" label="Id" sortable width="80" align="center"> </el-table-column>
+
+      <el-table-column label="头像" width="70" show-overflow-tooltip>
+        <template #default="{ row }">
+          <div class="headImg">
+            <el-avatar :src="setheadImg(row.headImg)" alt=""></el-avatar>
           </div>
         </template>
-        <!-- <el-table-column type="selection" width="55" /> -->
-        <el-table-column property="uid" label="Id" sortable width="80" align="center"> </el-table-column>
-
-        <el-table-column label="头像" width="70" show-overflow-tooltip>
-          <template #default="scope">
-            <div class="headImg">
-              <el-avatar :src="setheadImg(scope.row.headImg)" alt=""></el-avatar>
+      </el-table-column>
+      <el-table-column label="用户名" width="150" show-overflow-tooltip>
+        <template #default="{ row }">
+          {{ row.uname }}
+        </template>
+      </el-table-column>
+      <el-table-column property="username" label="登陆账号" width="180" />
+      <el-table-column label="密码" width="70" align="center" show-overflow-tooltip>
+        <template #default="{ row }">
+          <div class="password">
+            <lzyicon name="heroicons-solid:shield-check" @click="lookPwd(row.password)">
+            </lzyicon>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="权限" width="100px" align="center">
+        <template #default="{ row }">
+          <div class="power">
+            <span v-if="row.power === 'admin'" class="powerAdmin">管理员</span>
+            <span v-else>普通用户</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="允许" width="100px" align="center">
+        <template #default="{ row }">
+          <div class="power">
+            <div class="checkbox-con">
+              <input id="checkbox" type="checkbox" disabled v-model="row.isUse">
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="用户名" width="150" show-overflow-tooltip>
-          <template #default="scope">
-            {{ scope.row.uname }}
-          </template>
-        </el-table-column>
-        <el-table-column property="username" label="登陆账号" width="180" />
-        <el-table-column label="密码" width="70" align="center" show-overflow-tooltip>
-          <template #default="scope">
-            <div class="password">
-              <lzyicon name="heroicons-solid:shield-check" @click="lookPwd(scope.row.password)">
-              </lzyicon>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="权限" width="100px" align="center">
-          <template #default="scope">
-            <div class="power">
-              <span v-if="scope.row.power === 'admin'" class="powerAdmin">管理员</span>
-              <span v-else>普通用户</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="允许" width="100px" align="center">
-          <template #default="scope">
-            <div class="power">
-              <div class="checkbox-con">
-                <input id="checkbox" type="checkbox" disabled v-model="scope.row.isUse">
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
-          <template #default="scope">
-            <div class="svgTem">
-              <lzyicon name="memory:calendar-month"></lzyicon>
-              <span> {{ scope.row.createDate }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="上一次登陆时间" sortable :sort-method="formatter" width="160">
-          <template #default="scope">
-            <div class="svgTem">
-              <lzyicon name="memory:calendar-month"></lzyicon>
-              <span>{{ scope.row.lastLoginDate }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="Operations">
-          <template #default="scope">
-            <div class="tool">
-              <el-button type="primary" size="small" @click="modifyThe(scope.row)">修改</el-button>
-              <el-popconfirm width="220" @confirm="deleteUser(scope.row)" confirm-button-text="确定" cancel-button-text="取消"
-                title="你确定要删除吗?">
-                <template #reference>
-                  <el-button type="danger" size="small">删除</el-button>
-                </template>
-              </el-popconfirm>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="toolfooter">
-      <el-button class="add" type="primary" @click="addUser">新增用户</el-button>
-      <el-dialog class="userDialog" v-model="centVisible" :before-close="handleClose" title="新增用户" width="26%" left>
-        <UserForm v-if="centVisible" type="add" @switchAdd="switchAdd" />
-      </el-dialog>
-      <el-dialog class="userDialog" v-model="modifyTheVis" :before-close="handleClose" title="修改用户" width="26%" left>
-        <UserForm v-if="modifyTheVis" type="modify" :data="modifyData" @switchMod="switchMod" />
-      </el-dialog>
-      <div class="example-pagination-block lzyColor">
-        <div class="example-demonstration" v-if="data.total != 1">When you have more than
-          {{ data.total! % pageSize == 0 ? data.total! / pageSize : (data.total! / pageSize >> 0) + 1 }}
-          pages of data, use a pagination.
-        </div>
-        <el-pagination small v-model="total" :currentPage="total" v-model:page-size="pageSize" background
-          :total="data.total" @current-change="handleCurrentChange" layout="prev, pager, next, jumper" />
-      </div>
-    </div>
-  </div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
+        <template #default="{ row }">
+          <div class="svgTem">
+            <lzyicon name="memory:calendar-month"></lzyicon>
+            <span> {{ dayjs(row.createDate).format('YYYY-MM-DD') }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="上一次登陆时间" sortable :sort-method="formatter" width="160">
+        <template #default="{ row }">
+          <div class="svgTem">
+            <lzyicon name="memory:calendar-month"></lzyicon>
+            <span>{{ dayjs(row.lastLoginDate).format('YYYY-MM-DD') }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="Operations">
+        <template #default="{ row }">
+          <div class="tool">
+            <el-button type="primary" size="small" @click="modifyThe(row)">修改</el-button>
+            <el-popconfirm width="220" @confirm="_delete(row)" confirm-button-text="确定" cancel-button-text="取消"
+              title="你确定要删除吗?">
+              <template #reference>
+                <el-button type="danger" size="small">删除</el-button>
+              </template>
+            </el-popconfirm>
+          </div>
+        </template>
+      </el-table-column>
+    </template>
+    <!-- 新增文章 -->
+    <template #popupAdd>
+      <UserForm type="add" @switchMod="switchMod" />
+    </template>
+    <!-- 修改文章 -->
+    <template #popupModify>
+      <UserForm type="modify" :data="modifyData" @switchMod="switchMod" />
+    </template>
+  </SetRight>
 </template>
-
 <style lang="less" scoped>
 @import url('@/assets/css/headSearch.less');
-
-:deep(.el-dialog).userDialog {
-  border-radius: 20px;
-  background: #f5f5f5;
-  position: relative;
-  padding: 1.8rem;
-  padding-left: 0px;
-  padding-bottom: 50px;
-  border: 2px solid #c3c6ce;
-  transition: 0.5s ease-out;
-  overflow: visible;
-
-  .el-dialog__body {
-    padding: 0 50px !important;
-  }
-
-  .el-dialog__header {
-    font-family: 'almama';
-    padding-top: 0;
-
-    button {
-      font-size: 20px;
-
-      &:hover .el-icon,
-      &:active .el-icon {
-        color: var(--themeColor);
-        transition: .3s;
-        // 旋转一圈，使用动画
-        animation: rotate .5s linear 1;
-      }
-    }
-  }
-
-  &:hover {
-    border-color: var(--themeColor);
-    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
-
-    .card-button {
-      transform: translate(-50%, 0%);
-      opacity: 1;
-    }
-  }
-
-  .card-button {
-    transform: translate(-50%, 100%);
-    width: 100px;
-    border-radius: 1rem;
-    border: none;
-    background-color: var(--themeColor);
-    color: #fff;
-    font-size: 1rem;
-    padding: .5rem 1rem;
-    position: absolute;
-    left: 0%;
-    bottom: -50px;
-    opacity: 0;
-    transition: 0.3s ease-out;
-
-    &:nth-child(2) {
-      background-color: #fff;
-      left: 50%;
-      bottom: -50px;
-      color: var(--themeColor);
-      border: 2px solid var(--themeColor);
-    }
-  }
-}
 </style>
-./UserYype
-@/LTypes/UserType
-@/utils/utils

@@ -1,11 +1,12 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
-const emit = defineEmits(['searchVal'])
+import { useStore } from '@/store/store'
+const state = useStore()
 //搜索框内容
 const searchInput = ref<string>('')
 
 const search = () => {
-  emit('searchVal', searchInput.value)
+  state.setSearch(searchInput.value)
 }
 </script>
 

@@ -1,0 +1,89 @@
+#loadingVNode {
+  transition: .3s;
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+}
+
+#loadingVNode #over {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  opacity: 1;
+  z-index: 999;
+}
+
+#loadingVNode #layout {
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 999;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    width: 200px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+#loadingVNode #layout .loading-text {
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206),
+    1px 1px 2px rgb(81, 97, 206);
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.loading-svg {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 4em;
+}
+
+.loading-svg span {
+  width: 0.5em;
+  height: 1.5em;
+  background-color: var(--themeColor);
+}
+
+.loading-svg span:nth-of-type(1) {
+  animation: grow 1s -0.45s ease-in-out infinite;
+}
+
+.loading-svg span:nth-of-type(2) {
+  animation: grow 1s -0.3s ease-in-out infinite;
+}
+
+.loading-svg span:nth-of-type(3) {
+  animation: grow 1s -0.15s ease-in-out infinite;
+}
+
+.loading-svg span:nth-of-type(4) {
+  animation: grow 1s ease-in-out infinite;
+}
+
+@keyframes grow {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(2);
+  }
+}

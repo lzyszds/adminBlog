@@ -3,6 +3,7 @@ import 'highlight.js/lib/common'
 import "@fancyapps/ui/dist/fancybox.css";
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/base.css'
+import '@/assets/css/loading.css';
 
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
@@ -16,6 +17,7 @@ import { createPinia } from 'pinia' //状态管理
 import VueMarkdownEditor from '@/utils/markDownCreate'; //markdown配置
 import lzyIcon from '@/components/lzyIcon.vue'
 import Imgloading from "@/utils/lazy";
+import loading from './utils/loading';
 
 
 const pinia = createPinia()
@@ -23,7 +25,8 @@ const app = createApp(App)
 
 app.config.globalProperties.$fancyapps = { Fancybox, }
 // 添加vue指令
-app.directive('Loading', Imgloading)
+app.directive('ImgLoading', Imgloading)
+app.directive('zyloading', loading)
 
 app.directive('transition', transition)
 app.component('lzyicon', lzyIcon)

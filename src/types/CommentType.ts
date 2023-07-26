@@ -1,13 +1,13 @@
 export interface getComType {
-  article_id: Number, //文章id
-  comId: Number //评论id
-  content: String //评论内容
-  email: String //邮箱
-  ground_id: Number //评论楼层
-  head_img: String //头像
-  reply_id: Number //回复id
-  time: Number //时间
-  user_ip: String //用户ip
-  user_name: String //用户名
+  comId: number;  // 评论id
+  content: string;  // 评论内容
+  article_id: number; // 文章id
+  reply_id: number; // 回复id
+  ground_id: number;  // 回复的评论id
+  email: string;  // 邮箱
+  user_name: string;  // 用户名
+  user_ip: string;  // 用户ip
+  time: number; // 评论时间
+  head_img: string; // 头像
 }
 

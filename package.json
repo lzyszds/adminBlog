@@ -21,6 +21,7 @@
     "element-plus": "^2.3.7",
     "highlight.js": "^11.8.0",
     "lodash": "^4.17.21",
+    "lzyutils": "^1.0.0",
     "markdown-it": "^13.0.1",
     "markdown-it-attrs": "^4.1.6",
     "markdown-it-container": "^3.0.0",

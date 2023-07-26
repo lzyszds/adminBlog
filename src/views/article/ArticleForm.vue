@@ -32,7 +32,7 @@ const submitForm = () => {
     modified: dayjs().unix(),
     wtype: tagData.value.join(',')
   }
-  const url = props.type === 'modify' ? '/updateArticle' : '/addArticle'
+  const url = props.type === 'modify' ? '/privateApis/updateArticle' : '/privateApis/addArticle'
   //当前是否保存
   if (information.storage.text === information.text || information.storage.html === information.html) {
     http('post', url, data).then((res: any) => {
@@ -107,7 +107,7 @@ onMounted(() => {
         'Content-Type': 'multipart/form-data',
       }
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-      http('post', '/uploadArticleImg', formData, headers)
+      http('post', '/privateApis/uploadArticleImg', formData, headers)
         .then((res: HttpResonse<string>) => {
           if (res.code === 200) {
             information.cover = res.data
