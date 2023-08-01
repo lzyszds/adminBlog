@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ref, reactive } from 'vue'
+import { ref, reactive, provide } from 'vue'
 import SetRight from '@/components/SetRight.vue';
 import http from "@/http/http";
 import { ElTableColumn, dayjs } from 'element-plus';
@@ -80,10 +80,14 @@ const switchMod = (boolean: boolean, message: string) => {
   state.handleCurrentChange(requirement)
 }
 
+provide("setRightProps", {
+  popup,
+  requirement
+})
 </script>
 
 <template>
-  <SetRight :popup="popup" :requirement="requirement">
+  <SetRight>
     <template #table>
       <el-table-column property="uid" label="Id" sortable width="80" align="center"> </el-table-column>
 

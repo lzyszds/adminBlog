@@ -4,14 +4,14 @@ import { useStore } from '@/store/store';
 import { Popup, Requirement } from '@/types/SetRightType'
 import { show } from '@/utils/loading'
 import { ElMessageBox, ElPagination } from 'element-plus'
-import { h, computed } from 'vue';
+import { h, computed, inject } from 'vue';
 
 interface Props {
   popup?: Popup,
   requirement: Requirement
 }
 const state = useStore()
-const { popup, requirement } = defineProps<Props>()
+const { popup, requirement } = inject('setRightProps') as Props
 
 //开启表单时点击空白地方 关闭form表单时的提示
 const handleClose = (done: () => void) => {

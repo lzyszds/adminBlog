@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { reactive } from 'vue'
+import { reactive, provide } from 'vue'
 import SetRight from '@/components/SetRight.vue';
 import http from "@/http/http";
 import { ElTableColumn, dayjs } from 'element-plus';
@@ -36,11 +36,13 @@ const _delete = async (row: getComType) => {
     state.handleCurrentChange(requirement)
   }
 };
-
+provide("setRightProps", {
+  requirement
+})
 </script>
 
 <template>
-  <SetRight :requirement="requirement">
+  <SetRight>
     <template #table>
       <el-table-column prop="" label="头像" width="65">
         <template #default="{ row }">
