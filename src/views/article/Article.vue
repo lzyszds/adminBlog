@@ -67,7 +67,7 @@ const switchMod = async (boolean: boolean) => {
   popup.modifyVisible = boolean;
   ElNotification({
     title: "成功",
-    message: "用户修改成功",
+    message: "文章",
     type: "success",
   });
   await state.handleCurrentChange(requirement);
@@ -131,7 +131,7 @@ provide("setRightProps", {
     </template>
     <!-- 新增文章 -->
     <template #popupAdd>
-      <ArticleForm type="modify" :data="([] as any)" :tableheight="740" @switchMod="switchMod" />
+      <ArticleForm type="add" :data="([] as any)" :tableheight="740" @switchMod="switchMod" />
     </template>
     <!-- 修改文章 -->
     <template #popupModify>
