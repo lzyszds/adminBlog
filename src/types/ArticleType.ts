@@ -29,10 +29,23 @@ export interface Storagetype {
   text: string,
   html: string,
 }
-export interface Informationtypes {
+export interface InformationTypes {
   storage: Storagetype,
   text: any,
   html: any,
   title: string,
   cover: string,
+}
+
+export interface ArticledataType {
+  author: string,
+  title: InformationTypes['title'],
+  //文章开头第一段话
+  coverContent: string,
+  content: InformationTypes['storage']['text'],
+  main: InformationTypes['storage']['html'],
+  coverImg: string,
+  modified: number,
+  wtype: string,
+  aid: string | null,
 }

@@ -12,7 +12,6 @@ import { useStore } from '@/store/store';
 import { Popup, Requirement } from '@/types/SetRightType';
 import { tipNotify } from 'lzyutils';
 const state = useStore()
-
 //页面配置
 const requirement = reactive<Requirement>({
   search: '', //搜索内容

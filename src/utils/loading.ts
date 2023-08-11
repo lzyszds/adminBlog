@@ -74,7 +74,6 @@ export const hide = (id?) => {
 };
 
 export const show = async (id?, text?) => {
-  debugger
   const targetElement = document.querySelector(id || 'body');
   if (!targetElement) {
     throw new Error('输入的选择器不存在，默认添加到body。瞧瞧是不是因为异步问题-------来自loading内容');

@@ -98,7 +98,6 @@ div :deep(img[data-fancybox="gallery"]) {
   transition: .1s ease-out;
   box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.5);
   border: 1px solid #000;
-  margin-top: 5px;
   transform: scale(0.95);
 
   &:hover {

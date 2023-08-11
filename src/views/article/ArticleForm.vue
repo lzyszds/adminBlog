@@ -1,18 +1,37 @@
-<script setup lang="ts">
-import { ref, reactive, h, onMounted, onBeforeUnmount } from "vue";
+<script  setup lang="ts">
+import { ref, reactive, h, nextTick } from "vue";
 import { dayjs, ElMessageBox } from "element-plus";
-import { useEventListener } from "@vueuse/core";
+import { useEventListener, useStorage } from "@vueuse/core";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { compressPic } from "@/utils/utils";
-import { TagDataType, Props, Informationtypes } from "@/types/ArticleType";
+import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
+const articledata = useStorage("articledata", {} as ArticledataType);
 
+if (articledata.value.title) {
+  ElMessageBox({
+    title: "提示",
+    message: h("p", null, [h("span", null, "是否继续完成上次内容?")]),
+    showCancelButton: true,
+    confirmButtonText: "可以",
+    cancelButtonText: "不了",
+  }).then(() => {
+    information.text = articledata.value.content;
+    information.title = articledata.value.title;
+    information.cover = articledata.value.coverImg;
+    tagData.value = articledata.value.wtype.split(",");
+  }).catch(() => {
+    console.log(123);
+    localStorage.removeItem("articledata");
+  })
+}
 
 const emit = defineEmits(["switchMod", "switchAdd"]);
 const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  test |left center right ul ol table hr | link image code tip music| save tips`;
 const props = defineProps<Props>();
 
-const information = reactive<Informationtypes>({
+
+const information = reactive<InformationTypes>({
   storage: { text: "", html: "" },
   text: props.data?.content,
   html: props.data?.main,
@@ -23,40 +42,32 @@ const information = reactive<Informationtypes>({
 });
 //确认提交
 const submitForm = () => {
-  console.log(123);
-  const data = {
-    author: "lzy",
-    title: information.title,
-    //文章开头第一段话
-    coverContent: document.querySelector(".vuepress-markdown-body")?.firstElementChild
-      ?.innerHTML,
-    content: information.storage.text,
-    main: information.storage.html,
-    coverImg: (information.cover || props.data?.coverImg)?.replace(
-      "http://localhost:8089/public",
-      ""
-    ),
-    aid: props.type === "modify" ? props.data?.aid : null,
-    modified: dayjs().unix(),
-    wtype: tagData.value.join(","),
-  };
-  const url =
-    props.type === "modify" ? "/privateApis/updateArticle" : "/privateApis/addArticle";
+  const isModify = props.type === "modify"
+  const url = isModify ? "/privateApis/updateArticle" : "/privateApis/addArticle";
   //当前是否保存
   if (
     information.storage.text === information.text ||
     information.storage.html === information.html
   ) {
-    http("post", url, data).then((res: any) => {
+    http("post", url, setData()).then((res: any) => {
       if (res.code === 200) {
-        emit("switchMod", false);
-        emit("switchAdd", false);
+        if (isModify) {
+          emit("switchMod", { flag: false, data: res.data, type: '修改' });
+        } else {
+          emit("switchAdd", { flag: false, data: res.data, type: '新增' });
+        }
       }
-    });
+    }).catch((e) => {
+      if (isModify) {
+        emit("switchMod", { flag: true, data: e, type: '修改' });
+      } else {
+        emit("switchAdd", { flag: true, data: e, type: '新增' });
+      }
+    })
   } else {
     ElMessageBox({
       title: "提示",
-      message: h("p", null, [h("span", null, "输入内容还未保存，是否需要保存 ")]),
+      message: h("p", null, [h("span", null, "确定要发布文章吗？")]),
       showCancelButton: true,
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -68,7 +79,11 @@ const submitForm = () => {
   }
 };
 //暂存按钮
-const resetForm = () => {};
+const resetForm = () => {
+  const save = document.querySelector(".v-md-icon-save") as HTMLLIElement;
+  save.click();
+  articledata.value = setData();
+};
 //本地图片上传到线上，并返回当前文件在线上的path
 const handleUploadImage = (event, insertImage, files) => {
   console.log(event);
@@ -77,6 +92,7 @@ const handleUploadImage = (event, insertImage, files) => {
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5;
   //对图片进行压缩
   compressPic(files[0], scale).then(async ({ fileCompress }) => {
+    console.log(`lzy  fileCompress:`, fileCompress)
     // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
     let formData = new FormData();
     formData.append("upload-image", fileCompress);
@@ -85,21 +101,43 @@ const handleUploadImage = (event, insertImage, files) => {
       "Content-Type": "multipart/form-data",
     };
     // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    const res = await http<string>("post", "/uploadArticleImg", formData, headers);
+    const res = await http<string>("post", "/privateApis/uploadArticleImg", formData, headers);
     if (res.code === 200) {
       insertImage({
         url: "" + res.data,
         desc: "点击放大",
       });
     }
-  });
+  }).catch((e) => {
+    console.log(e);
+  })
 };
 const clicks = (text, html) => {
   information.storage = { text, html };
 };
 
+function setData(): ArticledataType {
+  console.log(`lzy  information.storage:`, information.storage)
+  const isModify = props.type === "modify";
+  return {
+    author: "lzy",
+    title: information.title,
+    //文章开头第一段话
+    coverContent: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
+    content: information.storage.text,
+    main: information.storage.html,
+    coverImg: (information.cover || props.data?.coverImg)?.replace(
+      "http://localhost:8089/public",
+      ""
+    )!,
+    aid: isModify ? props.data?.aid! : null,
+    modified: dayjs().unix(),
+    wtype: tagData.value.join(","),
+  };
+}
+
 //异步执行，等待dom渲染完成
-onMounted(() => {
+nextTick(() => {
   //通过点击图片 ，获取图片的src 以及将图片存入线上服务器
   const coverFile = document.querySelector("#coverFile") as HTMLInputElement;
   useEventListener(coverFile, "change", () => {
@@ -189,15 +227,6 @@ const addArticleType = async () => {
     tagList.value = data;
   }
 };
-onBeforeUnmount(() => {
-  Object.keys(information).map((item) => {
-    information[item] = "";
-  });
-  tagList.value = [];
-  tagData.value = [];
-  tagDataTem.value = [];
-  typeInput.value = "";
-});
 </script>
 
 <template>
@@ -209,35 +238,19 @@ onBeforeUnmount(() => {
           <template #reference>
             <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
             <div class="boxType" @click="visible = true">
-              <el-tag
-                class="ml-1"
-                type="info"
-                v-for="(item, index) in tagData"
-                :key="index"
-                >{{ item }}</el-tag
-              >
+              <el-tag class="ml-1" type="info" v-for="(item, index) in tagData" :key="index">{{ item }}</el-tag>
             </div>
             <!-- </el-tooltip> -->
           </template>
           <template #default>
             <div class="typePopover">
               <div class="item-search">
-                <input
-                  v-model="typeInput"
-                  @keydown.enter="addArticleType"
-                  type="text"
-                  placeholder="自定义标签"
-                />
+                <input v-model="typeInput" @keydown.enter="addArticleType" type="text" placeholder="自定义标签" />
                 <button @click="addArticleType">添加</button>
               </div>
               <div class="item-box">
-                <el-tag
-                  type="info"
-                  v-for="(item, index) in tagList"
-                  :key="index"
-                  @click="tagActive(item.name)"
-                  :class="tagActiveClass(item.name)"
-                  >{{ item.name }}
+                <el-tag type="info" v-for="(item, index) in tagList" :key="index" @click="tagActive(item.name)"
+                  :class="tagActiveClass(item.name)">{{ item.name }}
                 </el-tag>
               </div>
               <div class="item-tool">
@@ -255,22 +268,12 @@ onBeforeUnmount(() => {
         <span>文章标题：</span>
         <input class="title" type="text" v-model="information.title" />
       </div>
-      <v-md-editor
-        class="markDowmLzy"
-        v-model="information.text"
-        :disabled-menus="[]"
-        :left-toolbar="orderTool"
-        @save="clicks"
-        @upload-image="handleUploadImage"
-        :height="(tableheight! * 0.9) + 'px'"
-        :toolbar="toolbar"
-      >
+      <v-md-editor class="markDowmLzy" v-model="information.text" :disabled-menus="[]" :left-toolbar="orderTool"
+        @save="clicks" @upload-image="handleUploadImage" :height="(tableheight! * 0.9) + 'px'" :toolbar="toolbar">
       </v-md-editor>
     </div>
     <div class="btnTool">
-      <el-button class="card-button" type="primary" @click="submitForm()"
-        >发布内容</el-button
-      >
+      <el-button class="card-button" type="primary" @click="submitForm()">发布内容</el-button>
       <el-button class="card-button" @click="resetForm()">暂存内容</el-button>
     </div>
   </div>
@@ -404,7 +407,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.el-popper.is-light > .typePopover {
+.el-popper.is-light>.typePopover {
   .item-search {
     display: flex;
     border-bottom: 2px solid var(--themeColor);

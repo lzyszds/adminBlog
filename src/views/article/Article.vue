@@ -16,7 +16,7 @@ const state = useStore();
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
   currentPage: 1, //当前页数
-  pageSize: 10, //每页显示条数
+  pageSize: 7, //每页显示条数
   api: "/overtApis/articleList",
 });
 //自动加载数据
@@ -63,11 +63,18 @@ const popup = reactive<Popup>({
 });
 
 //子组件传来的参数 关闭form表单
-const switchMod = async (boolean: boolean) => {
-  popup.modifyVisible = boolean;
+const switchMod = async (arr: { flag: boolean, data: any, type: '修改' | '新增' }) => {
+  arr.type == '修改' ? popup.modifyVisible = arr.flag : popup.addVisible = arr.flag;
+  if (arr.flag) {
+    return ElNotification({
+      title: arr.type + "失败",
+      message: arr.type + "文章",
+      type: "error",
+    });
+  }
   ElNotification({
-    title: "成功",
-    message: "文章",
+    title: arr.type + "成功",
+    message: arr.type + "文章",
     type: "success",
   });
   await state.handleCurrentChange(requirement);
@@ -131,11 +138,11 @@ provide("setRightProps", {
     </template>
     <!-- 新增文章 -->
     <template #popupAdd>
-      <ArticleForm type="add" :data="([] as any)" :tableheight="740" @switchMod="switchMod" />
+      <article-form type="add" :data="([] as any)" :tableheight="740" @switchAdd="switchMod"></article-form>
     </template>
     <!-- 修改文章 -->
     <template #popupModify>
-      <ArticleForm type="modify" :data="modifyData!" :tableheight="740" @switchMod="switchMod" />
+      <article-form type="modify" :data="modifyData!" :tableheight="740" @switchMod="switchMod"></article-form>
     </template>
   </SetRight>
 </template>
