@@ -91,20 +91,34 @@ const currentChange = async (event: number) => {
 
 div :deep(img[data-fancybox="gallery"]) {
   width: 150px;
-  height: 73px;
+  height: 72px;
   object-fit: cover;
   border-radius: 10px;
-  cursor: pointer;
+  cursor: var(--linkCup);
   transition: .1s ease-out;
   box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.5);
-  border: 1px solid #000;
-  transform: scale(0.95);
+  border: 2px solid var(--selectionColor);
+  transition: .17s;
+  filter: grayscale(0.5);
+  vertical-align: bottom;
+  padding: 1.5px;
 
   &:hover {
-    transform: scale(1);
-    border-color: #fff;
+    filter: grayscale(0);
+    border-color: var(--themeColor);
+    box-shadow: 0 0 7px 1px rgba(122, 122, 122, 0.5);
+    transform: scale(1.2);
   }
 }
+
+
+:deep(.cell) {
+  &:has(img[data-fancybox="gallery"]) {
+    overflow: initial;
+  }
+}
+
+
 
 :deep(.el-dialog).articleDialog {
   border-radius: 20px;

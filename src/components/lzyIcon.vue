@@ -17,7 +17,7 @@ const props = defineProps<Props>()
 
 <style lang='less' scoped>
 .lzyIcon {
-  cursor: pointer;
+  cursor: var(--linkCup);
   vertical-align: text-bottom;
 }
 </style>

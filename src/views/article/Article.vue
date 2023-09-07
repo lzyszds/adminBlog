@@ -96,7 +96,7 @@ provide("setRightProps", {
       <el-table-column label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
-            <img v-ImgLoading data-fancybox="gallery" :src="'/api/public' + row.coverImg" alt="" />
+            <img v-ImgLoading :src="'/api/public' + row.coverImg" data-fancybox="gallery" title="o" alt="" />
           </div>
         </template>
       </el-table-column>

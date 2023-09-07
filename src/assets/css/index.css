@@ -1,6 +1,7 @@
 :root {
   --themeColor: #5161ce;
   --bgcolor: #fff !important;
+  --selectionColor: #344449;
   --themeGreen: #00CE3E;
   --darkBgcolor: rgb(27, 28, 37);
   --darkColor: rgb(255, 255, 255, .8);

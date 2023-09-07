@@ -113,10 +113,11 @@
     }
   }
 
+
   .power {
     display: flex;
     justify-content: center;
-    cursor: pointer;
+    cursor: var(--linkCup);
     user-select: none;
 
     &:active {
@@ -147,7 +148,7 @@
     place-content: center;
     user-select: none;
     transition: 0.3s;
-    cursor: pointer;
+    cursor: var(--linkCup);
 
     &:hover {
       color: var(--themeColor);
@@ -168,7 +169,7 @@
   display: flex;
   align-items: center;
   color: white;
-  cursor: pointer !important;
+  cursor: var(--linkCup) !important;
 }
 
 .checkbox-con input[type="checkbox"] {
@@ -180,7 +181,7 @@
   // background: #f1e1e1;
   position: relative;
   box-sizing: border-box;
-  cursor: pointer !important;
+  cursor: var(--linkCup) !important;
 }
 
 .checkbox-con input[type="checkbox"]::before {
@@ -218,7 +219,7 @@
 
 .checkbox-con label {
   margin-left: 10px;
-  cursor: pointer;
+  cursor: var(--linkCup);
   user-select: none;
 }
 

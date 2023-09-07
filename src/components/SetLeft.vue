@@ -245,7 +245,7 @@ infoData.value = data
       grid-template-columns: 7fr 9fr;
       align-items: center;
       padding: 5px 0px;
-      cursor: pointer;
+      cursor: var(--linkCup);
       transition: all 0.5s;
       user-select: none;
       position: relative;

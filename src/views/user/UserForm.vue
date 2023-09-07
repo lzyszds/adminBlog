@@ -240,14 +240,14 @@ const submitUpload = () => {
       }
 
       .ui_button {
-        cursor: pointer !important;
+        cursor: var(--linkCup) !important;
       }
 
       .fileInput {
         position: absolute;
         top: 0;
         left: 0;
-        cursor: pointer !important;
+        cursor: var(--linkCup) !important;
         display: none;
       }
     }
