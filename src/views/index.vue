@@ -13,7 +13,13 @@ const components = {
   Article,
   User
 }
+const router = useRouter()
 const changeComponent = (componentName: string) => {
+  if (componentName.indexOf('/login') == 0) {
+    // 销毁token
+    localStorage.clear()
+    return router.push('/login')
+  }
   loading.value = true
   currentView.value = componentName
   setTimeout(() => {

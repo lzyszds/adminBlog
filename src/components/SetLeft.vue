@@ -1,8 +1,6 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router'
 import http from '@/http/http';
-import load from '@/uiComponents/loader/loadings'
+import { hide } from '@/utils/loading'
 import { NowWeatherData, IWeather } from '@/types/nowWeatherData';
 interface Props {
   currentView: string
@@ -10,16 +8,18 @@ interface Props {
 
 const emit = defineEmits(['componentName'])
 const props = defineProps<Props>()
-const router = useRouter()
 
 const datalist = ref<IWeather>() //天气数据
 const cip = ref<string>() //ip
 // data:天气数据   cid:城市id 
-const weather: NowWeatherData = JSON.parse(localStorage.getItem("nowWeatherData")!)
+const weather: NowWeatherData = JSON.parse(localStorage.getItem("nowWeatherData")!) as NowWeatherData
+
 //获取请求天气的数据
-datalist.value = weather.weatherData
-datalist.value!.region = weather.region
-cip.value = weather.ip
+if (weather) {
+  datalist.value = weather.weatherData
+  datalist.value!.region = weather.region
+  cip.value = weather.ip
+}
 
 type Items = {
   name: string;
@@ -93,12 +93,7 @@ const changeComponent = async (index) => {
 const infoData: any = ref()
 const data: any = []
 const res = await http('get', '/overtApis/getUserInfo') as any// httpData
-//检验token是存在 401是token过期
-if (res.code == 401) {
-  // 销毁token
-  localStorage.removeItem('lzy_token')
-  router.push('/login')
-}
+hide()
 data.push(res.data)
 //处理用户签名
 if (data[0].perSign) {

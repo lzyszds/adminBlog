@@ -130,8 +130,8 @@ div :deep(img[data-fancybox="gallery"]) {
     }
 
     button {
-      margin-top: 15px;
-      margin-right: 30px;
+      margin-top: 5px;
+      margin-right: 15px;
       font-size: 20px;
       color: var(--themeColor);
 

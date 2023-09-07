@@ -5,6 +5,8 @@ import { useThrottleFn } from "@vueuse/core";
 import { getIpWeather } from "@/utils/utils";
 import { NowWeatherData } from "@/types/NowWeatherData";
 
+import { show } from '@/utils/loading'
+
 import { dayjs } from "element-plus";
 import http from "@/http/http";
 import { useRouter } from "vue-router";
@@ -12,7 +14,7 @@ const router = useRouter();
 //进入页面先判断是否登陆着,localStorage.getItem('token')是登陆时候存的token
 if (localStorage.getItem("lzy_token")) {
   //路由重定向
-  router.replace("/user");
+  router.replace("/");
 }
 interface getLoginData {
   error: number;
@@ -55,6 +57,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
         const res = (await http("post", "/privateApis/login", ruleForm)) as getLoginData;
         setTimeout(() => {
           if (res.error === 0 || res.code === 200) {
+            show()
             localStorage.setItem("lzy_token", res.data);
             //设置cookie，cookie过期时间为14天，如果过期则需要重新登陆，销毁localStorage中token
             const date14: any = dayjs().add(7, "day");
@@ -65,8 +68,9 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
             weather.then((res) => {
               //将个人信息存入localStorage，避免每次刷新都要请求接口
               localStorage.setItem("nowWeatherData", JSON.stringify(res));
-              router.push("/user");
+              router.push("/");
             });
+
           } else {
             tipsText.value = "账号或密码错误";
           }
@@ -85,30 +89,15 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   <div class="login">
     <div class="card">
       <div class="item center" :class="{ loadBtn: load }">
-        <el-form
-          ref="ruleFormRef"
-          :model="ruleForm"
-          :rules="rules"
-          class="demo-ruleForm"
-          status-icon
-        >
+        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
           <el-form-item prop="username">
-            <el-input
-              @keydown.enter="submitForm(ruleFormRef)"
-              class="input"
-              v-model="ruleForm.username"
-            >
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
               <template #prepend>账号</template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input
-              @keydown.enter="submitForm(ruleFormRef)"
-              class="input"
-              type="password"
-              v-model="ruleForm.password"
-              show-password
-            >
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" type="password" v-model="ruleForm.password"
+              show-password>
               <template #prepend>密码</template>
             </el-input>
           </el-form-item>
@@ -277,6 +266,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 }
 
 @keyframes shake {
+
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
@@ -300,6 +290,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 }
 
 @keyframes animate_line {
+
   0%,
   100% {
     top: 0;

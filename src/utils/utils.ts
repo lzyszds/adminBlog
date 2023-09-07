@@ -43,6 +43,7 @@ export function getIpWeather() {
   }
   return new Promise((resolve, reject) => {
     http('get', '/proxyApis/jinrishici/info', headers).then((res: any) => {
+      console.log(`lzy  res:`, res)
       if (res.status = 'success') {
         resolve(res.data)
       } else {

@@ -1,7 +1,5 @@
-<script  setup lang="ts">
-import { ref, reactive, h, nextTick } from "vue";
+<script setup lang="ts">
 import { dayjs, ElMessageBox } from "element-plus";
-import { useEventListener, useStorage } from "@vueuse/core";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { compressPic } from "@/utils/utils";
@@ -21,7 +19,6 @@ if (articledata.value.title) {
     information.cover = articledata.value.coverImg;
     tagData.value = articledata.value.wtype.split(",");
   }).catch(() => {
-    console.log(123);
     localStorage.removeItem("articledata");
   })
 }
@@ -135,13 +132,14 @@ function setData(): ArticledataType {
     wtype: tagData.value.join(","),
   };
 }
+const coverFile = ref<HTMLInputElement>();
 
 //异步执行，等待dom渲染完成
 nextTick(() => {
+  console.log(`lzy  coverFile.value:`, coverFile.value)
   //通过点击图片 ，获取图片的src 以及将图片存入线上服务器
-  const coverFile = document.querySelector("#coverFile") as HTMLInputElement;
   useEventListener(coverFile, "change", () => {
-    const files = coverFile.files as FileList;
+    const files = coverFile.value!.files as FileList;
     //对图片进行压缩
     compressPic(files[0], 0.5).then(({ fileCompress }) => {
       // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
@@ -167,8 +165,7 @@ nextTick(() => {
 //更新封面
 const coverUpdate = () => {
   //将input type=file 作用触发 从而触发change事件
-  const coverFile = document.querySelector("#coverFile") as HTMLInputElement;
-  coverFile.click();
+  coverFile.value!.click();
 };
 
 //标签弹窗控制flag
@@ -263,7 +260,7 @@ const addArticleType = async () => {
         <span>封面图片：</span>
         <div @click="coverUpdate" class="coverImg">
           <img :src="information.cover" alt="" />
-          <input type="file" id="coverFile" />
+          <input type="file" ref="coverFile" id="coverFile" />
         </div>
         <span>文章标题：</span>
         <input class="title" type="text" v-model="information.title" />
@@ -354,7 +351,7 @@ const addArticleType = async () => {
       white-space: nowrap;
       margin: 0 30px 0 0;
       line-height: 35px;
-      cursor: pointer;
+      cursor: var(--linkCup);
 
       &:deep(.el-tag.el-tag--info) {
         background-color: var(--themeColor);

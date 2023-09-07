@@ -35,12 +35,16 @@ export default {
 
 const setLoadingPosition = (targetElement) => {
   const loadingDiv = document.querySelector('#loadingVNode') as HTMLElement;
+  let parentWidth, parentHeight
   if (loadingDiv) {
     targetElement.style.position = 'relative';
     // 获取父元素的宽度和高度
-    const parentWidth = targetElement.clientWidth;
-    const parentHeight = targetElement.clientHeight;
-
+    parentWidth = targetElement.clientWidth;
+    parentHeight = targetElement.clientHeight;
+    if (targetElement.nodeName == 'BODY') {
+      parentWidth = targetElement.clientWidth -  1
+      parentHeight = targetElement.clientHeight -  1
+    }
     // 设置loading元素的宽度和高度与父元素相同
     loadingDiv.style.width = parentWidth + 'px';
     loadingDiv.style.height = parentHeight + 'px';

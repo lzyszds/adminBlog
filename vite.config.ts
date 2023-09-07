@@ -2,6 +2,7 @@ import { defineConfig, } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import prismjs from 'vite-plugin-prismjs';
+import AutoImport from 'unplugin-auto-import/vite'
 
 const baseUrl = {
   development: './',
@@ -21,6 +22,9 @@ export default defineConfig(({ command, mode }): any => {
     envDir: path.resolve(__dirname, './env'),
     plugins: [
       vue(),
+      AutoImport({
+        imports: ['vue', 'vue-router', '@vueuse/core', 'pinia']
+      }),
       prismjs({
         languages: ['json', 'js', 'ts', 'css', 'less', 'html', 'markdown', 'sql', 'typescript', 'vim'],
       }),

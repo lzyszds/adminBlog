@@ -2,6 +2,15 @@
 import axios, { AxiosResponse } from 'axios'
 import { ElMessageBox } from 'element-plus'
 import { getCookie } from '@/utils/utils'
+/**
+ * 在 Vue.js 中，使用 vue-router 来处理路由时，有时可能会遇到在响应拦截器中无法访问路由的情况。
+ * 这通常是因为在拦截器中，路由对象（$route）可能还没有被创建，
+ * 或者因为异步操作的原因，拦截器代码在路由切换之前执行。
+ * 为了在响应拦截器中访问路由信息，
+ * 你可以使用 Vue Router 提供的 beforeEach 导航守卫来确保在路由切换之前执行你的拦截器逻辑。
+*/
+import router from '@/router/index'; // 导入你的路由实例
+
 export interface HttpResonse<T> {
   code: number
   data: T,
@@ -23,22 +32,28 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
   }
   if (response.status === 200) {
     // 993登录过期
-    if (response.data.code != '10011') {
-      return Promise.resolve(response)
-    } else {
+    if (response.data.code == '401') {
       let timer: any = setTimeout(() => {
-        window.location.href = '/login'
-      }, 1000 * 1000)
+        router.push('/login')
+        ElMessageBox.close()
+      }, 1000 * 2)
       localStorage.clear() // 清空本地存储
       ElMessageBox.alert('登陆验证失败，请重新登陆！！(2秒后自动退出)', '提示', {
         // 如果要禁用其自动对焦
         // autofocus: false,
         confirmButtonText: '确定',
         callback: () => {
-          window.location.href = '/login'
+          router.push('/login')
           clearTimeout(timer)
+          ElMessageBox.close()
         },
       })
+      return Promise.resolve({
+        code: 401,
+        data: '未登录',
+      })
+    } else {
+      return Promise.resolve(response)
     }
   } else {
     return Promise.reject(identifyCode(response.status, response))
