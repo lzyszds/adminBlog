@@ -25,9 +25,12 @@ const instance = axios.create({
   // timeout: 5000,
   withCredentials: true,//表示跨域请求时是否需要使用凭证
 })
+
 // 响应拦截器
 instance.interceptors.response.use((response: AxiosResponse): any => {
+  console.log(`lzy  response:`, response)
   if (!getCookie('token_remderDay')) {
+    // 如果没有名为 'token_remderDay' 的 Cookie，清空本地存储
     localStorage.clear()
   }
   if (response.status === 200) {
@@ -39,6 +42,7 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
       }, 1000 * 2)
       localStorage.clear() // 清空本地存储
       ElMessageBox.alert('登陆验证失败，请重新登陆！！(2秒后自动退出)', '提示', {
+        // 弹出提示框，告知用户登录验证失败
         // 如果要禁用其自动对焦
         // autofocus: false,
         confirmButtonText: '确定',
@@ -56,6 +60,7 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
       return Promise.resolve(response)
     }
   } else {
+    // 如果响应状态码不为 200，返回对应的错误信息
     return Promise.reject(identifyCode(response.status, response))
   }
 })
