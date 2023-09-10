@@ -16,7 +16,7 @@ export default defineConfig(({ command, mode }): any => {
   // 设置第三个参数为 '' 来加载所有环境变量，而不管是否有 `VITE_` 前缀。
   // const env = loadEnv(mode, process.cwd(), '')
   let _baseUrl = 'http://localhost'
-  if (mode == 'lzym') _baseUrl = 'http://192.168.0.200'
+  // if (mode == 'lzym') _baseUrl = 'http://192.168.0.200'
   return {
     // 在 vite.config.ts 中添加 envDir 属性指定环境文件目录为 env：
     envDir: path.resolve(__dirname, './env'),

@@ -1,51 +1,47 @@
-<script setup lang='ts'>
-import Search from '@/components/Search.vue'
-import { useStore } from '@/store/store';
-import { Popup, Requirement } from '@/types/SetRightType'
-import { show } from '@/utils/loading'
-import { ElMessageBox, ElPagination } from 'element-plus'
-import { h, computed, inject } from 'vue';
+<script setup lang="ts">
+import Search from "@/components/Search.vue";
+import { useStore } from "@/store/store";
+import { Popup, Requirement } from "@/types/SetRightType";
+import { show } from "@/utils/loading";
+import { ElMessageBox, ElPagination } from "element-plus";
+import { h, computed, inject } from "vue";
 
 interface Props {
-  popup?: Popup,
-  requirement: Requirement
+  popup?: Popup;
+  requirement: Requirement;
 }
-const state = useStore()
-const { popup, requirement } = inject('setRightProps') as Props
+const state = useStore();
+const { popup, requirement } = inject("setRightProps") as Props;
 
 //开启表单时点击空白地方 关闭form表单时的提示
 const handleClose = (done: () => void) => {
   ElMessageBox({
-    title: '提示',
-    message: h('p', null, [
-      h('span', null, '你确定关闭该对话框吗 '),
-    ]),
+    title: "提示",
+    message: h("p", null, [h("span", null, "你确定关闭该对话框吗 ")]),
     showCancelButton: true,
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-  })
-    .then(() => {
-      done()
-    })
-}
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+  }).then(() => {
+    done();
+  });
+};
 const addToPop = () => {
-  popup!.addVisible = true
-}
+  popup!.addVisible = true;
+};
 
 //计算总页数
 const pageSum = computed(() => {
   const { pageSize } = requirement;
-  const { total } = state
-  return total! % pageSize == 0 ? total! / pageSize : (total! / pageSize >> 0) + 1
+  const { total } = state;
+  return total! % pageSize == 0 ? total! / pageSize : ((total! / pageSize) >> 0) + 1;
 });
 
 //分页事件、切换页码时提供load效果
 const currentChange = async (event: number) => {
-  requirement.currentPage = event
-  show('#loadings')
-  state.handleCurrentChange(requirement, event)
-
-}
+  requirement.currentPage = event;
+  show("#loadings");
+  state.handleCurrentChange(requirement, event);
+};
 </script>
 
 <template>
@@ -61,18 +57,34 @@ const currentChange = async (event: number) => {
         </template>
         <slot name="table"></slot>
       </el-table>
-
     </div>
     <div class="toolfooter">
       <div v-if="popup">
-        <el-button class="add" type="primary" @click="addToPop">{{ popup.addName }}</el-button>
-        <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible" top="0px"
-          :before-close="handleClose" title="新增文章" :width="popup.addWidth" left>
+        <el-button class="add" type="primary" @click="addToPop">{{
+          popup.addName
+        }}</el-button>
+        <el-dialog
+          v-if="popup"
+          class="articleDialog"
+          :close-on-press-escape="false"
+          v-model="popup.addVisible"
+          top="0px"
+          :before-close="handleClose"
+          title="新增文章"
+          :width="popup.addWidth"
+          left
+        >
           <slot name="popupAdd" v-if="popup.addVisible"></slot>
-
         </el-dialog>
-        <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
-          :before-close="handleClose" title="修改文章" :width="popup.addWidth" addLeft>
+        <el-dialog
+          class="articleDialog"
+          :close-on-press-escape="false"
+          v-model="popup.modifyVisible"
+          :before-close="handleClose"
+          title="修改文章"
+          :width="popup.addWidth"
+          addLeft
+        >
           <slot name="popupModify" v-if="popup.modifyVisible"></slot>
         </el-dialog>
       </div>
@@ -80,14 +92,21 @@ const currentChange = async (event: number) => {
         <div class="example-demonstration">
           When you have more than {{ pageSum }} pages of data, use a pagination.
         </div>
-        <el-pagination small v-model="requirement.currentPage" :page-size="requirement.pageSize" background
-          :total="state.total" @current-change="currentChange" layout="prev, pager, next, jumper" />
+        <el-pagination
+          small
+          v-model="requirement.currentPage"
+          :page-size="requirement.pageSize"
+          background
+          :total="state.total"
+          @current-change="currentChange"
+          layout="prev, pager, next, jumper"
+        />
       </div>
     </div>
   </div>
 </template>
 <style lang="less" scoped>
-@import url('@/assets/css/headSearch.less');
+@import url("@/assets/css/headSearch.less");
 
 div :deep(img[data-fancybox="gallery"]) {
   width: 150px;
@@ -95,10 +114,10 @@ div :deep(img[data-fancybox="gallery"]) {
   object-fit: cover;
   border-radius: 10px;
   cursor: var(--linkCup);
-  transition: .1s ease-out;
+  transition: 0.1s ease-out;
   box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.5);
   border: 2px solid var(--selectionColor);
-  transition: .17s;
+  transition: 0.17s;
   filter: grayscale(0.5);
   vertical-align: bottom;
   padding: 1.5px;
@@ -111,14 +130,11 @@ div :deep(img[data-fancybox="gallery"]) {
   }
 }
 
-
 :deep(.cell) {
   &:has(img[data-fancybox="gallery"]) {
     overflow: initial;
   }
 }
-
-
 
 :deep(.el-dialog).articleDialog {
   border-radius: 20px;
@@ -131,7 +147,7 @@ div :deep(img[data-fancybox="gallery"]) {
   margin: 25px auto;
 
   .el-dialog__header {
-    font-family: 'almama';
+    font-family: "almama";
     text-align: center;
     margin-bottom: 30px;
     padding: 0;

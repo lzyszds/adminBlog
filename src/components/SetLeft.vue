@@ -1,116 +1,121 @@
-<script setup lang='ts'>
-import http from '@/http/http';
-import { hide } from '@/utils/loading'
-import { NowWeatherData, IWeather } from '@/types/nowWeatherData';
+<script setup lang="ts">
+import http from "@/http/http";
+import { hide } from "@/utils/loading";
+import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
 interface Props {
-  currentView: string
+  currentView: string;
 }
 
-const emit = defineEmits(['componentName'])
-const props = defineProps<Props>()
+const emit = defineEmits(["componentName"]);
+const props = defineProps<Props>();
 
-const datalist = ref<IWeather>() //天气数据
-const cip = ref<string>() //ip
-// data:天气数据   cid:城市id 
-const weather: NowWeatherData = JSON.parse(localStorage.getItem("nowWeatherData")!) as NowWeatherData
+const datalist = ref<IWeather>(); //天气数据
+const cip = ref<string>(); //ip
+// data:天气数据   cid:城市id
+const weather: NowWeatherData = JSON.parse(
+  localStorage.getItem("nowWeatherData")!
+) as NowWeatherData;
 
 //获取请求天气的数据
 if (weather) {
-  datalist.value = weather.weatherData
-  datalist.value!.region = weather.region
-  cip.value = weather.ip
+  datalist.value = weather.weatherData;
+  datalist.value!.region = weather.region;
+  cip.value = weather.ip;
 }
 
 type Items = {
   name: string;
   uicon: string;
   component: string;
-}[]
+}[];
 
 //左侧菜单栏
 const items: Items = [
   {
-    name: '用户管理',
+    name: "用户管理",
     uicon: '<i class="iconfont">&#xe612;</i>',
-    component: 'User'
+    component: "User",
   },
   {
-    name: '文章管理',
+    name: "文章管理",
     uicon: '<i class="iconfont">&#xe606;</i>',
-    component: 'Article'
+    component: "Article",
   },
   {
-    name: '评论管理',
+    name: "评论管理",
     uicon: '<i class="iconfont">&#xe607;</i>',
-    component: 'Comment'
+    component: "Comment",
   },
   {
-    name: '分类管理',
+    name: "分类管理",
     uicon: '<i class="iconfont">&#xe60e;</i>',
-    component: '/categoryAdmin'
+    component: "/categoryAdmin",
   },
   {
-    name: '标签管理',
+    name: "标签管理",
     uicon: '<i class="iconfont">&#xe64d;</i>',
-    component: '/tagAdmin'
+    component: "/tagAdmin",
   },
   {
-    name: '友链管理',
+    name: "友链管理",
     uicon: '<i class="iconfont">&#xe609;</i>',
-    component: '/linkAdmin'
+    component: "/linkAdmin",
   },
   {
-    name: '网站设置',
+    name: "网站设置",
     uicon: '<i class="iconfont">&#xe60a;</i>',
-    component: '/settingAdmin'
-  }, {
-    name: '退出登陆',
-    uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: '/login'
+    component: "/settingAdmin",
   },
   {
-    name: '返回首页',
+    name: "退出登陆",
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: '/home/index'
+    component: "/login",
   },
-]
+  {
+    name: "返回首页",
+    uicon: '<i class="iconfont">&#xe60b;</i>',
+    component: "/home/index",
+  },
+];
 
-const activeIndex = ref(0)
+const activeIndex = ref(0);
 //判断当前激活的组件，设置左侧菜单栏的激活状态
 items.forEach((item, index) => {
   if (item.component === props.currentView) {
-    activeIndex.value = index
+    activeIndex.value = index;
   }
-})
+});
 //点击左侧菜单栏，切换组件
 const changeComponent = async (index) => {
-  activeIndex.value = index
+  activeIndex.value = index;
   // await load.show('#content')
-  emit('componentName', items[index].component)
-}
+  emit("componentName", items[index].component);
+};
 
 //处理用户详情数据
-const infoData: any = ref()
-const data: any = []
-const res = await http('get', '/overtApis/getUserInfo') as any// httpData
-hide()
-data.push(res.data)
+const infoData: any = ref();
+const data: any = [];
+const res = (await http("get", "/overtApis/getUserInfo")) as any; // httpData
+hide();
+data.push(res.data);
 //处理用户签名
 if (data[0].perSign) {
-  data.perSign = data[0].perSign.replace(',', '#,~').split('#,~')
-  data.perSign = data[0].perSign ? data.perSign : '这个人很懒，什么都没留下'
+  data.perSign = data[0].perSign.replace(",", "#,~").split("#,~");
+  data.perSign = data[0].perSign ? data.perSign : "这个人很懒，什么都没留下";
 } else {
-  data.perSign = ['这个人很懒', '什么都没留下']
+  data.perSign = ["这个人很懒", "什么都没留下"];
 }
 
-infoData.value = data
+infoData.value = data;
 </script>
 
 <template>
   <div class="setleft">
-    <div class="logo"> Lzyszds </div>
+    <div class="logo">Lzyszds</div>
     <div class="userinfo">
-      <div class="headPortrait"><img :src="'http://localhost:8089/public' + infoData[0].headImg" alt=""> </div>
+      <div class="headPortrait">
+        <img :src="'/api/public' + infoData[0].headImg" alt="" />
+      </div>
       <h3>{{ infoData[0].uname }}</h3>
       <p>「{{ infoData.perSign[0] }}」</p>
       <p>{{ infoData.perSign[1] }}</p>
@@ -120,8 +125,13 @@ infoData.value = data
       </p> -->
     </div>
     <div class="list">
-      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(index)"
-        :class="{ 'active': activeIndex == index }">
+      <div
+        class="list_item"
+        v-for="(item, index) in items"
+        :key="index"
+        @click="changeComponent(index)"
+        :class="{ active: activeIndex == index }"
+      >
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>
@@ -129,10 +139,17 @@ infoData.value = data
     <div class="footer">
       <div class="time">
         <p class="weacher">
-          <el-tooltip class="box-item" effect="lzy_dark"
+          <el-tooltip
+            class="box-item"
+            effect="lzy_dark"
             :content="`湿度：${datalist?.humidity}%RH 风向：${datalist?.windDirection} 降水量：${datalist?.rainfall}mm`"
-            placement="top">
-            <span>{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{ datalist?.temperature }}℃ </span>
+            placement="top"
+          >
+            <span
+              >{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{
+                datalist?.temperature
+              }}℃
+            </span>
           </el-tooltip>
 
           <!-- <span>湿度：{{ datalist?.humidity }}%RH</span> -->
@@ -155,7 +172,7 @@ infoData.value = data
   .logo {
     padding-top: 30px;
     color: #000;
-    font-family: 'almama';
+    font-family: "almama";
     font-size: 40px;
     text-align: center;
   }
@@ -178,7 +195,7 @@ infoData.value = data
       }
 
       &:before {
-        content: '';
+        content: "";
         display: block;
         position: absolute;
         top: 0;
@@ -200,7 +217,7 @@ infoData.value = data
       font-size: 20px;
       color: #000;
       font-weight: 600;
-      font-family: 'almama';
+      font-family: "almama";
       margin: 0px 0;
     }
 
@@ -208,7 +225,7 @@ infoData.value = data
       font-size: 9px;
       color: #999;
       font-weight: 600;
-      font-family: 'almama';
+      font-family: "almama";
     }
 
     .essCount {
@@ -259,14 +276,14 @@ infoData.value = data
       }
 
       &:before {
-        content: '';
+        content: "";
         display: block;
         position: absolute;
         top: 0;
         left: 0;
         width: 5px;
         height: 100%;
-        transition: .3s;
+        transition: 0.3s;
       }
 
       &.active {
@@ -279,14 +296,13 @@ infoData.value = data
           -webkit-animation: jello-horizontal 0.9s both;
           animation: jello-horizontal 0.9s both;
         }
-
       }
 
       span {
         font-size: 16px;
         color: #000;
         font-weight: 500;
-        font-family: 'dindin';
+        font-family: "dindin";
       }
 
       span:nth-child(1) {
@@ -294,9 +310,6 @@ infoData.value = data
         padding-right: 20px;
       }
     }
-
-
-
   }
 
   .footer {
@@ -304,7 +317,7 @@ infoData.value = data
     position: absolute;
     bottom: 0;
     text-align: center;
-    font-family: 'almama';
+    font-family: "almama";
     font-size: 8px;
 
     .time {
