@@ -5,7 +5,7 @@ import { useThrottleFn } from "@vueuse/core";
 import { getIpWeather } from "@/utils/utils";
 import { NowWeatherData } from "@/types/NowWeatherData";
 
-import { show } from '@/utils/loading'
+import { show } from "@/utils/loading";
 
 import { dayjs } from "element-plus";
 import http from "@/http/http";
@@ -31,6 +31,8 @@ const ruleFormRef = ref<FormInstance>();
 const ruleForm = reactive({
   username: "",
   password: "",
+  email: '',
+  code: ''
 });
 // 表单验证规则
 const rules = reactive<FormRules>({
@@ -57,7 +59,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
         const res = (await http("post", "/privateApis/login", ruleForm)) as getLoginData;
         setTimeout(() => {
           if (res.error === 0 || res.code === 200) {
-            show()
+            show();
             localStorage.setItem("lzy_token", res.data);
             //设置cookie，cookie过期时间为14天，如果过期则需要重新登陆，销毁localStorage中token
             const date14: any = dayjs().add(7, "day");
@@ -70,7 +72,6 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
               localStorage.setItem("nowWeatherData", JSON.stringify(res));
               router.push("/");
             });
-
           } else {
             tipsText.value = "账号或密码错误";
           }
@@ -83,6 +84,16 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     console.error(e);
   }
 }, 1000);
+const activeModel = ref("account");
+//账号登陆
+const accountLogin = () => {
+  activeModel.value = "account";
+};
+//邮箱登陆
+const emailLogin = () => {
+  
+  activeModel.value = "email";
+};
 </script>
 
 <template>
@@ -91,21 +102,44 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
       <div class="item center" :class="{ loadBtn: load }">
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
           <el-form-item prop="username">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username"
+              v-if="activeModel === 'account'">
               <template #prepend>账号</template>
+            </el-input>
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.email" v-else>
+              <template #prepend>邮箱</template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" type="password" v-model="ruleForm.password"
-              show-password>
+              show-password v-if="activeModel === 'account'">
               <template #prepend>密码</template>
+            </el-input>
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input yzm" type="text" v-model="ruleForm.code"
+              v-else>
+              <template #prepend>验证码</template>
+              <template #append>
+                <lzyicon name="grommet-icons:send"></lzyicon>
+              </template>
             </el-input>
           </el-form-item>
 
-          <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)">
-              <lzyicon name="majesticons:scan-fingerprint-line"></lzyicon>
+          <el-form-item style="margin: 0">
+            <el-button type="primary" style="margin-top: 10px" @click="submitForm(ruleFormRef)">
+              <lzyicon name="majesticons:scan-fingerprint-line" style="margin-right: 5px"></lzyicon>
               <span class="spanTEXT">登陆</span>
+            </el-button>
+          </el-form-item>
+          <el-form-item v-if="activeModel == 'account'">
+            <el-button type="primary" @click="emailLogin">
+              <lzyicon name="line-md:email-twotone-alt" style="margin-right: 5px"></lzyicon>
+              <span class="spanTEXT">邮箱登陆</span>
+            </el-button>
+          </el-form-item>
+          <el-form-item v-else>
+            <el-button type="primary" @click="accountLogin">
+              <lzyicon name="line-md:account-small" style="margin-right: 5px"></lzyicon>
+              <span class="spanTEXT">账号密码登陆</span>
             </el-button>
           </el-form-item>
         </el-form>
@@ -221,6 +255,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
             transition: 0.6s;
           }
 
+
           .el-input__wrapper {
             box-shadow: none;
             border: 1px solid var(--themeColor);
@@ -231,6 +266,24 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
               font-weight: 600;
               font-family: "firaCode";
               color: #000;
+            }
+          }
+
+          .yzm .el-input__wrapper {
+            border-radius: 0;
+            border: 1px solid var(--themeColor);
+            border-right: transparent;
+
+          }
+
+          .el-input-group__append {
+            padding: 0px 15px 0px 10px;
+            border-radius: 0 15px 15px 0;
+            border: 1px solid var(--themeColor);
+            background: #fff;
+
+            &:hover {
+              color: var(--themeColor);
             }
           }
 
