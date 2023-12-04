@@ -4,6 +4,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/base.css'
 import '@/assets/css/loading.css';
+import 'animate.css';
 
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'

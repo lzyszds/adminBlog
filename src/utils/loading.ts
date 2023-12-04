@@ -42,8 +42,8 @@ const setLoadingPosition = (targetElement) => {
     parentWidth = targetElement.clientWidth;
     parentHeight = targetElement.clientHeight;
     if (targetElement.nodeName == 'BODY') {
-      parentWidth = targetElement.clientWidth -  1
-      parentHeight = targetElement.clientHeight -  1
+      parentWidth = targetElement.clientWidth - 1
+      parentHeight = targetElement.clientHeight - 1
     }
     // 设置loading元素的宽度和高度与父元素相同
     loadingDiv.style.width = parentWidth + 'px';

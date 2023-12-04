@@ -125,13 +125,8 @@ infoData.value = data;
       </p> -->
     </div>
     <div class="list">
-      <div
-        class="list_item"
-        v-for="(item, index) in items"
-        :key="index"
-        @click="changeComponent(index)"
-        :class="{ active: activeIndex == index }"
-      >
+      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(index)"
+        :class="{ active: activeIndex == index, animate__rubberBand: activeIndex == index }">
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>
@@ -139,16 +134,12 @@ infoData.value = data;
     <div class="footer">
       <div class="time">
         <p class="weacher">
-          <el-tooltip
-            class="box-item"
-            effect="lzy_dark"
+          <el-tooltip class="box-item" effect="lzy_dark"
             :content="`湿度：${datalist?.humidity}%RH 风向：${datalist?.windDirection} 降水量：${datalist?.rainfall}mm`"
-            placement="top"
-          >
-            <span
-              >{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{
-                datalist?.temperature
-              }}℃
+            placement="top">
+            <span>{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{
+              datalist?.temperature
+            }}℃
             </span>
           </el-tooltip>
 
@@ -415,5 +406,5 @@ infoData.value = data;
     transform: scale3d(1, 1, 1);
   }
 }
+
 </style>
-@/types/NowWeatherData

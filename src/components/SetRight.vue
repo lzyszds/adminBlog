@@ -48,7 +48,8 @@ const currentChange = async (event: number) => {
   <div class="mainTem">
     <Search />
     <div class="tableuser" id="loadings">
-      <el-table class="tableuser" :data="state.tableData" style="width: 100%">
+      <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__backInRight"
+        style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />
@@ -63,28 +64,12 @@ const currentChange = async (event: number) => {
         <el-button class="add" type="primary" @click="addToPop">{{
           popup.addName
         }}</el-button>
-        <el-dialog
-          v-if="popup"
-          class="articleDialog"
-          :close-on-press-escape="false"
-          v-model="popup.addVisible"
-          top="0px"
-          :before-close="handleClose"
-          title="新增文章"
-          :width="popup.addWidth"
-          left
-        >
+        <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible" top="0px"
+          :before-close="handleClose" title="新增文章" :width="popup.addWidth" left>
           <slot name="popupAdd" v-if="popup.addVisible"></slot>
         </el-dialog>
-        <el-dialog
-          class="articleDialog"
-          :close-on-press-escape="false"
-          v-model="popup.modifyVisible"
-          :before-close="handleClose"
-          title="修改文章"
-          :width="popup.addWidth"
-          addLeft
-        >
+        <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
+          :before-close="handleClose" title="修改文章" :width="popup.addWidth" addLeft>
           <slot name="popupModify" v-if="popup.modifyVisible"></slot>
         </el-dialog>
       </div>
@@ -92,15 +77,8 @@ const currentChange = async (event: number) => {
         <div class="example-demonstration">
           When you have more than {{ pageSum }} pages of data, use a pagination.
         </div>
-        <el-pagination
-          small
-          v-model="requirement.currentPage"
-          :page-size="requirement.pageSize"
-          background
-          :total="state.total"
-          @current-change="currentChange"
-          layout="prev, pager, next, jumper"
-        />
+        <el-pagination small v-model="requirement.currentPage" :page-size="requirement.pageSize" background
+          :total="state.total" @current-change="currentChange" layout="prev, pager, next, jumper" />
       </div>
     </div>
   </div>
@@ -182,6 +160,58 @@ div :deep(img[data-fancybox="gallery"]) {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+:deep(.el-table__body) {
+  overflow: hidden;
+
+  .animate__duration {
+    transition: all 0.5s;
+    animation-duration: 0.5s;
+    /* 按顺序弹出 */
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+
+    &:nth-child(1) {
+      animation-delay: .1s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: .4s;
+    }
+
+    &:nth-child(5) {
+      animation-delay: .5s;
+    }
+
+    &:nth-child(6) {
+      animation-delay: .6s;
+    }
+
+    &:nth-child(7) {
+      animation-delay: .7s;
+    }
+
+    &:nth-child(8) {
+      animation-delay: .8s;
+    }
+
+    &:nth-child(9) {
+      animation-delay: .9s;
+    }
+
+    &:nth-child(10) {
+      animation-delay: 1s;
+    }
   }
 }
 </style>

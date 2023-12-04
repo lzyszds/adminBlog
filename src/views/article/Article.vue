@@ -37,16 +37,14 @@ const modifyThe = (event: Article) => {
 
 //删除文章
 const _delete = async (event) => {
-  if (false) {
-    const res = await http("post", "/deleteArticle", { id: event.aid });
-    ElNotification({
-      title: res.code == 200 ? "成功" : "失败",
-      message: "用户" + res.message,
-      type: res.code == 200 ? "success" : "error",
-    });
-    if (res.code != 200) console.log(`lzy ~ res`, res.err);
-  }
-  // handleCurrentChange(total.value)
+  const res = await http("post", "/privateApis/deleteArticle", { id: event.aid });
+  ElNotification({
+    title: res.code == 200 ? "成功" : "失败",
+    message: "用户" + res.message,
+    type: res.code == 200 ? "success" : "error",
+  });
+  if (res.code != 200) return false;
+  await state.handleCurrentChange(requirement)
 };
 
 const popup = reactive<Popup>({

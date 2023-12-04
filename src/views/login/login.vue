@@ -84,16 +84,6 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     console.error(e);
   }
 }, 1000);
-const activeModel = ref("account");
-//账号登陆
-const accountLogin = () => {
-  activeModel.value = "account";
-};
-//邮箱登陆
-const emailLogin = () => {
-  
-  activeModel.value = "email";
-};
 </script>
 
 <template>
@@ -102,44 +92,22 @@ const emailLogin = () => {
       <div class="item center" :class="{ loadBtn: load }">
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
           <el-form-item prop="username">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username"
-              v-if="activeModel === 'account'">
+            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
               <template #prepend>账号</template>
-            </el-input>
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.email" v-else>
-              <template #prepend>邮箱</template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" type="password" v-model="ruleForm.password"
-              show-password v-if="activeModel === 'account'">
+              show-password>
               <template #prepend>密码</template>
             </el-input>
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input yzm" type="text" v-model="ruleForm.code"
-              v-else>
-              <template #prepend>验证码</template>
-              <template #append>
-                <lzyicon name="grommet-icons:send"></lzyicon>
-              </template>
-            </el-input>
+
           </el-form-item>
 
           <el-form-item style="margin: 0">
             <el-button type="primary" style="margin-top: 10px" @click="submitForm(ruleFormRef)">
               <lzyicon name="majesticons:scan-fingerprint-line" style="margin-right: 5px"></lzyicon>
               <span class="spanTEXT">登陆</span>
-            </el-button>
-          </el-form-item>
-          <el-form-item v-if="activeModel == 'account'">
-            <el-button type="primary" @click="emailLogin">
-              <lzyicon name="line-md:email-twotone-alt" style="margin-right: 5px"></lzyicon>
-              <span class="spanTEXT">邮箱登陆</span>
-            </el-button>
-          </el-form-item>
-          <el-form-item v-else>
-            <el-button type="primary" @click="accountLogin">
-              <lzyicon name="line-md:account-small" style="margin-right: 5px"></lzyicon>
-              <span class="spanTEXT">账号密码登陆</span>
             </el-button>
           </el-form-item>
         </el-form>
@@ -292,7 +260,7 @@ const emailLogin = () => {
             margin: 20px 10px 0;
             font-size: 16px;
             width: 100%;
-            line-height: 35px;
+            line-height: 34px;
             height: 35px;
             background-color: var(--themeColor);
             display: flex;
