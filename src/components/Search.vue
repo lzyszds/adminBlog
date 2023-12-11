@@ -6,6 +6,7 @@ const state = useStore()
 const searchInput = ref<string>('')
 
 const search = () => {
+  state.total = 6
   state.setSearch(searchInput.value)
 }
 </script>

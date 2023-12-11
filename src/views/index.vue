@@ -6,7 +6,7 @@ import Comment from '@/views/comment/Comment.vue'
 import User from '@/views/user/User.vue'
 import { useStore } from '@/store/store'
 
-const store = useStore()
+const state = useStore()
 
 const currentView = ref('User')
 const components = {
@@ -16,26 +16,30 @@ const components = {
 }
 const router = useRouter()
 const changeComponent = (componentName: string) => {
+  // 如果当前路由和点击的路由一样，就不执行下方内容
+  if (currentView.value == componentName) return
+  state.loading = true
   if (componentName.indexOf('/login') == 0) {
     // 销毁token
     localStorage.clear()
     return router.push('/login')
   }
-  store.loading = true
-  currentView.value = componentName
+  setTimeout(() => {
+    currentView.value = componentName
+  }, 100)
 }
 </script>
 
 <template>
   <div class="admin">
-    <div class="tool">
+    <div class="tool" id="tool">
       <Suspense>
         <SetLeft @component-name="changeComponent" :currentView="currentView" />
       </Suspense>
     </div>
-    <div class="content" id="content" v-zyloading="store.loading">
+    <div class="content" id="content" v-zyloading="state.loading">
       <Suspense>
-        <component :is="components[currentView]"  />
+        <component :is="components[currentView]" />
       </Suspense>
     </div>
   </div>

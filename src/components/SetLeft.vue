@@ -169,6 +169,8 @@ infoData.value = data;
   }
 
   .userinfo {
+    transition: .5s all;
+
     text-align: center;
     width: 330px;
 

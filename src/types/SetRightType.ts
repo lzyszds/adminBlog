@@ -14,6 +14,6 @@ export interface Popup {
 export interface Requirement {
   search: string,
   currentPage: number,
-  pageSize: number,
+  limit: number,
   api: string
 }

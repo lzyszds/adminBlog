@@ -16,7 +16,7 @@ const state = useStore()
 const requirement = reactive<Requirement>({
   search: '', //搜索内容
   currentPage: 1, //当前页数
-  pageSize: 10, //每页显示条数
+  limit: 11, //每页显示条数
   api: '/overtApis/getUserList'
 })
 //自动加载数据

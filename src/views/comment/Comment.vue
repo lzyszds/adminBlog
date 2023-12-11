@@ -1,24 +1,24 @@
-<script setup lang='ts'>
-import { reactive, provide } from 'vue'
-import SetRight from '@/components/SetRight.vue';
+<script setup lang="ts">
+import { reactive, provide } from "vue";
+import SetRight from "@/components/SetRight.vue";
 import http from "@/http/http";
-import { ElTableColumn, dayjs } from 'element-plus';
+import { ElTableColumn, dayjs } from "element-plus";
 
-import { useStore } from '@/store/store';
-import { Requirement } from '@/types/SetRightType';
-import { getComType } from '@/types/CommentType';
-import { LNotification } from '@/utils/utils';
-const state = useStore()
+import { useStore } from "@/store/store";
+import { Requirement } from "@/types/SetRightType";
+import { getComType } from "@/types/CommentType";
+import { LNotification } from "@/utils/utils";
+const state = useStore();
 
 //页面配置
 const requirement = reactive<Requirement>({
-  search: '', //搜索内容
+  search: "", //搜索内容
   currentPage: 1, //当前页数
-  pageSize: 10, //每页显示条数
-  api: '/overtApis/getAllComment'
-})
+  limit: 10, //每页显示条数
+  api: "/overtApis/getAllComment",
+});
 //自动加载数据
-await state.handleCurrentChange(requirement)
+await state.handleCurrentChange(requirement);
 
 const topCom = (_row: getComType) => {
   // 置顶评论
@@ -33,12 +33,12 @@ const _delete = async (row: getComType) => {
     aid: row.article_id,
   });
   if (res.data === "删除成功") {
-    state.handleCurrentChange(requirement)
+    state.handleCurrentChange(requirement);
   }
 };
 provide("setRightProps", {
-  requirement
-})
+  requirement,
+});
 </script>
 
 <template>
@@ -50,8 +50,18 @@ provide("setRightProps", {
         </template>
       </el-table-column>
       <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
-      <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="content" label="评论内容" width="220" show-overflow-tooltip></el-table-column>
+      <el-table-column
+        prop="email"
+        label="邮箱"
+        width="180"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="content"
+        label="评论内容"
+        width="220"
+        show-overflow-tooltip
+      ></el-table-column>
       <el-table-column prop="time" label="评论时间" width="150" show-overflow-tooltip>
         <template #default="{ row }">
           <span style="font-size: 12px !important">
@@ -68,14 +78,28 @@ provide("setRightProps", {
       <el-table-column fixed="right" label="Operations" width="140">
         <template #default="scope">
           <!-- 如果当前评论不为一级评论，不给予置顶功能 -->
-          <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" icon-color="#626AEF"
-            title="Are you sure to delete this?" @confirm="topCom(scope.row)">
+          <el-popconfirm
+            width="220"
+            confirm-button-text="OK"
+            cancel-button-text="No, Thanks"
+            icon-color="#626AEF"
+            title="Are you sure to delete this?"
+            @confirm="topCom(scope.row)"
+          >
             <template #reference>
-              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small">置顶</el-button>
+              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small"
+                >置顶</el-button
+              >
             </template>
           </el-popconfirm>
-          <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" icon-color="#626AEF"
-            title="Are you sure to delete this?" @confirm="_delete(scope.row)">
+          <el-popconfirm
+            width="220"
+            confirm-button-text="OK"
+            cancel-button-text="No, Thanks"
+            icon-color="#626AEF"
+            title="Are you sure to delete this?"
+            @confirm="_delete(scope.row)"
+          >
             <template #reference>
               <el-button type="danger" size="small">删除</el-button>
             </template>
@@ -86,5 +110,5 @@ provide("setRightProps", {
   </SetRight>
 </template>
 <style lang="less" scoped>
-@import url('@/assets/css/headSearch.less');
+@import url("@/assets/css/headSearch.less");
 </style>

@@ -30,26 +30,31 @@ const addToPop = () => {
 
 //计算总页数
 const pageSum = computed(() => {
-  const { pageSize } = requirement;
+  const { limit } = requirement;
   const { total } = state;
-  return total! % pageSize == 0 ? total! / pageSize : ((total! / pageSize) >> 0) + 1;
+  return total! % limit == 0 ? total! / limit : ((total! / limit) >> 0) + 1;
 });
 
 //分页事件、切换页码时提供load效果
-const currentChange = async (event: number) => {
-  requirement.currentPage = event;
+// const currentChange = async (event: number) => {
+//   console.log(`lzy  event:`, event)
+//   requirement.currentPage = event;
+//   state.formLoading = true; //开启load效果
+//   state.handleCurrentChange(requirement, event);
+// };
+watch(() => requirement.currentPage, async (event) => {
   state.formLoading = true; //开启load效果
   state.handleCurrentChange(requirement, event);
-};
+}, { deep: true })
 </script>
 
 <template>
   <div class="mainTem">
     <Search />
-    <div style="width: 735px;" v-if="state.formLoading"></div>
-    <div class="tableuser" v-else>
-      <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__backInRight"
-        style="width: 100%">
+    <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
+    <div class="tableuser">
+      <el-table class="tableuser" v-zyloading="state.formLoading" :data="state.tableData"
+        row-class-name="animate__duration animate__backInRight" style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />
@@ -77,8 +82,8 @@ const currentChange = async (event: number) => {
         <div class="example-demonstration">
           When you have more than {{ pageSum }} pages of data, use a pagination.
         </div>
-        <el-pagination small v-model="requirement.currentPage" :page-size="requirement.pageSize" background
-          :total="state.total" @current-change="currentChange" layout="prev, pager, next, jumper" />
+        <el-pagination small v-model:current-page="requirement.currentPage" background :page-count="state.total"
+          layout="prev, pager, next, jumper" />
       </div>
     </div>
   </div>
