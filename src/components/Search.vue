@@ -20,12 +20,9 @@ const search = () => {
 
 <style lang="less" scoped>
 .search {
-  height: 50px;
-  width: 1300px;
 
   :deep(.searchInput) {
     width: 200px;
-    margin: 10px 0 0 20px;
 
     .el-input__wrapper {
       border-radius: 15px 0 0 15px;
@@ -37,7 +34,6 @@ const search = () => {
   }
 
   :deep(.btn) {
-    margin-top: 10px;
     border-radius: 0 15px 15px 0;
     background-color: var(--themeColor);
     border-color: transparent;

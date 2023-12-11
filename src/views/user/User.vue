@@ -94,9 +94,9 @@ provide("setRightProps", {
 <template>
   <SetRight>
     <template #table>
-      <el-table-column property="uid" label="Id" sortable width="80" align="center"> </el-table-column>
+      <el-table-column property="uid" label="Id" sortable width="80" align="center"></el-table-column>
 
-      <el-table-column label="头像" width="70" show-overflow-tooltip>
+      <el-table-column label="头像" width="70">
         <template #default="{ row }">
           <div class="headImg">
             <el-avatar :src="setheadImg(row.headImg)" alt=""></el-avatar>
@@ -108,7 +108,7 @@ provide("setRightProps", {
           {{ row.uname }}
         </template>
       </el-table-column>
-      <el-table-column property="username" label="登陆账号" width="180" />
+      <el-table-column property="username" label="登陆账号" min-width="180" />
       <el-table-column label="密码" width="70" align="center" show-overflow-tooltip>
         <template #default="{ row }">
           <div class="password">
@@ -125,7 +125,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="允许" width="100px" align="center">
+      <!-- <el-table-column label="允许" width="100px" align="center">
         <template #default="{ row }">
           <div class="power">
             <div class="checkbox-con">
@@ -133,7 +133,7 @@ provide("setRightProps", {
             </div>
           </div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
@@ -150,7 +150,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="Operations">
+      <el-table-column fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
             <el-button type="primary" size="small" @click="modifyThe(row)">修改</el-button>

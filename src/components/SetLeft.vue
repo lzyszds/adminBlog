@@ -49,7 +49,7 @@ const items: Items = [
   {
     name: "分类管理",
     uicon: '<i class="iconfont">&#xe60e;</i>',
-    component: "/categoryAdmin",
+    component: "Category",
   },
   {
     name: "标签管理",
@@ -137,9 +137,13 @@ infoData.value = data;
           <el-tooltip class="box-item" effect="lzy_dark"
             :content="`湿度：${datalist?.humidity}%RH 风向：${datalist?.windDirection} 降水量：${datalist?.rainfall}mm`"
             placement="top">
-            <span>{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{
-              datalist?.temperature
-            }}℃
+            <span>
+              <span>{{ datalist?.region }} {{ datalist?.weather }} 室外温度：{{
+                datalist?.temperature
+              }}℃</span>
+              <span>
+                <lzyicon name="wi:night-alt-cloudy"></lzyicon>
+              </span>
             </span>
           </el-tooltip>
 
@@ -148,7 +152,7 @@ infoData.value = data;
         <a :href="cip">IP: {{ cip }}</a>
       </div>
       <div>
-        <p>© 2022 Lzyszds</p>
+        <p>©2022 Lzyszds</p>
         <p>Powered by Ts + Vue3 + Vite + ElementPlus</p>
       </div>
     </div>
@@ -317,8 +321,20 @@ infoData.value = data;
       color: var(--themeColor);
 
       .weacher {
-        span {
+        span:nth-child(1) {
           margin-right: 10px;
+        }
+
+        .el-tooltip__trigger {
+          span {
+            &:nth-child(1) {
+              display: block;
+            }
+
+            &:nth-child(2) {
+              display: none;
+            }
+          }
         }
       }
     }

@@ -50,11 +50,14 @@ watch(() => requirement.currentPage, async (event) => {
 
 <template>
   <div class="mainTem">
-    <Search />
+    <div class="topTool">
+      <Search />
+      <el-button v-if="popup" class="add" type="primary" @click="addToPop">{{ popup!.addName }}</el-button>
+    </div>
     <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
     <div class="tableuser">
       <el-table class="tableuser" v-zyloading="state.formLoading" :data="state.tableData"
-        row-class-name="animate__duration animate__backInRight" style="width: 100%">
+        row-class-name="animate__duration animate__bounceInUp" style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />
@@ -65,19 +68,6 @@ watch(() => requirement.currentPage, async (event) => {
       </el-table>
     </div>
     <div class="toolfooter">
-      <div v-if="popup">
-        <el-button class="add" type="primary" @click="addToPop">{{
-          popup.addName
-        }}</el-button>
-        <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible" top="0px"
-          :before-close="handleClose" title="新增文章" :width="popup.addWidth" left>
-          <slot name="popupAdd" v-if="popup.addVisible"></slot>
-        </el-dialog>
-        <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
-          :before-close="handleClose" title="修改文章" :width="popup.addWidth" addLeft>
-          <slot name="popupModify" v-if="popup.modifyVisible"></slot>
-        </el-dialog>
-      </div>
       <div class="example-pagination-block lzyColor">
         <div class="example-demonstration">
           When you have more than {{ pageSum }} pages of data, use a pagination.
@@ -87,9 +77,31 @@ watch(() => requirement.currentPage, async (event) => {
       </div>
     </div>
   </div>
+  <div v-if="popup">
+    <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible" top="0px"
+      :before-close="handleClose" title="新增文章" :width="popup.addWidth" left>
+      <slot name="popupAdd" v-if="popup.addVisible"></slot>
+    </el-dialog>
+    <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
+      :before-close="handleClose" title="修改文章" :width="popup.addWidth" addLeft>
+      <slot name="popupModify" v-if="popup.modifyVisible"></slot>
+    </el-dialog>
+  </div>
 </template>
 <style lang="less" scoped>
 @import url("@/assets/css/headSearch.less");
+
+.topTool {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 20px;
+  height: 50px;
+  background-color: #fff;
+  border-radius: 10px;
+  gap: 20px;
+}
 
 div :deep(img[data-fancybox="gallery"]) {
   width: 150px;
@@ -169,7 +181,7 @@ div :deep(img[data-fancybox="gallery"]) {
 }
 
 :deep(.el-table__body) {
-  overflow: hidden;
+  overflow-y: hidden;
 
   .animate__duration {
     transition: all 0.5s;
@@ -216,6 +228,10 @@ div :deep(img[data-fancybox="gallery"]) {
 
     &:nth-child(10) {
       animation-delay: 1s;
+    }
+
+    &:nth-child(11) {
+      animation-delay: 1.1s;
     }
   }
 }

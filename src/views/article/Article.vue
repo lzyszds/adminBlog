@@ -112,7 +112,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="最近修改时间" sortable :sort-method="formatter" width="160">
+      <el-table-column label="最近修改时间" sortable :sort-method="formatter" width="150">
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
@@ -123,13 +123,13 @@ provide("setRightProps", {
       <el-table-column property="guid" label="文章路径" sortable>
         <template #default="{ row }">
           <div class="guidCup">
-            <a target="_blank" :href="'/home/detail/' + row.aid">{{
-              "/home/detail/" + row.aid
-            }}</a>
+            <a target="_blank" :href="'/home/detail/' + row.aid">
+              {{ "/home/detail/" + row.aid }}
+            </a>
           </div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="Operations" width="200">
+      <el-table-column fixed="right" label="Operations" width="140">
         <template #default="{ row }">
           <div class="tool">
             <el-button type="primary" size="small" @click="modifyThe(row)">修改</el-button>

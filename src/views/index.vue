@@ -4,6 +4,8 @@ import { ref, } from 'vue'
 import Article from '@/views/article/Article.vue'
 import Comment from '@/views/comment/Comment.vue'
 import User from '@/views/user/User.vue'
+import Category from '@/views/category/Category.vue'
+
 import { useStore } from '@/store/store'
 
 const state = useStore()
@@ -12,7 +14,8 @@ const currentView = ref('User')
 const components = {
   Comment,
   Article,
-  User
+  User,
+  Category
 }
 const router = useRouter()
 const changeComponent = (componentName: string) => {
