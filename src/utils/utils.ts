@@ -125,10 +125,10 @@ export const copyTip = () => {
 }
 
 // 提示通知
-export const tipNotify = (val: string) => {
+export const tipNotify = (val: string, time?: number) => {
   const style = `color: var(--themeColor); font-size: 16px;`
   const icon = `<i class="iconfont icon-tongzhi" style="${style}"></i>`
-  LNotification(`${icon} ${val}`)
+  LNotification(`${icon} ${val}`, time)
 }
 
 

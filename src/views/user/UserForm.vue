@@ -81,9 +81,9 @@ const resetForm = (formInstance: FormInstance | undefined) => {
 }
 
 const handleExceed = async () => {
-  ruleForm.value.headImg = '';
+  ruleForm.value.headImg = "http://localhost:8089/public/img/load.gif";
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  const { data } = await http<string>('get', '/getRandHeadImg')
+  const { data } = await http<string>('get', '/overtApis/getRandHeadImg')
   ruleForm.value.headImg = "http://localhost:8089/public" + data;
 }
 const messagetxt = ref('limit 1 file, new file will cover the old file')
@@ -124,7 +124,8 @@ const submitUpload = () => {
     status-icon>
     <!-- 修改用户信息标签 -->
     <div class="headelement">
-      <el-avatar :size="100" :src="ruleForm.headImg" />
+      <el-avatar v-ImgLoading :size="100" :src="ruleForm.headImg">
+      </el-avatar>
       <div class="upload-demo">
         <div class="fileBtn">
           <div class="fileUpload">
@@ -181,6 +182,7 @@ const submitUpload = () => {
 
   :deep(textarea) {
     resize: none;
+    border: 2px solid transparent;
 
     &:focus {
       box-shadow: none;
@@ -263,7 +265,5 @@ const submitUpload = () => {
   .el-form-item--default .el-form-item__label {
     flex-direction: row-reverse;
   }
-
-
 }
 </style>

@@ -4,8 +4,9 @@ import { ref, } from 'vue'
 import Article from '@/views/article/Article.vue'
 import Comment from '@/views/comment/Comment.vue'
 import User from '@/views/user/User.vue'
+import { useStore } from '@/store/store'
 
-const loading = ref(false)
+const store = useStore()
 
 const currentView = ref('User')
 const components = {
@@ -20,11 +21,8 @@ const changeComponent = (componentName: string) => {
     localStorage.clear()
     return router.push('/login')
   }
-  loading.value = true
+  store.loading = true
   currentView.value = componentName
-  setTimeout(() => {
-    loading.value = false
-  }, 500)
 }
 </script>
 
@@ -35,9 +33,9 @@ const changeComponent = (componentName: string) => {
         <SetLeft @component-name="changeComponent" :currentView="currentView" />
       </Suspense>
     </div>
-    <div class="content" id="content" v-zyloading="loading">
+    <div class="content" id="content" v-zyloading="store.loading">
       <Suspense>
-        <component :is="components[currentView]" v-if="!loading" />
+        <component :is="components[currentView]"  />
       </Suspense>
     </div>
   </div>

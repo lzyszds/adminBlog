@@ -28,7 +28,6 @@ const instance = axios.create({
 
 // 响应拦截器
 instance.interceptors.response.use((response: AxiosResponse): any => {
-  console.log(`lzy  response:`, response)
   if (!getCookie('token_remderDay')) {
     // 如果没有名为 'token_remderDay' 的 Cookie，清空本地存储
     localStorage.clear()

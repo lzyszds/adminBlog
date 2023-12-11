@@ -21,7 +21,6 @@ const requirement = reactive<Requirement>({
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
-
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
 const formatter = () => {
   return 0;
@@ -77,6 +76,11 @@ const switchMod = async (arr: { flag: boolean, data: any, type: '修改' | '新�
   });
   await state.handleCurrentChange(requirement);
 };
+
+// watch(() => state.search, async (newVal) => {
+//   requirement.search = newVal
+//   await state.handleCurrentChange(requirement)
+// }, { deep: true })
 
 provide("setRightProps", {
   popup,

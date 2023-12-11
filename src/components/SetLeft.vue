@@ -406,5 +406,4 @@ infoData.value = data;
     transform: scale3d(1, 1, 1);
   }
 }
-
 </style>

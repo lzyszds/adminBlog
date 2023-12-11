@@ -2,7 +2,6 @@
 import Search from "@/components/Search.vue";
 import { useStore } from "@/store/store";
 import { Popup, Requirement } from "@/types/SetRightType";
-import { show } from "@/utils/loading";
 import { ElMessageBox, ElPagination } from "element-plus";
 import { h, computed, inject } from "vue";
 
@@ -39,7 +38,7 @@ const pageSum = computed(() => {
 //分页事件、切换页码时提供load效果
 const currentChange = async (event: number) => {
   requirement.currentPage = event;
-  show("#loadings");
+  state.formLoading = true; //开启load效果
   state.handleCurrentChange(requirement, event);
 };
 </script>
@@ -47,7 +46,8 @@ const currentChange = async (event: number) => {
 <template>
   <div class="mainTem">
     <Search />
-    <div class="tableuser" id="loadings">
+    <div style="width: 735px;" v-if="state.formLoading"></div>
+    <div class="tableuser" v-else>
       <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__backInRight"
         style="width: 100%">
         <template #empty>

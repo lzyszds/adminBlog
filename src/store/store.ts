@@ -1,13 +1,9 @@
 import { defineStore } from 'pinia'
 import http from "@/http/http";
-import { hide, show } from '@/utils/loading';
+import { tipNotify } from '@/utils/utils'
 import dayjs from 'dayjs';
 import { Requirement } from '@/types/SetRightType';
 
-interface YourDataType {
-  createTime: string; // 假设createTime是一个字符串类型属性，你可以根据实际情况调整类型
-  modified: string;
-}
 
 
 export const useStore = defineStore('main', {
@@ -17,6 +13,8 @@ export const useStore = defineStore('main', {
       search: '' as string,
       total: 0 as number,
       time: 0 as number,
+      loading: false as boolean,
+      formLoading: false as boolean,
     }
   },
   /**
@@ -50,15 +48,41 @@ export const useStore = defineStore('main', {
       requirement.currentPage = val ?? requirement.currentPage
       const pagePara = `${api}?pages=${requirement.currentPage}&limit=${pageSize}&search=${search}`
       const data = await http<T[]>('get', pagePara)
-      this.total = data.total!
+
       if (data.total == 0) {
-        // 数据清空
+        //如果 data.total 等于 0，那么 this.tableData 被设置为空数组，this.total 被设置为 data.total。
+        //这可能表示没有数据可用，所以清空表格数据并设置总数为0。
         this.tableData = []
-        return hide('#loadings')
+        this.total = data.total!
+      } else if (data.code == 500) {
+        //如果 data.code 等于 500，那么会调用 tipNotify 函数显示一个消息，持续时间为2000毫秒，
+        //然后 this.tableData 被设置为空数组。这可能表示服务器返回了一个错误，所以清空表格数据并显示一个提示。
+        tipNotify(data.msg!, 2000)
+        this.tableData = []
+      } else {
+        //否则，this.total 被设置为 data.total，this.tableData 被设置为 data.data。这可能表示数据加载成功，所以更新表格数据和总数。
+        this.total = data.total!
+        this.tableData = data.data
       }
-      this.tableData = data.data
-      if (document.querySelector('#loadings')) hide('#loadings')
+      //最后，调用 this.hideLoading() 和 this.hideformLoading() 方法，这两个方法将 loading 和 formLoading 状态设置为 false，可能表示数据加载完成，不再需要显示加载指示器。
+      this.hideLoading()
+      this.hideformLoading()
+    },
+    /**
+     * hideLoading 方法将 loading 状态设置为 false。
+     * 这通常表示应用已经完成了某个需要显示加载指示器的操作（例如数据的异步加载）。
+     */
+    hideLoading() {
+      this.loading = false
+    },
+    /**
+     * hideformLoading 方法将 formLoading 状态设置为 false。
+     * 这可能表示表单的提交或验证已经完成，不再需要显示表单的加载指示器。
+     */
+    hideformLoading() {
+      this.formLoading = false
     }
-  }
+  },
+
 })
 

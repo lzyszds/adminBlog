@@ -79,6 +79,12 @@ const switchMod = (boolean: boolean, message: string) => {
   state.handleCurrentChange(requirement)
 }
 
+// watch(() => state.search, async (newVal) => {
+//   requirement.search = newVal
+//   await state.handleCurrentChange(requirement)
+// }, { deep: true })
+
+
 provide("setRightProps", {
   popup,
   requirement
@@ -170,4 +176,8 @@ provide("setRightProps", {
 </template>
 <style lang="less" scoped>
 @import url('@/assets/css/headSearch.less');
+
+:deep(.el-dialog).articleDialog {
+  padding: 5rem;
+}
 </style>
