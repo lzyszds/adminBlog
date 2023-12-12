@@ -46,22 +46,12 @@ provide("setRightProps", {
     <template #table>
       <el-table-column prop="" label="头像" width="65">
         <template #default="{ row }">
-          <el-avatar :src="row.head_img" style="width: 40px; height: 40px"></el-avatar>
+          <el-avatar :src="'/api/public' + row.head_img" style="width: 40px; height: 40px"></el-avatar>
         </template>
       </el-table-column>
       <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
-      <el-table-column
-        prop="email"
-        label="邮箱"
-        width="180"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
-        prop="content"
-        label="评论内容"
-        width="220"
-        show-overflow-tooltip
-      ></el-table-column>
+      <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="content" label="评论内容" width="220" show-overflow-tooltip></el-table-column>
       <el-table-column prop="time" label="评论时间" width="150" show-overflow-tooltip>
         <template #default="{ row }">
           <span style="font-size: 12px !important">
@@ -78,28 +68,14 @@ provide("setRightProps", {
       <el-table-column fixed="right" label="Operations" width="140">
         <template #default="scope">
           <!-- 如果当前评论不为一级评论，不给予置顶功能 -->
-          <el-popconfirm
-            width="220"
-            confirm-button-text="OK"
-            cancel-button-text="No, Thanks"
-            icon-color="#626AEF"
-            title="Are you sure to delete this?"
-            @confirm="topCom(scope.row)"
-          >
+          <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" icon-color="#626AEF"
+            title="Are you sure to delete this?" @confirm="topCom(scope.row)">
             <template #reference>
-              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small"
-                >置顶</el-button
-              >
+              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small">置顶</el-button>
             </template>
           </el-popconfirm>
-          <el-popconfirm
-            width="220"
-            confirm-button-text="OK"
-            cancel-button-text="No, Thanks"
-            icon-color="#626AEF"
-            title="Are you sure to delete this?"
-            @confirm="_delete(scope.row)"
-          >
+          <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" icon-color="#626AEF"
+            title="Are you sure to delete this?" @confirm="_delete(scope.row)">
             <template #reference>
               <el-button type="danger" size="small">删除</el-button>
             </template>

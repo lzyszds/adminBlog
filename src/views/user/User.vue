@@ -24,7 +24,7 @@ await state.handleCurrentChange(requirement)
 
 //设置头像图片
 const setheadImg = (headImg: User['setHeadImg']) => {
-  return 'http://localhost:8089/public' + headImg
+  return '/api/public' + headImg
 }
 //查看密码
 const lookPwd = (val) => {

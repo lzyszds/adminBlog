@@ -5,13 +5,15 @@ import Article from '@/views/article/Article.vue'
 import Comment from '@/views/comment/Comment.vue'
 import User from '@/views/user/User.vue'
 import Category from '@/views/category/Category.vue'
+import System from '@/views/system/System.vue'
 
 import { useStore } from '@/store/store'
 
 const state = useStore()
 
-const currentView = ref('User')
+const currentView = ref('System')
 const components = {
+  System,
   Comment,
   Article,
   User,

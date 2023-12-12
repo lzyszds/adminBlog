@@ -18,8 +18,8 @@ const weather: NowWeatherData = JSON.parse(
 
 //获取请求天气的数据
 if (weather) {
-  datalist.value = weather.weatherData;
-  datalist.value!.region = weather.region;
+  datalist.value = weather.weatherData || {};
+  datalist.value.region = weather.region;
   cip.value = weather.ip;
 }
 
@@ -31,6 +31,11 @@ type Items = {
 
 //左侧菜单栏
 const items: Items = [
+  {
+    name: "欢迎使用",
+    uicon: '<i class="iconfont">&#xe608;</i>',
+    component: "System",
+  },
   {
     name: "用户管理",
     uicon: '<i class="iconfont">&#xe612;</i>',
