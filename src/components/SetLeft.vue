@@ -99,19 +99,21 @@ const changeComponent = async (index) => {
 
 //处理用户详情数据
 const infoData: any = ref();
-const data: any = [];
-const res = (await http("get", "/overtApis/getUserInfo")) as any; // httpData
+let data: any = [];
+const res = (await http("get", "/user/getUserInfoToken")) as any; // httpData
 hide();
-data.push(res.data);
+data = res.data
 //处理用户签名
-if (data[0].perSign) {
-  data.perSign = data[0].perSign.replace(",", "#,~").split("#,~");
-  data.perSign = data[0].perSign ? data.perSign : "这个人很懒，什么都没留下";
+if (data.signature) {
+  if (data.signature.indexOf(",") == -1) data.signature = data.signature.split("，");
+  else data.signature = data.signature ? data.signature.split(",") : "这个人很懒，什么都没留下";
+
 } else {
-  data.perSign = ["这个人很懒", "什么都没留下"];
+  data.signature = ["这个人很懒", "什么都没留下"];
 }
 
 infoData.value = data;
+console.log(`lzy  infoData.value:`, infoData.value)
 </script>
 
 <template>
@@ -119,11 +121,11 @@ infoData.value = data;
     <div class="logo">Lzyszds</div>
     <div class="userinfo">
       <div class="headPortrait">
-        <img :src="'/api/public' + infoData[0].headImg" alt="" />
+        <img :src="'/api/public' + infoData.head_img" alt="" />
       </div>
-      <h3>{{ infoData[0].uname }}</h3>
-      <p>「{{ infoData.perSign[0] }}」</p>
-      <p>{{ infoData.perSign[1] }}</p>
+      <h3>{{ infoData.uname }}</h3>
+      <p v-for="(item, index) in infoData.signature" :key="index">「{{ item }} 」</p>
+
       <!-- <p class="essCount">
         <lzyIcon :name="`icon-youxiang`" :fill="`#5161ce`"></lzyIcon>
         <span>17</span>
@@ -137,7 +139,7 @@ infoData.value = data;
       </div>
     </div>
     <div class="footer">
-      <div class="time">
+      <!-- <div class="time">
         <p class="weacher">
           <el-tooltip class="box-item" effect="lzy_dark"
             :content="`湿度：${datalist?.humidity}%RH 风向：${datalist?.windDirection} 降水量：${datalist?.rainfall}mm`"
@@ -151,11 +153,9 @@ infoData.value = data;
               </span>
             </span>
           </el-tooltip>
-
-          <!-- <span>湿度：{{ datalist?.humidity }}%RH</span> -->
         </p>
         <a :href="cip">IP: {{ cip }}</a>
-      </div>
+      </div> -->
       <div>
         <p>©2022 Lzyszds</p>
         <p>Powered by Ts + Vue3 + Vite + ElementPlus</p>

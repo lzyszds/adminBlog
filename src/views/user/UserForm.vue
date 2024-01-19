@@ -14,29 +14,29 @@ const ruleForm: any = ref()
 //修改
 if (props.type == 'modify') {
   ruleForm.value = {
-    headImg: 'http://localhost:8089/public' + props.data?.headImg,
-    name: props.data?.uname,
+    head_img: props.data?.head_img,
+    uname: props.data?.uname,
     username: props.data?.username,
     password: props.data?.password,
     power: props.data?.power,
-    date: props.data?.createDate,
+    create_date: props.data?.create_date,
     uid: props.data?.uid,
-    perSign: props.data?.perSign,
+    signature: props.data?.signature,
   }
 } else {
   //新增
   ruleForm.value = {
-    headImg: 'http://localhost:8089/public/img/updateImg/put7.webp',
-    name: '',
+    head_img: '',
+    uname: '',
     username: '',
     password: '',
-    power: 'user',
-    date: Date.now(),
-    perSign: '什么都不留吗?'
+    power: 1,
+    create_date: Date.now(),
+    signature: '什么都不留吗?'
   }
 }
 const rules = reactive<FormRules>({
-  name: [
+  uname: [
     { required: true, message: '名称不能为空,请输入名称', trigger: 'blur' },
     { min: 3, max: 16, message: '名称要求不符合(3-16位)', trigger: 'blur' },
   ],
@@ -52,11 +52,11 @@ const rules = reactive<FormRules>({
 
 const operateUser = async () => {
   const isAdd = props.type == 'add'
-  if (isAdd) {
-    ruleForm.value.headImg = ruleForm.value.headImg.replace('http://localhost:8089/public', '');
-  }
+  // if (isAdd) {
+  //   ruleForm.value.head_img = ruleForm.value.head_img;
+  // }
   try {
-    await http('post', isAdd ? '/privateApis/addUserLzy' : '/privateApis/updateUserLzy', ruleForm.value)
+    await http('post', isAdd ? '/user/addUser' : '/user/updateUser', ruleForm.value)
     emit('switchMod', false, isAdd ? '用户添加成功' : '用户修改成功')
   } catch (e) {
     emit('switchMod', false, isAdd ? '用户添加失败' : '用户修改失败')
@@ -80,12 +80,19 @@ const resetForm = (formInstance: FormInstance | undefined) => {
   formInstance.resetFields()
 }
 
+var timer
 const handleExceed = async () => {
-  ruleForm.value.headImg = "http://localhost:8089/public/img/load.gif";
+  timer = true;
+  ruleForm.value.head_img = "/img/load.gif";
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  const { data } = await http<string>('get', '/overtApis/getRandHeadImg')
-  ruleForm.value.headImg = "http://localhost:8089/public" + data;
+  const { data } = await http<string>('get', '/user/getRandHeadImg')
+  ruleForm.value.head_img = data;
+  setTimeout(() => {
+    timer = false;
+  }, 50)
 }
+await handleExceed()
+
 const messagetxt = ref('limit 1 file, new file will cover the old file')
 const upClick = () => {
   const file = document.getElementById('xFile') as HTMLInputElement
@@ -101,16 +108,16 @@ const submitUpload = () => {
     //e代表事件,可以通过e.target获取FileReader对象然后在获取readAsDataURL读取的base64字符
     //下面是将blob转换为file 用于上传
     let formData = new FormData();
-    formData.append('headImg', xFile.files[0]);
+    formData.append('head_img', xFile.files[0]);
     let headers = {
       'Content-Type': 'multipart/form-data',
     }
     //给后台上传头像图片，并获取后台返回新的图片地址
-    const res = await http('post', '/privateApis/uploadHead', formData, headers)
+    const res = await http('post', '/user/uploadHead', formData, headers)
     if (res.code === 200) {
       // const objectURL = URL.createObjectURL(blob);
-      ruleForm.value.headImg = res.data;//显示的头像blob转化为可图片显示的src
-      // ruleForm.value.setHeadImg = res.message; //放入数据库中的图片路径
+      ruleForm.value.head_img = res.data;//显示的头像blob转化为可图片显示的src
+      // ruleForm.value.sethead_img = res.message; //放入数据库中的图片路径
       messagetxt.value = 'limit 1 file, new file will cover the old file'
     } else {
       messagetxt.value = res.msg!
@@ -124,7 +131,7 @@ const submitUpload = () => {
     status-icon>
     <!-- 修改用户信息标签 -->
     <div class="headelement">
-      <el-avatar v-ImgLoading :size="100" :src="ruleForm.headImg">
+      <el-avatar v-ImgLoading :size="100" :src="'/api/public' + ruleForm.head_img">
       </el-avatar>
       <div class="upload-demo">
         <div class="fileBtn">
@@ -133,7 +140,7 @@ const submitUpload = () => {
               <el-button type="primary" @click="upClick">上传本地</el-button>
             </label>
             <form action="" method="post">
-              <input class="fileInput" name="headImg" type="file" @change="submitUpload" id="xFile" />
+              <input class="fileInput" name="head_img" type="file" @change="submitUpload" id="xFile" />
             </form>
 
           </div>
@@ -144,8 +151,8 @@ const submitUpload = () => {
         </div>
       </div>
     </div>
-    <el-form-item label="Name(名称)" prop="name">
-      <el-input v-model="ruleForm.name" />
+    <el-form-item label="Name(名称)" prop="uname">
+      <el-input v-model="ruleForm.uname" />
     </el-form-item>
     <el-form-item label="UserName(账号)" prop="username">
       <el-input v-model="ruleForm.username" />
@@ -155,15 +162,15 @@ const submitUpload = () => {
     </el-form-item>
     <el-form-item label="power(权限)" prop="power">
       <el-select style="width: 100%;" v-model="ruleForm.power" placeholder="Activity power">
-        <el-option label="admin" value="admin" />
-        <el-option label="user" value="user" />
+        <el-option label="admin" :value="0" />
+        <el-option label="user" :value="1" />
       </el-select>
     </el-form-item>
     <el-form-item label="create(创建)" prop="date">
-      <el-date-picker style="width: 100%;" v-model="ruleForm.date" type="date" placeholder="Pick a day" disabled />
+      <el-date-picker style="width: 100%;" v-model="ruleForm.create_date" type="date" placeholder="Pick a day" disabled />
     </el-form-item>
     <el-form-item class="pertextarea" style="flex-direction: column;" prop="delivery">
-      <el-input v-model="ruleForm.perSign" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" />
+      <el-input v-model="ruleForm.signature" :autosize="{ minRows: 4, maxRows: 4 }" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button class="card-button" type="primary" @click="submitForm(ruleFormRef)">Create</el-button>

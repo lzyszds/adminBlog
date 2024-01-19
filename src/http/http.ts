@@ -13,7 +13,10 @@ import router from '@/router/index'; // 导入你的路由实例
 
 export interface HttpResonse<T> {
   code: number
-  data: T,
+  data: {
+    data: T[]
+    total: number
+  } | T[],
   msg?: string,
   total?: number,
   message?: string,

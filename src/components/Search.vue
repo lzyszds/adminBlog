@@ -1,13 +1,22 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import { useStore } from '@/store/store'
+import { Popup, Requirement } from "@/types/SetRightType";
 const state = useStore()
 //搜索框内容
 const searchInput = ref<string>('')
+interface Props {
+  popup?: Popup;
+  requirement: Requirement;
+}
+const { popup, requirement } = inject("setRightProps") as Props;
+
 
 const search = () => {
-  state.total = 6
-  state.setSearch(searchInput.value)
+  state.total = 0
+  requirement.search = searchInput.value
+  state.handleCurrentChange(requirement)
+  
 }
 </script>
 

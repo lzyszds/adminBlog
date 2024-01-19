@@ -56,7 +56,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.validate(async (valid, fields) => {
       if (valid) {
-        const res = (await http("post", "/privateApis/login", ruleForm)) as getLoginData;
+        const res = (await http("post", "/user/login", ruleForm)) as getLoginData;
         setTimeout(() => {
           if (res.error === 0 || res.code === 200) {
             show();

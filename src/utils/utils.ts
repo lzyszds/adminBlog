@@ -42,7 +42,7 @@ export function getIpWeather() {
     'X-User-Token': 'iwKIaV2WP/9pLVldKr7qSFoeqAvBCO/n'
   }
   return new Promise((resolve, reject) => {
-    http('get', '/proxyApis/jinrishici/info', headers).then((res: any) => {
+    http('get', '/common/jinrishici/info', headers).then((res: any) => {
       console.log(`lzy  res:`, res)
       if (res.status = 'success') {
         resolve(res.data)

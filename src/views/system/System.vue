@@ -3,140 +3,243 @@ import { useStore } from '@/store/store'
 import http from '@/http/http'
 import dayjs from 'dayjs';
 import SortTab from '@/components/SortTab.vue'
+const loading = ref(true)
 
 const state = useStore()
-setTimeout(() => {
-  state.loading = false
-}, 500)
-const { hotList, news, articleType } = (await http("get", "/overtApis/getAdminHomeData")) as any; // httpData
+const data: any = ref({})
+http("get", "/overtApis/getAdminHomeData").then(res => {
+  data.value = res
+  loading.value = false
+  // state.loading = false
+})
 const classNames = ["one", "two", "three", "four", "five", "six"]
 
 </script>
 
 <template>
-  <section class="section">
-    <div class="left-content">
-      <div class="activities">
-        <h1>热门内容</h1>
-        <div class="activity-container">
-          <div v-for="(item, index) in hotList" :key="index" class="image-container" :class="'img-' + classNames[index]">
-            <img :src="'/api/public' + item.coverImg" :alt="item.title" />
-            <div class="overlay">
-              <h3>{{ item.title }}</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="left-bottom">
-        <div class="weekly-schedule">
-          <h1>最新内容</h1>
-          <div class="calendar">
-            <div v-for="(item, index) in news" :key="index" class="day-and-activity"
-              :class="'activity-' + classNames[index]">
-              <div class="day">
-                <h1>{{ dayjs(item.createTime * 1000).format('MM/DD') }}</h1>
-                <p>{{ dayjs(item.createTime * 1000).format('YYYY') }}</p>
-              </div>
-              <div class="activity">
-                <h2>{{ item.title }}</h2>
-                <div class="participants">
-
+  <el-space direction="vertical" alignment="flex-start" class="" style="width: 100%;">
+    <el-skeleton :loading="loading" animated>
+      <template #template>
+        <section class="section">
+          <div class="left-content">
+            <div class="activities">
+              <h1>热门内容</h1>
+              <div class="activity-container">
+                <div v-for="(item, index) in [1, 2, 3, 4, 5, 6]" :key="index" class="image-container"
+                  :class="'img-' + classNames[index]">
+                  <el-skeleton-item variant="image" style="height: 100%;" />
+                  <div class="overlay">
+                    <h3><el-skeleton-item variant="text" s /></h3>
+                  </div>
                 </div>
               </div>
-              <button class="btn">查看</button>
+            </div>
+
+            <div class="left-bottom">
+              <div class="weekly-schedule">
+                <h1>最新内容</h1>
+                <div class="calendar">
+                  <el-skeleton-item variant="text" class="day-and-activity" v-for="(item, index) in data.news"
+                    :key="index" style="width: 550px;height:54px" />
+                </div>
+              </div>
+              <div class="personal-bests">
+                <h1>系统详情</h1>
+                <el-skeleton-item variant="image" style="width: 400px;height:350px;border-radius: 15px;" />
+                <div class="overlay" style="align-items:center">
+                  <el-skeleton-item variant="text" style="margin-bottom: 10px;width:90%;" />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="personal-bests">
-          <h1>系统详情</h1>
-          <SortTab :articleType="articleType"></SortTab>
-        </div>
-      </div>
-    </div>
+          <div class=" right-content">
+            <div class="user-info">
+              <div class="icon-container">
+                <lzyicon height="25px" name="material-symbols:circle-notifications-outline" />
+                <lzyicon height="25px" name="material-symbols:notification-multiple-outline" />
+              </div>
+              <h4>欢迎访问</h4>
+              <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
+            </div>
 
-    <div class="right-content">
-      <div class="user-info">
-        <div class="icon-container">
-          <lzyicon height="25px" name="material-symbols:circle-notifications-outline" />
-          <lzyicon height="25px" name="material-symbols:notification-multiple-outline" />
-        </div>
-        <h4>欢迎访问</h4>
-        <img src="/api/public/img/heard.jpg" alt="user" />
-      </div>
+            <div class="active-calories">
+              <div class="active-calories-container">
+                <div class="box" style="--i: 85%">
+                  <div class="circle">
+                    <h2>85<small>%</small></h2>
+                  </div>
+                </div>
+                <div class="calories-content">
+                  <p><span>今日:</span> 400</p>
+                  <p><span>本周:</span> 3500</p>
+                  <p><span>本月:</span> 14000</p>
+                </div>
+              </div>
+            </div>
 
-      <div class="active-calories">
-        <div class="active-calories-container">
-          <div class="box" style="--i: 85%">
-            <div class="circle">
-              <h2>85<small>%</small></h2>
+
+            <div class="friends-activity">
+              <h1>最新评论</h1>
+              <div class="card-container">
+                <div class="card">
+                  <div class="card-user-info">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9290037d-a5b2-4f50-aea3-9f3f2b53b441"
+                      alt="" />
+                    <h2>Jane</h2>
+                  </div>
+                  <img class="card-img"
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/bef54506-ea45-4e42-a1b6-23a48f61c5e8"
+                    alt="" />
+                  <p>We completed the 30-Day Running Streak Challenge!🏃‍♀️🎉</p>
+                </div>
+
+                <div class="card card-two">
+                  <div class="card-user-info">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/42616ef2-ba96-49c7-80ea-c3cf1e2ecc89"
+                      alt="" />
+                    <h2>Mike</h2>
+                  </div>
+                  <img class="card-img"
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/2dcc1b94-06c5-4c62-b886-53b9e433fd44"
+                    alt="" />
+                  <p>I just set a new record in cycling: 30 miles!💪</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="calories-content">
-            <p><span>今日:</span> 400</p>
-            <p><span>本周:</span> 3500</p>
-            <p><span>本月:</span> 14000</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="mobile-personal-bests">
-        <h1>系统详情</h1>
-        <div class="personal-bests-container">
-          <div class="best-item box-one">
-            <p>Fastest 5K Run: 22min</p>
-            <img
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/05dfc444-9ed3-44cc-96af-a9cf195f5820"
-              alt="" />
-          </div>
-          <div class="best-item box-two">
-            <p>Longest Distance Cycling: 4 miles</p>
-            <img
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9ca170e9-1252-4fa6-8677-36493540c1f2"
-              alt="" />
-          </div>
-          <div class="best-item box-three">
-            <p>Longest Roller-Skating: 2 hours</p>
-            <img
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/262d1611-ed4c-4297-981c-480cf7f95714"
-              alt="" />
-          </div>
-        </div>
-      </div>
-
-      <div class="friends-activity">
-        <h1>最新评论</h1>
-        <div class="card-container">
-          <div class="card">
-            <div class="card-user-info">
-              <img
-                src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9290037d-a5b2-4f50-aea3-9f3f2b53b441"
-                alt="" />
-              <h2>Jane</h2>
+        </section>
+      </template>
+      <template #default>
+        <section class="section">
+          <div class="left-content">
+            <div class="activities">
+              <h1>热门内容</h1>
+              <div class="activity-container">
+                <div v-for="(item, index) in data.hotList" :key="index" class="image-container"
+                  :class="'img-' + classNames[index]">
+                  <img :src="'/api/public' + item.coverImg" :alt="item.title" />
+                  <div class="overlay">
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                </div>
+              </div>
             </div>
-            <img class="card-img"
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/bef54506-ea45-4e42-a1b6-23a48f61c5e8"
-              alt="" />
-            <p>We completed the 30-Day Running Streak Challenge!🏃‍♀️🎉</p>
+
+            <div class="left-bottom">
+              <div class="weekly-schedule">
+                <h1>最新内容</h1>
+                <div class="calendar">
+                  <div v-for="(item, index) in data.news" :key="index" class="day-and-activity"
+                    :class="'activity-' + classNames[index]">
+                    <div class="day">
+                      <h1>{{ dayjs(item.createTime * 1000).format('MM/DD') }}</h1>
+                      <p>{{ dayjs(item.createTime * 1000).format('YYYY') }}</p>
+                    </div>
+                    <div class="activity">
+                      <h2>{{ item.title }}</h2>
+                      <div class="participants">
+
+                      </div>
+                    </div>
+                    <button class="btn">查看</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="personal-bests">
+                <h1>系统详情</h1>
+                <SortTab :articleType="data.articleType"></SortTab>
+              </div>
+            </div>
           </div>
 
-          <div class="card card-two">
-            <div class="card-user-info">
-              <img
-                src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/42616ef2-ba96-49c7-80ea-c3cf1e2ecc89"
-                alt="" />
-              <h2>Mike</h2>
+          <div class="right-content">
+            <div class="user-info">
+              <div class="icon-container">
+                <lzyicon height="25px" name="material-symbols:circle-notifications-outline" />
+                <lzyicon height="25px" name="material-symbols:notification-multiple-outline" />
+              </div>
+              <h4>欢迎访问</h4>
+              <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
             </div>
-            <img class="card-img"
-              src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/2dcc1b94-06c5-4c62-b886-53b9e433fd44"
-              alt="" />
-            <p>I just set a new record in cycling: 30 miles!💪</p>
+
+            <div class="active-calories">
+              <div class="active-calories-container">
+                <div class="box" style="--i: 85%">
+                  <div class="circle">
+                    <h2>85<small>%</small></h2>
+                  </div>
+                </div>
+                <div class="calories-content">
+                  <p><span>今日:</span> 400</p>
+                  <p><span>本周:</span> 3500</p>
+                  <p><span>本月:</span> 14000</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-personal-bests">
+              <h1>系统详情</h1>
+              <div class="personal-bests-container">
+                <div class="best-item box-one">
+                  <p>Fastest 5K Run: 22min</p>
+                  <img
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/05dfc444-9ed3-44cc-96af-a9cf195f5820"
+                    alt="" />
+                </div>
+                <div class="best-item box-two">
+                  <p>Longest Distance Cycling: 4 miles</p>
+                  <img
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9ca170e9-1252-4fa6-8677-36493540c1f2"
+                    alt="" />
+                </div>
+                <div class="best-item box-three">
+                  <p>Longest Roller-Skating: 2 hours</p>
+                  <img
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/262d1611-ed4c-4297-981c-480cf7f95714"
+                    alt="" />
+                </div>
+              </div>
+            </div>
+
+            <div class="friends-activity">
+              <h1>最新评论</h1>
+              <div class="card-container">
+                <div class="card">
+                  <div class="card-user-info">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9290037d-a5b2-4f50-aea3-9f3f2b53b441"
+                      alt="" />
+                    <h2>Jane</h2>
+                  </div>
+                  <img class="card-img"
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/bef54506-ea45-4e42-a1b6-23a48f61c5e8"
+                    alt="" />
+                  <p>We completed the 30-Day Running Streak Challenge!🏃‍♀️🎉</p>
+                </div>
+
+                <div class="card card-two">
+                  <div class="card-user-info">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/42616ef2-ba96-49c7-80ea-c3cf1e2ecc89"
+                      alt="" />
+                    <h2>Mike</h2>
+                  </div>
+                  <img class="card-img"
+                    src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/2dcc1b94-06c5-4c62-b886-53b9e433fd44"
+                    alt="" />
+                  <p>I just set a new record in cycling: 30 miles!💪</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        </section>
+      </template>
+    </el-skeleton>
+  </el-space>
 </template>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap");
@@ -159,7 +262,8 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 .section {
   display: grid;
   grid-template-columns: 75% 25%;
-  height: 100%
+  height: 100%;
+  width: 100%;
 }
 
 /* LEFT CONTENT */
@@ -427,6 +531,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 /* PERSONAL BESTS */
 
 .personal-bests {
+  position: relative;
   display: block;
 }
 
@@ -434,6 +539,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   margin-top: 20px;
   font-size: 1.3rem;
   font-weight: 700;
+  margin-bottom: 10px;
 }
 
 
@@ -679,6 +785,16 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 .card p {
   font-size: 0.9rem;
   padding: 0 5px 5px;
+}
+
+.el-space {
+  width: 100%;
+  height: 100%;
+
+  & :deep(.el-space__item) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 @media (max-width: 1500px) {

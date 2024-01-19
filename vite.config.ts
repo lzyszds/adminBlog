@@ -54,7 +54,8 @@ export default defineConfig(({ command, mode }): any => {
       port: 8088,
       proxy: {
         "/api": {
-          target: _baseUrl + ':8089',//这里是域名，不是完整地址
+          // target: _baseUrl + ':8089',//这里是域名，不是完整地址
+          target: _baseUrl + ':1020',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域
           rewrite: path => path.replace(/^\/api/, '')
         },

@@ -15,7 +15,7 @@ const state = useStore();
 //页面配置
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
-  currentPage: 1, //当前页数
+  pages: 1, //当前页数
   limit: 7, //每页显示条数
   api: "/overtApis/articleList",
 });

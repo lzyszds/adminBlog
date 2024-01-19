@@ -10,14 +10,13 @@ import UserForm from '@/views/user/UserForm.vue'
 
 import { useStore } from '@/store/store';
 import { Popup, Requirement } from '@/types/SetRightType';
-import { tipNotify } from 'lzyutils';
 const state = useStore()
 //页面配置
 const requirement = reactive<Requirement>({
   search: '', //搜索内容
-  currentPage: 1, //当前页数
+  pages: 1, //当前页数
   limit: 11, //每页显示条数
-  api: '/overtApis/getUserList'
+  api: '/user/getUserList'
 })
 //自动加载数据
 await state.handleCurrentChange(requirement)
@@ -25,10 +24,6 @@ await state.handleCurrentChange(requirement)
 //设置头像图片
 const setheadImg = (headImg: User['setHeadImg']) => {
   return '/api/public' + headImg
-}
-//查看密码
-const lookPwd = (val) => {
-  tipNotify("密码：" + val)
 }
 
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
@@ -46,7 +41,7 @@ const modifyThe = (event: User) => {
 
 //删除用户
 const _delete = async (event) => {
-  const res = await http('post', '/privateApis/deleteUserLzy', { id: event.uid })
+  const res = await http('post', '/user/deleteUserLzy', { id: event.uid })
   ElNotification({
     title: res.code == 200 ? '成功' : '失败',
     message: '用户' + res.msg,
@@ -84,6 +79,10 @@ const switchMod = (boolean: boolean, message: string) => {
 //   await state.handleCurrentChange(requirement)
 // }, { deep: true })
 
+function formatDate(date) {
+  return date ? dayjs(date).format('YYYY-MM-DD') : ''
+}
+
 
 provide("setRightProps", {
   popup,
@@ -99,7 +98,7 @@ provide("setRightProps", {
       <el-table-column label="头像" width="70">
         <template #default="{ row }">
           <div class="headImg">
-            <el-avatar :src="setheadImg(row.headImg)" alt=""></el-avatar>
+            <el-avatar :src="setheadImg(row.head_img)" alt=""></el-avatar>
           </div>
         </template>
       </el-table-column>
@@ -109,18 +108,10 @@ provide("setRightProps", {
         </template>
       </el-table-column>
       <el-table-column property="username" label="登陆账号" min-width="180" />
-      <el-table-column label="密码" width="70" align="center" show-overflow-tooltip>
-        <template #default="{ row }">
-          <div class="password">
-            <lzyicon name="heroicons-solid:shield-check" @click="lookPwd(row.password)">
-            </lzyicon>
-          </div>
-        </template>
-      </el-table-column>
       <el-table-column label="权限" width="100px" align="center">
         <template #default="{ row }">
           <div class="power">
-            <span v-if="row.power === 'admin'" class="powerAdmin">管理员</span>
+            <span v-if="row.power === 0" class="powerAdmin">管理员</span>
             <span v-else>普通用户</span>
           </div>
         </template>
@@ -138,7 +129,7 @@ provide("setRightProps", {
         <template #default="{ row }">
           <div class="svgTem">
             <lzyicon name="memory:calendar-month"></lzyicon>
-            <span> {{ dayjs(row.createDate).format('YYYY-MM-DD') }}</span>
+            <span> {{ formatDate(row.create_date) }}</span>
           </div>
         </template>
       </el-table-column>
@@ -146,7 +137,15 @@ provide("setRightProps", {
         <template #default="{ row }">
           <div class="svgTem">
             <lzyicon name="memory:calendar-month"></lzyicon>
-            <span>{{ dayjs(row.lastLoginDate).format('YYYY-MM-DD') }}</span>
+            <span>{{ formatDate(row.last_login_date) }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="注册时的IP" sortable :sort-method="formatter" width="160">
+        <template #default="{ row }">
+          <div class="svgTem">
+            <lzyicon name="memory:calendar-month"></lzyicon>
+            <span>{{ row.create_ip == '::1' ? "127.0.0.1" : row.create_ip }}</span>
           </div>
         </template>
       </el-table-column>

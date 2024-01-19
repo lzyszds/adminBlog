@@ -13,7 +13,7 @@ export interface Popup {
 
 export interface Requirement {
   search: string,
-  currentPage: number,
+  pages: number,
   limit: number,
   api: string
 }

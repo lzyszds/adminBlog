@@ -12,6 +12,7 @@ interface Props {
 const state = useStore();
 const { popup, requirement } = inject("setRightProps") as Props;
 
+
 //开启表单时点击空白地方 关闭form表单时的提示
 const handleClose = (done: () => void) => {
   ElMessageBox({
@@ -42,16 +43,20 @@ const pageSum = computed(() => {
 //   state.formLoading = true; //开启load效果
 //   state.handleCurrentChange(requirement, event);
 // };
-watch(() => requirement.currentPage, async (event) => {
+watch(() => requirement.pages, async (event) => {
   state.formLoading = true; //开启load效果
   state.handleCurrentChange(requirement, event);
 }, { deep: true })
+
+provide("requirement", {
+  requirement
+})
 </script>
 
 <template>
   <div class="mainTem">
     <div class="topTool">
-      <Search />
+      <Search :requirement="requirement" />
       <el-button v-if="popup" class="add" type="primary" @click="addToPop">{{ popup!.addName }}</el-button>
     </div>
     <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
@@ -72,7 +77,7 @@ watch(() => requirement.currentPage, async (event) => {
         <div class="example-demonstration">
           When you have more than {{ pageSum }} pages of data, use a pagination.
         </div>
-        <el-pagination small v-model:current-page="requirement.currentPage" background :page-count="state.total"
+        <el-pagination small v-model:current-page="requirement.pages" background :page-count="state.total"
           layout="prev, pager, next, jumper" />
       </div>
     </div>

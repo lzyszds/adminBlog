@@ -5,11 +5,11 @@ export interface User {
   username: string,
   password: string,
   power: string,
-  createDate: string,
-  lastLoginDate: string,
-  headImg: string,
-  setHeadImg: string,
+  create_date: string,
+  last_login_date: string,
+  head_img: string,
+  setHeadImg?: string,
   date?: any,
-  perSign: string,
+  signature: string,
 }
 
