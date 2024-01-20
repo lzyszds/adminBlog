@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
-import { FormInstance, FormRules } from 'element-plus'
+import { ElNotification, FormInstance, FormRules } from 'element-plus'
 import http from '@/http/http';
 const emit = defineEmits(['switchMod'])
 const props = defineProps({
@@ -10,6 +10,8 @@ const props = defineProps({
 // const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
+const backupsData = { ...props.data }
+
 const ruleForm: any = ref()
 //修改
 if (props.type == 'modify') {
@@ -17,7 +19,7 @@ if (props.type == 'modify') {
     head_img: props.data?.head_img,
     uname: props.data?.uname,
     username: props.data?.username,
-    password: props.data?.password,
+    password: "",
     power: props.data?.power,
     create_date: props.data?.create_date,
     uid: props.data?.uid,
@@ -52,14 +54,41 @@ const rules = reactive<FormRules>({
 
 const operateUser = async () => {
   const isAdd = props.type == 'add'
-  // if (isAdd) {
-  //   ruleForm.value.head_img = ruleForm.value.head_img;
-  // }
+  //找出修改的数据 与原数据对比
+  const diffData = Object.keys(ruleForm.value).reduce((diff, key) => {
+    if (key == 'uid') {
+      diff[key] = ruleForm.value[key]
+    } else if (ruleForm.value[key] !== backupsData[key]) {
+      if (key == 'password' && ruleForm.value[key] == '') return diff
+      diff[key] = ruleForm.value[key]
+    }
+    return diff
+  }, {})
+
   try {
-    await http('post', isAdd ? '/user/addUser' : '/user/updateUser', ruleForm.value)
-    emit('switchMod', false, isAdd ? '用户添加成功' : '用户修改成功')
+    const res = await http('post', isAdd ? '/user/addUser' : '/user/updateUser', diffData)
+    if (res.code === 200) {
+      ElNotification({
+        title: '成功',
+        message: isAdd ? '用户添加成功' : '用户修改成功',
+        type: 'success',
+      })
+      emit('switchMod', false, isAdd)
+    } else {
+      ElNotification({
+        title: '失败',
+        message: isAdd ? '用户添加失败' : '用户修改失败',
+        type: 'error',
+      })
+      emit('switchMod', true, isAdd)
+    }
   } catch (e) {
-    emit('switchMod', false, isAdd ? '用户添加失败' : '用户修改失败')
+    ElNotification({
+      title: '失败',
+      message: isAdd ? '用户添加失败' : '用户修改失败',
+      type: 'error',
+    })
+    emit('switchMod', true, isAdd)
   }
 }
 
@@ -91,7 +120,7 @@ const handleExceed = async () => {
     timer = false;
   }, 50)
 }
-await handleExceed()
+if (props.type == 'add') await handleExceed()
 
 const messagetxt = ref('limit 1 file, new file will cover the old file')
 const upClick = () => {
@@ -157,8 +186,8 @@ const submitUpload = () => {
     <el-form-item label="UserName(账号)" prop="username">
       <el-input v-model="ruleForm.username" />
     </el-form-item>
-    <el-form-item label="PassWord(密码)" prop="password">
-      <el-input v-model="ruleForm.password" type="password" show-password />
+    <el-form-item label="PassWord(密码)" :prop="props.type == 'add' ? 'password' : ''">
+      <el-input v-model="ruleForm.password" type="password" show-password placeholder="不填就是不修改密码" />
     </el-form-item>
     <el-form-item label="power(权限)" prop="power">
       <el-select style="width: 100%;" v-model="ruleForm.power" placeholder="Activity power">

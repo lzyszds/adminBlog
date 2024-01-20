@@ -61,8 +61,8 @@ provide("requirement", {
     </div>
     <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
     <div class="tableuser">
-      <el-table class="tableuser" v-zyloading="state.formLoading" :data="state.tableData"
-        row-class-name="animate__duration animate__bounceInUp" style="width: 100%">
+      <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__bounceInUp"
+        style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />

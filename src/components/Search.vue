@@ -6,17 +6,18 @@ const state = useStore()
 //搜索框内容
 const searchInput = ref<string>('')
 interface Props {
-  popup?: Popup;
   requirement: Requirement;
 }
-const { popup, requirement } = inject("setRightProps") as Props;
+const { requirement } = inject("setRightProps") as Props;
 
-
+let timer
 const search = () => {
-  state.total = 0
-  requirement.search = searchInput.value
-  state.handleCurrentChange(requirement)
-  
+  timer && clearTimeout(timer)
+  timer = setTimeout(() => {
+    state.total = 0
+    requirement.search = searchInput.value
+    state.handleCurrentChange(requirement)
+  }, 500)
 }
 </script>
 

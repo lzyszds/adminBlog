@@ -102,7 +102,7 @@ export function compressPic(file, quality) {
 }
 
 // 默认弹窗
-export const LNotification = (val: string, time: number = 2000, postion: any = 'bottom-right') => {
+export const LNotification = (val: string, time: number = 2000, postion: any = 'bottom-right', type: "success" | "warning" | "error" | "info" = "success") => {
   ElNotification.closeAll()
   ElNotification({
     dangerouslyUseHTMLString: true,
@@ -110,6 +110,7 @@ export const LNotification = (val: string, time: number = 2000, postion: any = '
     position: postion,
     duration: time,
     customClass: 'copy-success',
+    type: type
   })
 }
 
