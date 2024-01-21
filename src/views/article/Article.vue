@@ -17,7 +17,7 @@ const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
   limit: 7, //每页显示条数
-  api: "/overtApis/articleList",
+  api: "/article/getArticleList",
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
