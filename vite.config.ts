@@ -59,20 +59,10 @@ export default defineConfig(({ command, mode }): any => {
           changeOrigin: true,//是否跨域
           rewrite: path => path.replace(/^\/api/, '')
         },
-        '/adminGetApi': {
-          target: _baseUrl + ':8089/overtApis/',//这里是域名，不是完整地址
+        "/adminPublic": {
+          target: _baseUrl + ':1020/public',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域
-          rewrite: path => path.replace(/^\/adminGetApi/, '')
-        },
-        '/adminPostApi': {
-          target: _baseUrl + ':8089/privateApis/',//这里是域名，不是完整地址
-          changeOrigin: true,//是否跨域
-          rewrite: path => path.replace(/^\/adminPostApi/, '')
-        },
-        '/adminStatic': {
-          target: _baseUrl + ':8089/public',//这里是域名，不是完整地址
-          changeOrigin: true,//是否跨域
-          rewrite: path => path.replace(/^\/adminStatic/, '')
+          rewrite: path => path.replace(/^\/adminPublic/, '')
         },
         '/getIp': {
           target: 'https://v2.jinrishici.com',//这里是域名，不是完整地址

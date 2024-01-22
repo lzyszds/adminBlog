@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dayjs, ElMessageBox } from "element-plus";
+import { dayjs, ElMessageBox, ElNotification } from "element-plus";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { compressPic } from "@/utils/utils";
@@ -17,7 +17,7 @@ if (articledata.value.title) {
     information.text = articledata.value.content;
     information.title = articledata.value.title;
     information.cover = articledata.value.coverImg;
-    tagData.value = articledata.value.wtype.split(",");
+    // tagData.value = articledata.value.wtype.split(",");
   }).catch(() => {
     localStorage.removeItem("articledata");
   })
@@ -33,14 +33,14 @@ const information = reactive<InformationTypes>({
   text: props.data?.content,
   html: props.data?.main,
   title: props.data?.title || "",
-  cover: props.data?.coverImg
-    ? "http://localhost:8089/public" + props.data?.coverImg
-    : "/adminGetApi/getRandArticleImg",
+  cover: props.data?.cover_img
+    ? "/adminPublic" + props.data?.cover_img
+    : "/api/article/getRandArticleImg",
 });
 //确认提交
 const submitForm = () => {
   const isModify = props.type === "modify"
-  const url = isModify ? "/privateApis/updateArticle" : "/privateApis/addArticle";
+  const url = isModify ? "/article/updateArticle" : "/article/addArticle";
   //当前是否保存
   if (
     information.storage.text === information.text ||
@@ -98,7 +98,7 @@ const handleUploadImage = (event, insertImage, files) => {
       "Content-Type": "multipart/form-data",
     };
     // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    const res = await http<string>("post", "/privateApis/uploadArticleImg", formData, headers);
+    const res = await http<string>("post", "/article/uploadArticleImg", formData, headers);
     if (res.code === 200) {
       insertImage({
         url: "" + res.data,
@@ -114,26 +114,23 @@ const clicks = (text, html) => {
 };
 
 function setData(): ArticledataType {
-  console.log(`lzy  information.storage:`, information.storage)
   const isModify = props.type === "modify";
   return {
     author: "lzy",
     title: information.title,
     //文章开头第一段话
-    coverContent: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
+    partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
     content: information.storage.text,
     main: information.storage.html,
-    coverImg: (information.cover || props.data?.coverImg)?.replace(
-      "http://localhost:8089/public",
+    coverImg: (information.cover || props.data?.cover_img)?.replace(
+      "/adminPublic",
       ""
     )!,
     aid: isModify ? props.data?.aid! : null,
     modified: dayjs().unix(),
-    wtype: tagData.value.join(","),
   };
 }
 const coverFile = ref<HTMLInputElement>();
-
 //异步执行，等待dom渲染完成
 nextTick(() => {
   console.log(`lzy  coverFile.value:`, coverFile.value)
@@ -150,15 +147,15 @@ nextTick(() => {
         "Content-Type": "multipart/form-data",
       };
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-      http("post", "/privateApis/uploadArticleImg", formData, headers).then(
-        (res: HttpResonse<string>) => {
-          if (res.code === 200) {
-            information.cover = res.data;
-          } else {
-            console.log(res.msg);
-          }
-        }
-      );
+      // http("post", "/article/uploadArticleImg", formData, headers).then(
+      //   (res: HttpResonse<string>) => {
+      //     if (res.code === 200) {
+      //       information.cover = res.data;
+      //     } else {
+      //       console.log(res.msg);
+      //     }
+      //   }
+      // );
     });
   });
 });
@@ -173,7 +170,7 @@ const visible = ref<boolean>(false);
 //全部标签数据
 const tagData: any = ref([]);
 //当前文章的标签数据 当前文章的标签数据 是否已经有标签
-tagData.value = props.data?.wtype ? props.data?.wtype.split(",") : [];
+// tagData.value = props.data?.w ? props.data?.wtype.split(",") : [];
 //临时存储数据
 const tagDataTem: any = ref(tagData.value);
 //标签列表
@@ -181,15 +178,25 @@ const tagList = ref<TagDataType[]>();
 
 try {
   //获取标签列表
-  const { data } = await http<TagDataType[]>("get", "/overtApis/articleType");
-  tagList.value = data;
+  const result = await http<TagDataType[]>("get", "/article/getArticleTypeList");
+  console.log(typeof result.data);
+  console.log(`lzy  data:`,)
+  tagList.value = result.data;
 } catch (e) {
   console.log(e);
 }
 
 const tagActive = (tag) => {
   //数量不能超过4个
-  if (tagDataTem.value.length >= 4) return;
+  if (tagDataTem.value.length >= 4) {
+    console.log(123);
+    ElNotification({
+      title: "提示",
+      message: "最多只能选择4个标签",
+      type: "warning",
+    });
+    return;
+  }
   if (tagDataTem.value.includes(tag)) {
     tagDataTem.value = tagDataTem.value.filter((item) => item !== tag) as any;
   } else {
@@ -218,9 +225,9 @@ const addArticleType = async () => {
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value);
   }
-  const result = await http<null>("post", "/privateApis/addArticleType", { name: typeInput.value });
+  const result = await http<null>("post", "/article/getArticleTypeList", { name: typeInput.value });
   if (result.code == 200) {
-    const { data } = await http<TagDataType[]>("get", "/overtApis/articleType");
+    const { data } = await http<TagDataType[]>("get", "/article/addArticleType");
     tagList.value = data;
   }
 };
@@ -463,4 +470,3 @@ const addArticleType = async () => {
 }
 </style>
 
-../../types/type ../../types/toolbar @/LTypes/ArticleType @/utils/utils
