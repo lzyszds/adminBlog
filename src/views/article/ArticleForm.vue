@@ -35,7 +35,7 @@ const information = reactive<InformationTypes>({
   title: props.data?.title || "",
   cover: props.data?.cover_img
     ? "/adminPublic" + props.data?.cover_img
-    : "/api/article/getRandArticleImg",
+    : "/api/article/getRandArticleImg"
 });
 //确认提交
 const submitForm = () => {
