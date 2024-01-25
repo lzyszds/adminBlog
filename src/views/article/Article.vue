@@ -93,12 +93,12 @@ provide("setRightProps", {
   <SetRight>
     <template #table>
       <el-table-column property="aid" label="Id" sortable width="80" align="center"></el-table-column>
-      <el-table-column property="author" label="作者" width="80" show-overflow-tooltip>
+      <el-table-column property="uname" label="作者" width="80" show-overflow-tooltip>
       </el-table-column>
       <el-table-column label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
-            <img v-ImgLoading :src="'/api/public' + row.coverImg" data-fancybox="gallery" title="o" alt="" />
+            <img v-ImgLoading :src="'/adminPublic' + row.cover_img" data-fancybox="gallery" title="o" alt="" />
           </div>
         </template>
       </el-table-column>
