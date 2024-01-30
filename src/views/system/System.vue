@@ -1,14 +1,12 @@
 <script setup lang='ts'>
-import { useStore } from '@/store/store'
 import http from '@/http/http'
 import dayjs from 'dayjs';
 import SortTab from '@/components/SortTab.vue'
 const loading = ref(true)
 
-const state = useStore()
 const data: any = ref({})
-http("get", "/overtApis/getAdminHomeData").then(res => {
-  data.value = res
+http("get", "/common/getAdminHomeData").then(res => {
+  data.value = res.data
   loading.value = false
   // state.loading = false
 })
@@ -29,7 +27,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   :class="'img-' + classNames[index]">
                   <el-skeleton-item variant="image" style="height: 100%;" />
                   <div class="overlay">
-                    <h3><el-skeleton-item variant="text" s /></h3>
+                    <h3><el-skeleton-item variant="text" /></h3>
                   </div>
                 </div>
               </div>
@@ -39,7 +37,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
               <div class="weekly-schedule">
                 <h1>最新内容</h1>
                 <div class="calendar">
-                  <el-skeleton-item variant="text" class="day-and-activity" v-for="(item, index) in data.news"
+                  <el-skeleton-item variant="text" class="day-and-activity" v-for="(item, index) in data.newArticle"
                     :key="index" style="width: 550px;height:54px" />
                 </div>
               </div>
@@ -118,9 +116,9 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
             <div class="activities">
               <h1>热门内容</h1>
               <div class="activity-container">
-                <div v-for="(item, index) in data.hotList" :key="index" class="image-container"
+                <div v-for="(item, index) in data.hotArticle" :key="index" class="image-container"
                   :class="'img-' + classNames[index]">
-                  <img :src="'/api/public' + item.coverImg" :alt="item.title" />
+                  <img :src="'/api/public' + item.cover_img" :alt="item.title" />
                   <div class="overlay">
                     <h3>{{ item.title }}</h3>
                   </div>
@@ -132,11 +130,11 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
               <div class="weekly-schedule">
                 <h1>最新内容</h1>
                 <div class="calendar">
-                  <div v-for="(item, index) in data.news" :key="index" class="day-and-activity"
+                  <div v-for="(item, index) in data.newArticle" :key="index" class="day-and-activity"
                     :class="'activity-' + classNames[index]">
                     <div class="day">
-                      <h1>{{ dayjs(item.createTime * 1000).format('MM/DD') }}</h1>
-                      <p>{{ dayjs(item.createTime * 1000).format('YYYY') }}</p>
+                      <h1>{{ dayjs(item.createTime).format('MM/DD') }}</h1>
+                      <p>{{ dayjs(item.createTime).format('YYYY') }}</p>
                     </div>
                     <div class="activity">
                       <h2>{{ item.title }}</h2>
@@ -350,8 +348,29 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   transition: all 0.6s linear;
 }
 
-.image-container:hover .overlay {
-  opacity: 0;
+.image-container:hover {
+  overflow: hidden;
+
+  img {
+    transform: scale(1.1);
+    transition: all 0.2s linear;
+
+  }
+
+  .overlay {
+    background: linear-gradient(180deg,
+        transparent,
+        transparent,
+        rgba(59, 59, 116, 0.8));
+    transition: all 0.6s linear;
+    cursor: pointer;
+
+    h3 {
+      transition: all 0.2s linear;
+      transform: translateX(-20px);
+      max-width: clamp(0px, 60%, 60%);
+    }
+  }
 }
 
 .overlay h3 {
@@ -359,7 +378,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   margin-right: 10px;
   color: #fff;
   overflow: hidden;
-  width: 83px;
+  max-width: 83px;
   text-wrap: nowrap;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -392,7 +411,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 
 .day-and-activity {
   display: grid;
-  grid-template-columns: 15% 60% 25%;
+  grid-template-columns: 15% 70% 15%;
   align-items: center;
   border-radius: 14px;
   margin-bottom: 5px;
@@ -486,18 +505,19 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 
 .btn {
   display: block;
-  padding: 8px 24px;
+  padding: 3px 10px;
   margin: 10px auto;
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   text-decoration: none;
   color: #484b57;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 25px;
+  box-shadow: inset 0 6px 30px rgb(255 0 0 / 10%);
+  border-radius: 5px;
   cursor: pointer;
+  font-family: 'almama';
+
 }
 
 .btn:hover,
