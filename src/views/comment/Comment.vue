@@ -4,7 +4,7 @@ import SetRight from "@/components/SetRight.vue";
 import http from "@/http/http";
 import { ElTableColumn, dayjs } from "element-plus";
 
-import { useStore } from "@/store/store";
+import { useStore } from "@/store";
 import { Requirement } from "@/types/SetRightType";
 import { getComType } from "@/types/CommentType";
 import { LNotification } from "@/utils/utils";
@@ -13,9 +13,9 @@ const state = useStore();
 //页面配置
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
-  currentPage: 1, //当前页数
+  pages: 1, //当前页数
   limit: 10, //每页显示条数
-  api: "/overtApis/getAllComment",
+  api: "/article/getAllComment",
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
@@ -36,8 +36,9 @@ const _delete = async (row: getComType) => {
     state.handleCurrentChange(requirement);
   }
 };
+console.log(`lzy  requirement:`, requirement)
 provide("setRightProps", {
-  requirement,
+  requirement: requirement,
 });
 </script>
 
@@ -59,7 +60,7 @@ provide("setRightProps", {
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="comId" label="评论id" width="70"></el-table-column>
+      <el-table-column prop="comment_id" label="评论id" width="70"></el-table-column>
       <el-table-column prop="article_id" label="文章id" width="70"></el-table-column>
       <el-table-column prop="ground_id" label="评论楼层" width="80"></el-table-column>
       <el-table-column prop="reply_id" label="回复id" width="70"></el-table-column>
@@ -88,3 +89,4 @@ provide("setRightProps", {
 <style lang="less" scoped>
 @import url("@/assets/css/headSearch.less");
 </style>
+@/store

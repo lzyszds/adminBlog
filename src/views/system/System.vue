@@ -1,14 +1,16 @@
 <script setup lang='ts'>
+import { useStore } from '@/store'
 import http from '@/http/http'
 import dayjs from 'dayjs';
 import SortTab from '@/components/SortTab.vue'
 const loading = ref(true)
+const state = useStore()
 
 const data: any = ref({})
 http("get", "/common/getAdminHomeData").then(res => {
   data.value = res.data
   loading.value = false
-  // state.loading = false
+  state.loading = false
 })
 const classNames = ["one", "two", "three", "four", "five", "six"]
 

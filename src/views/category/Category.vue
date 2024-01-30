@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { useStore } from '@/store/store'
+import { useStore } from '@/store'
 
 const state = useStore()
 setTimeout(() => {
@@ -68,3 +68,4 @@ const tableData = [
 
 <style lang='less' scoped>
 </style>
+@/store

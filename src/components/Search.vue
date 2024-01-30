@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
-import { useStore } from '@/store/store'
+import { useStore } from '@/store'
 import { Popup, Requirement } from "@/types/SetRightType";
 const state = useStore()
 //搜索框内容
@@ -50,3 +50,4 @@ const search = () => {
   }
 }
 </style>
+@/store

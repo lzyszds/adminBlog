@@ -8,7 +8,7 @@ import { ElNotification } from "element-plus";
 import { Article } from "@/types/ArticleType";
 import ArticleForm from "@/Views/article/ArticleForm.vue";
 
-import { useStore } from "@/store/store";
+import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
 const state = useStore();
 
@@ -151,3 +151,4 @@ provide("setRightProps", {
 <style lang="less" scoped>
 @import url("@/assets/css/headSearch.less");
 </style>
+@/store

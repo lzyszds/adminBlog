@@ -7,7 +7,7 @@ import User from '@/views/user/User.vue'
 import Category from '@/views/category/Category.vue'
 import System from '@/views/system/System.vue'
 
-import { useStore } from '@/store/store'
+import { useStore } from '@/store'
 
 const state = useStore()
 
@@ -49,3 +49,4 @@ const changeComponent = (componentName: string) => {
     </div>
   </div>
 </template>
+@/store

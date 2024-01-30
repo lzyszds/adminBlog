@@ -8,7 +8,7 @@ import { ElNotification } from 'element-plus'
 import { User } from '@/types/UserType'
 import UserForm from '@/views/user/UserForm.vue'
 
-import { useStore } from '@/store/store';
+import { useStore } from '@/store';
 import { Popup, Requirement } from '@/types/SetRightType';
 const state = useStore()
 //页面配置
@@ -179,3 +179,4 @@ provide("setRightProps", {
   padding: 5rem;
 }
 </style>
+@/store

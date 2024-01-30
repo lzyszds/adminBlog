@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Search from "@/components/Search.vue";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
 import { ElMessageBox, ElPagination } from "element-plus";
 import { h, computed, inject } from "vue";
@@ -241,3 +241,4 @@ div :deep(img[data-fancybox="gallery"]) {
   }
 }
 </style>
+@/store
