@@ -32,19 +32,19 @@ const items: Items = [
     component: "Category",
   },
   {
-    name: "标签管理",
+    name: "邮箱消息",
     uicon: '<i class="iconfont">&#xe64d;</i>',
-    component: "/tagAdmin",
+    component: "EmailMessage",
   },
   {
     name: "友链管理",
     uicon: '<i class="iconfont">&#xe609;</i>',
-    component: "/linkAdmin",
+    component: "LinkControl",
   },
   {
     name: "网站设置",
     uicon: '<i class="iconfont">&#xe60a;</i>',
-    component: "/settingAdmin",
+    component: "Setting",
   },
   {
     name: "退出登陆",
@@ -52,7 +52,7 @@ const items: Items = [
     component: "/login",
   },
   {
-    name: "返回首页",
+    name: "前往首页",
     uicon: '<i class="iconfont">&#xe60b;</i>',
     component: "/home/index",
   },
@@ -60,7 +60,7 @@ const items: Items = [
 const emit = defineEmits(["componentName"]);
 
 //默认显示的组件 激活
-emit("componentName", items[3].component)
+emit("componentName", items[historyRouter.value].component)
 
 const datalist = ref<IWeather>(); //天气数据
 const cip = ref<string>(); //ip
