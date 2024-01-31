@@ -8,6 +8,7 @@ import 'animate.css';
 
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 import App from './App.vue'
 import router from './router'
@@ -32,7 +33,7 @@ app.directive('zyloading', loading)
 app.directive('transition', transition)
 app.component('lzyicon', lzyIcon)
 
-app.use(ElementPlus)
+app.use(ElementPlus, { locale: zhCn, })
 app.use(hljsVuePlugin)
 app.use(router)
 app.use(pinia)

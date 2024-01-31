@@ -108,7 +108,7 @@ provide("setRightProps", {
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
-            {{ dayjs(row.createTime * 1000).format("YYYY-MM-DD") }}
+            {{ dayjs(row.create_date).format("YYYY.MM.DD") }}
           </div>
         </template>
       </el-table-column>
@@ -116,7 +116,7 @@ provide("setRightProps", {
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
-            {{ dayjs(row.modified * 1000).format("YYYY-MM-DD") }}
+            {{ dayjs(row.modified_date).format("YYYY.MM.DD") }}
           </div>
         </template>
       </el-table-column>
@@ -129,7 +129,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="Operations" width="140">
+      <el-table-column fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
             <el-button type="primary" size="small" @click="modifyThe(row)">修改</el-button>

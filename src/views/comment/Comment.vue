@@ -53,9 +53,9 @@ provide("setRightProps", {
       <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip></el-table-column>
       <el-table-column prop="content" label="评论内容" width="220" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="time" label="评论时间" width="150" show-overflow-tooltip>
+      <el-table-column prop="time" label="评论时间" show-overflow-tooltip>
         <template #default="{ row }">
-          <span style="font-size: 12px !important">
+          <span>
             {{ dayjs.unix(row.time).format("YYYY.MM.DD HH:mm") }}
           </span>
         </template>
@@ -66,7 +66,7 @@ provide("setRightProps", {
       <el-table-column prop="reply_id" label="回复id" width="70"></el-table-column>
       <el-table-column prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column fixed="right" label="Operations" width="140">
+      <el-table-column fixed="right" label="操作" width="140">
         <template #default="scope">
           <!-- 如果当前评论不为一级评论，不给予置顶功能 -->
           <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" icon-color="#626AEF"

@@ -62,7 +62,7 @@ provide("requirement", {
     <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
     <div class="tableuser">
       <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__bounceInUp"
-        style="width: 100%">
+        style="width: 100%" :border="true">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />
@@ -75,10 +75,12 @@ provide("requirement", {
     <div class="toolfooter">
       <div class="example-pagination-block lzyColor">
         <div class="example-demonstration">
-          When you have more than {{ pageSum }} pages of data, use a pagination.
+
         </div>
         <el-pagination small v-model:current-page="requirement.pages" background :page-count="state.total"
-          layout="prev, pager, next, jumper" />
+          layout="prev, pager, next, jumper">
+
+        </el-pagination>
       </div>
     </div>
   </div>
@@ -126,7 +128,7 @@ div :deep(img[data-fancybox="gallery"]) {
     filter: grayscale(0);
     border-color: var(--themeColor);
     box-shadow: 0 0 7px 1px rgba(122, 122, 122, 0.5);
-    transform: scale(1.2);
+    transform: scale(1.03);
   }
 }
 

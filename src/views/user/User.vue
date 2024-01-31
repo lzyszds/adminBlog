@@ -79,7 +79,7 @@ const switchMod = (boolean: boolean, isAdd) => {
 // }, { deep: true })
 
 function formatDate(date) {
-  return date ? dayjs(date).format('YYYY-MM-DD') : ''
+  return date ? dayjs(date).format('YYYY.MM.DD') : ''
 }
 
 
