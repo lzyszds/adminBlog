@@ -31,7 +31,7 @@ const changeComponent = (componentName: string) => {
   }
   setTimeout(() => {
     currentView.value = componentName
-  }, 100)
+  }, 50)
 }
 </script>
 

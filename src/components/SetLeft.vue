@@ -2,33 +2,8 @@
 import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
-interface Props {
-  currentView: string;
-}
-
-const emit = defineEmits(["componentName"]);
-const props = defineProps<Props>();
-
-const datalist = ref<IWeather>(); //天气数据
-const cip = ref<string>(); //ip
-// data:天气数据   cid:城市id
-const weather: NowWeatherData = JSON.parse(
-  localStorage.getItem("nowWeatherData")!
-) as NowWeatherData;
-
-//获取请求天气的数据
-if (weather) {
-  datalist.value = weather.weatherData || {};
-  datalist.value.region = weather.region;
-  cip.value = weather.ip;
-}
-
-type Items = {
-  name: string;
-  uicon: string;
-  component: string;
-}[];
-
+import { useStorage } from "@vueuse/core"
+const historyRouter = useStorage('historyRouter', 0) // returns Ref<number>
 //左侧菜单栏
 const items: Items = [
   {
@@ -82,18 +57,36 @@ const items: Items = [
     component: "/home/index",
   },
 ];
+const emit = defineEmits(["componentName"]);
 
-const activeIndex = ref(0);
-//判断当前激活的组件，设置左侧菜单栏的激活状态
-items.forEach((item, index) => {
-  if (item.component === props.currentView) {
-    activeIndex.value = index;
-  }
-});
+//默认显示的组件 激活
+emit("componentName", items[3].component)
+
+const datalist = ref<IWeather>(); //天气数据
+const cip = ref<string>(); //ip
+// data:天气数据   cid:城市id
+const weather: NowWeatherData = JSON.parse(
+  localStorage.getItem("nowWeatherData")!
+) as NowWeatherData;
+
+//获取请求天气的数据
+if (weather) {
+  datalist.value = weather.weatherData || {};
+  datalist.value.region = weather.region;
+  cip.value = weather.ip;
+}
+
+type Items = {
+  name: string;
+  uicon: string;
+  component: string;
+}[];
+
+
+
 //点击左侧菜单栏，切换组件
 const changeComponent = async (index) => {
-  activeIndex.value = index;
-  // await load.show('#content')
+  historyRouter.value = index
   emit("componentName", items[index].component);
 };
 
@@ -113,7 +106,6 @@ if (data.signature) {
 }
 
 infoData.value = data;
-console.log(`lzy  infoData.value:`, infoData.value)
 </script>
 
 <template>
@@ -133,7 +125,7 @@ console.log(`lzy  infoData.value:`, infoData.value)
     </div>
     <div class="list">
       <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(index)"
-        :class="{ active: activeIndex == index, animate__rubberBand: activeIndex == index }">
+        :class="{ active: historyRouter == index, animate__rubberBand: historyRouter == index }">
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>
