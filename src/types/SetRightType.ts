@@ -5,10 +5,11 @@ export interface Popup {
   modifyVisible: boolean,
   addWidth: string,
   modifyWidth: string,
-  addLeft: string,
-  modifyLeft: string,
-  addTop: string,
-  modifyTop: string,
+  addLeft?: string,
+  modifyLeft?: string,
+  addTop?: string,
+  modifyTop?: string,
+  alignCenter?: boolean,
 }
 
 export interface Requirement {

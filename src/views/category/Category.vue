@@ -1,71 +1,59 @@
 <script setup lang='ts'>
+import SetRight from '@/components/SetRight.vue';
 import { useStore } from '@/store'
+import { Popup, Requirement } from '@/types/SetRightType';
 
 const state = useStore()
 setTimeout(() => {
     state.loading = false
 }, 500)
-const handleClick = () => {
-    console.log('click')
-}
+//页面配置
+const requirement = reactive<Requirement>({
+    search: "", //搜索内容
+    pages: 1, //当前页数
+    limit: 7, //每页显示条数
+    api: "/article/getArticleTypeList",
+});
+//自动加载数据
+await state.handleCurrentChange(requirement);
+const popup = reactive<Popup>({
+    addName: "新增分类",
+    modifyName: "修改分类",
+    addVisible: false,
+    modifyVisible: false,
+    addWidth: "40%",
+    modifyWidth: "40%",
+    alignCenter: true
+});
 
-const tableData = [
-    {
-        date: '2016-05-03',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Home',
-    },
-    {
-        date: '2016-05-02',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office',
-    },
-    {
-        date: '2016-05-04',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Home',
-    },
-    {
-        date: '2016-05-01',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office',
-    },
-]
+provide('setRightProps', {
+    requirement,
+    popup
+})
 </script>
 
 <template>
-    <el-table :data="tableData" style="width: 100%">
-        <el-table-column fixed prop="date" label="Date" width="150" />
-        <el-table-column prop="name" label="Name" width="120" />
-        <el-table-column prop="state" label="State" width="120" />
-        <el-table-column prop="city" label="City" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
-        <el-table-column prop="zip" label="Zip" width="120" />
-        <el-table-column fixed="right" label="Operations" width="120">
-            <template #default>
-                <el-button link type="primary" size="small" @click="handleClick">Detail</el-button>
-                <el-button link type="primary" size="small">Edit</el-button>
-            </template>
-        </el-table-column>
-    </el-table>
+    <SetRight>
+        <template #table>
+            <el-table-column property="type_id" label="id" sortable width="180" align="center"></el-table-column>
+            <el-table-column prop="name" label="分类名"></el-table-column>
+            <el-table-column label="权限" width="100px" align="center">
+                <template #default="{ row }">
+                    <div class="power">
+                        <span v-if="row.whether_use === 0" class="powerAdmin">已禁用</span>
+                        <span v-else>已启用</span>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="150px">
+                <template #default="{ row }">
+                    <el-button type="primary" size="small" @click="handleClick">编辑</el-button>
+                    <el-button type="danger" size="small">删除</el-button>
+                </template>
+            </el-table-column>
+        </template>
+    </SetRight>
 </template>
 
 <style lang='less' scoped>
 </style>
-@/store

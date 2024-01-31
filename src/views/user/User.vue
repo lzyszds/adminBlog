@@ -58,10 +58,6 @@ const popup = reactive<Popup>({
   modifyVisible: false,
   addWidth: '26%',
   modifyWidth: '26%',
-  addLeft: '0px',
-  modifyLeft: '0px',
-  addTop: '0px',
-  modifyTop: '0px',
 })
 //子组件传来的参数 关闭form表单
 const switchMod = (boolean: boolean, isAdd) => {

@@ -57,6 +57,7 @@ const popup = reactive<Popup>({
   modifyLeft: "0px",
   addTop: "0px",
   modifyTop: "0px",
+  alignCenter: true
 });
 
 //子组件传来的参数 关闭form表单

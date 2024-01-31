@@ -12,7 +12,6 @@ interface Props {
 const state = useStore();
 const { popup, requirement } = inject("setRightProps") as Props;
 
-
 //开启表单时点击空白地方 关闭form表单时的提示
 const handleClose = (done: () => void) => {
   ElMessageBox({
@@ -62,7 +61,7 @@ provide("requirement", {
     <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
     <div class="tableuser">
       <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__bounceInUp"
-        style="width: 100%" :border="true">
+        style="width: 100%">
         <template #empty>
           <div class="empty">
             <img src="@/assets/image/暂无文档.svg" alt="" />
@@ -85,12 +84,12 @@ provide("requirement", {
     </div>
   </div>
   <div v-if="popup">
-    <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible" top="0px"
-      :before-close="handleClose" title="新增文章" :width="popup.addWidth" left>
+    <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible"
+      :before-close="handleClose" title="新增文章" :align-center="popup.alignCenter" :width="popup.addWidth">
       <slot name="popupAdd" v-if="popup.addVisible"></slot>
     </el-dialog>
     <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
-      :before-close="handleClose" title="修改文章" :width="popup.addWidth" addLeft>
+      :before-close="handleClose" title="修改文章" :align-center="popup.alignCenter" :width="popup.modifyWidth">
       <slot name="popupModify" v-if="popup.modifyVisible"></slot>
     </el-dialog>
   </div>
