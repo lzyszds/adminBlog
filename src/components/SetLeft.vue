@@ -2,8 +2,8 @@
 import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
-import { useStorage } from "@vueuse/core"
-const historyRouter = useStorage('historyRouter', 0) // returns Ref<number>
+import { useSessionStorage } from "@vueuse/core"
+const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
 //左侧菜单栏
 const items: Items = [
   {
