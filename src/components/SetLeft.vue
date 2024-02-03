@@ -2,7 +2,6 @@
 import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
-import { useSessionStorage } from "@vueuse/core"
 const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
 //左侧菜单栏
 const items: Items = [
@@ -49,18 +48,15 @@ const items: Items = [
   {
     name: "退出登陆",
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: "/login",
+    component: "Login",
   },
   {
     name: "前往首页",
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: "/home/index",
+    component: "Home",
   },
 ];
-const emit = defineEmits(["componentName"]);
 
-//默认显示的组件 激活
-emit("componentName", items[historyRouter.value].component)
 
 const datalist = ref<IWeather>(); //天气数据
 const cip = ref<string>(); //ip
@@ -87,7 +83,6 @@ type Items = {
 //点击左侧菜单栏，切换组件
 const changeComponent = async (index) => {
   historyRouter.value = index
-  emit("componentName", items[index].component);
 };
 
 //处理用户详情数据

@@ -16,6 +16,11 @@ const requirement = reactive<Requirement>({
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
+
+const edit = (row: any) => {
+    console.log(`lzy  row:`, row)
+}
+
 const popup = reactive<Popup>({
     addName: "新增分类",
     modifyName: "修改分类",
@@ -46,8 +51,8 @@ provide('setRightProps', {
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="150px">
-                <template #default="{ row }">
-                    <el-button type="primary" size="small" @click="handleClick">编辑</el-button>
+                <template #default="">
+                    <el-button type="primary" size="small" @click="edit">编辑</el-button>
                     <el-button type="danger" size="small">删除</el-button>
                 </template>
             </el-table-column>

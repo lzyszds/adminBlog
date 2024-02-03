@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dayjs, ElMessageBox, ElNotification } from "element-plus";
-import http, { HttpResonse } from "@/http/http";
+import http from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { compressPic } from "@/utils/utils";
 import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
@@ -225,10 +225,10 @@ const addArticleType = async () => {
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value);
   }
-  const result = await http<null>("post", "/article/getArticleTypeList", { name: typeInput.value });
+  const result = await http<null>("post", "/article/addArticleType", { name: typeInput.value });
   if (result.code == 200) {
     const { data } = await http<TagDataType[]>("get", "/article/addArticleType");
-    tagList.value = data;
+    console.log(data);
   }
 };
 </script>
