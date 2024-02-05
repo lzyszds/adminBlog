@@ -18,9 +18,9 @@ const state = useStore()
 const currentView = ref()
 const componentsNames = [
   'System',
-  'Comment',
-  'Article',
   'User',
+  'Article',
+  'Comment',
   'Category',
   'EmailMessage',
   'LinkControl',
