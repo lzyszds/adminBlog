@@ -51,7 +51,7 @@ export default defineConfig(({ command, mode }): any => {
       hmr: true,
       usePolling: false,
       host: '0.0.0.0',
-      port: 8088,
+      port: 1025,
       proxy: {
         "/api": {
           // target: _baseUrl + ':8089',//这里是域名，不是完整地址
