@@ -37,13 +37,13 @@ export interface InformationTypes {
 }
 
 export interface ArticledataType {
-  author: string,
   title: InformationTypes['title'],
   //文章开头第一段话
   partial_content: string,
   content: InformationTypes['storage']['text'],
   main: InformationTypes['storage']['html'],
-  coverImg: string,
-  modified: number,
+  cover_img: string,
+  modified: string,
   aid: string | null,
+  tags: string[],
 }

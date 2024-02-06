@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dayjs, ElMessageBox, ElNotification } from "element-plus";
-import http from "@/http/http";
+import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { compressPic } from "@/utils/utils";
 import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
@@ -16,7 +16,7 @@ if (articledata.value.title) {
   }).then(() => {
     information.text = articledata.value.content;
     information.title = articledata.value.title;
-    information.cover = articledata.value.coverImg;
+    information.cover = articledata.value.cover_img;
     // tagData.value = articledata.value.wtype.split(",");
   }).catch(() => {
     localStorage.removeItem("articledata");
@@ -101,7 +101,7 @@ const handleUploadImage = (event, insertImage, files) => {
     const res = await http<string>("post", "/article/uploadArticleImg", formData, headers);
     if (res.code === 200) {
       insertImage({
-        url: "" + res.data,
+        url: "/adminPublic" + res.data,
         desc: "点击放大",
       });
     }
@@ -116,24 +116,23 @@ const clicks = (text, html) => {
 function setData(): ArticledataType {
   const isModify = props.type === "modify";
   return {
-    author: "lzy",
     title: information.title,
     //文章开头第一段话
     partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
     content: information.storage.text,
     main: information.storage.html,
-    coverImg: (information.cover || props.data?.cover_img)?.replace(
+    cover_img: (information.cover || props.data?.cover_img)?.replace(
       "/adminPublic",
       ""
     )!,
     aid: isModify ? props.data?.aid! : null,
-    modified: dayjs().unix(),
+    modified: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    tags: tagDataTem.value,
   };
 }
 const coverFile = ref<HTMLInputElement>();
 //异步执行，等待dom渲染完成
 nextTick(() => {
-  console.log(`lzy  coverFile.value:`, coverFile.value)
   //通过点击图片 ，获取图片的src 以及将图片存入线上服务器
   useEventListener(coverFile, "change", () => {
     const files = coverFile.value!.files as FileList;
@@ -147,15 +146,15 @@ nextTick(() => {
         "Content-Type": "multipart/form-data",
       };
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-      // http("post", "/article/uploadArticleImg", formData, headers).then(
-      //   (res: HttpResonse<string>) => {
-      //     if (res.code === 200) {
-      //       information.cover = res.data;
-      //     } else {
-      //       console.log(res.msg);
-      //     }
-      //   }
-      // );
+      http("post", "/article/uploadArticleImg", formData, headers).then(
+        (res: HttpResonse<string>) => {
+          if (res.code === 200) {
+            information.cover = "/adminPublic" + res.data;
+          } else {
+            console.log(res.msg);
+          }
+        }
+      );
     });
   });
 });
@@ -178,9 +177,7 @@ const tagList = ref<TagDataType[]>();
 
 try {
   //获取标签列表
-  const result = await http<TagDataType[]>("get", "/article/getArticleTypeList");
-  console.log(typeof result.data);
-  console.log(`lzy  data:`,)
+  const result = await http("get", "/article/getArticleTypeList") as any;
   tagList.value = result.data;
 } catch (e) {
   console.log(e);
@@ -335,6 +332,7 @@ const addArticleType = async () => {
       img {
         width: 100px;
         height: 100%;
+        object-fit: cover;
       }
     }
 

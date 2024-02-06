@@ -137,7 +137,7 @@ const submitUpload = () => {
     //e代表事件,可以通过e.target获取FileReader对象然后在获取readAsDataURL读取的base64字符
     //下面是将blob转换为file 用于上传
     let formData = new FormData();
-    formData.append('head_img', xFile.files[0]);
+    formData.append('head-img', xFile.files[0]);
     let headers = {
       'Content-Type': 'multipart/form-data',
     }
@@ -169,7 +169,7 @@ const submitUpload = () => {
               <el-button type="primary" @click="upClick">上传本地</el-button>
             </label>
             <form action="" method="post">
-              <input class="fileInput" name="head_img" type="file" @change="submitUpload" id="xFile" />
+              <input class="fileInput" name="head-img" type="file" @change="submitUpload" id="xFile" />
             </form>
 
           </div>
