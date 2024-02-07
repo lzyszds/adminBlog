@@ -30,8 +30,12 @@ const formatter = () => {
 const modifyData = ref<Article>();
 
 const modifyThe = (event: Article) => {
-  modifyData.value = event;
-  popup.modifyVisible = true;
+  //根据点击的文章id获取文章详情信息
+  http("get", "/article/getArticleInfo/" + event.aid).then((res: any) => {
+    modifyData.value = res.data;
+    popup.modifyVisible = true;
+
+  });
 };
 
 //删除文章
