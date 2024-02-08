@@ -24,7 +24,7 @@ if (articledata.value.title) {
 }
 
 const emit = defineEmits(["switchMod", "switchAdd"]);
-const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  test |left center right ul ol table hr | link image code tip music| save tips`;
+const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  mark |left center right ul ol table hr | link image code tip music| save tips`;
 const props = defineProps<Props>();
 
 

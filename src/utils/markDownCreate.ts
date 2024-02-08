@@ -14,6 +14,12 @@ import Prism from 'prismjs';
 import container from 'markdown-it-container'
 //标记
 import mark from 'markdown-it-mark'
+//markdown内部注释（好像屁用没有）用法：<!-- comments -->
+import inlineComments from 'markdown-it-inline-comments'
+//markdown内部注释（好像屁用没有）用法：<!-- comments -->
+import bracketedSpans from 'markdown-it-bracketed-spans'
+
+
 
 //表情包
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index';
@@ -31,6 +37,8 @@ VueMarkdownEditor.use(vuepressTheme, {
   Prism,
   extend(md) {
     md.use(mark)
+      .use(inlineComments)
+      .use(bracketedSpans)
       .use(markdownItAttrs, {
         // optional, these are default options
         leftDelimiter: '{',
