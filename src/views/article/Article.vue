@@ -5,7 +5,7 @@ import http from "@/http/http";
 import { ElTableColumn, dayjs } from "element-plus";
 
 import { ElNotification } from "element-plus";
-import { Article } from "@/types/ArticleType";
+import { ArticleMultipleDataType } from "@/types/ArticleType";
 import ArticleForm from "@/Views/article/ArticleForm.vue";
 
 import { useStore } from "@/store";
@@ -27,9 +27,9 @@ const formatter = () => {
 };
 
 //修改用户按钮，点击后弹出确认框
-const modifyData = ref<Article>();
+const modifyData = ref<ArticleMultipleDataType>();
 
-const modifyThe = (event: Article) => {
+const modifyThe = (event: ArticleMultipleDataType) => {
   //根据点击的文章id获取文章详情信息
   http("get", "/article/getArticleInfo/" + event.aid).then((res: any) => {
     modifyData.value = res.data;
@@ -121,7 +121,7 @@ provide("setRightProps", {
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
-            {{ dayjs(row.modified_date).format("YYYY.MM.DD") }}
+            {{ row.modified_date ? dayjs(row.modified_date).format("YYYY.MM.DD") : "暂无修改记录" }}
           </div>
         </template>
       </el-table-column>
@@ -131,6 +131,13 @@ provide("setRightProps", {
             <a target="_blank" :href="'/home/detail/' + row.aid">
               {{ "/home/detail/" + row.aid }}
             </a>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column property="tags" label="类型" sortable  width="250">
+        <template #default="{ row }">
+          <div class="tags">
+            <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{ item }}</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -156,4 +163,3 @@ provide("setRightProps", {
 <style lang="less" scoped>
 @import url("@/assets/css/headSearch.less");
 </style>
-@/store

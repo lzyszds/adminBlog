@@ -1,3 +1,4 @@
+import { User } from "./UserType"
 
 export interface Article {
   aid: string
@@ -20,7 +21,7 @@ export interface TagDataType {
 
 export interface Props {
   type: string,
-  data?: Article,
+  data?: ArticleMultipleDataType,
   tableheight: number,
 }
 
@@ -46,4 +47,11 @@ export interface ArticledataType {
   modified: string,
   aid: string | null,
   tags: string[],
+}
+
+export interface ArticleMultipleDataType extends Article {
+  tags: string[],
+  head_img: User['head_img'],
+  signature: User['signature'],
+  uname: User['uname'],
 }
