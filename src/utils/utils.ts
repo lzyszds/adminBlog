@@ -237,13 +237,19 @@ export function toProxys(obj: any): any {
  *
  * @param obj 要比较的第一个对象
  * @param other 要比较的第二个对象
+ * @param keepNeededValue 需要保留的值
  * @param newResult 用来存储比较结果的空对象
  * @returns 比较结果对象，如果两个对象相等，则返回空对象，否则返回包含差异的键值对
  */
-export function isEqual(obj: object, other: object, newResult: object = {}): any {
+export function isEqual(obj: object, other: object, keepNeededValue: [] | string, newResult: object = {}): any {
   // 遍历第一个对象的每个键
   for (const key in obj) {
-
+    // 如果需要保留的值存在
+    if (keepNeededValue && keepNeededValue.includes(key)) {
+      // 将需要保留的值添加到结果对象中
+      newResult[key] = obj[key]
+      continue
+    }
     // 如果键对应的值是数组
     if (obj[key] instanceof Array && other[key] instanceof Array) {
       // 递归比较两个数组
@@ -251,7 +257,7 @@ export function isEqual(obj: object, other: object, newResult: object = {}): any
       // 如果键对应的值是对象
     } else if (obj[key] instanceof Object && other[key] instanceof Object) {
       // 递归比较两个对象
-      newResult = isEqual(obj[key], other[key], newResult)
+      newResult = isEqual(obj[key], other[key], keepNeededValue, newResult)
 
       // 如果两个键对应的值不相等
     } else if (obj[key] !== other[key]) {

@@ -128,7 +128,7 @@ function setData(): ArticledataType {
     aid: isModify ? props.data?.aid! : null,
     tags: tagDataTem.value,
   }
-  return isEqual(data, protoInformation);
+  return isEqual(data, protoInformation, 'aid')
 }
 const coverFile = ref<HTMLInputElement>();
 //异步执行，等待dom渲染完成
