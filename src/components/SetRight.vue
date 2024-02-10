@@ -28,13 +28,6 @@ const addToPop = () => {
   popup!.addVisible = true;
 };
 
-//计算总页数
-const pageSum = computed(() => {
-  const { limit } = requirement;
-  const { total } = state;
-  return total! % limit == 0 ? total! / limit : ((total! / limit) >> 0) + 1;
-});
-
 //分页事件、切换页码时提供load效果
 // const currentChange = async (event: number) => {
 //   console.log(`lzy  event:`, event)
@@ -197,15 +190,15 @@ div :deep(img[data-fancybox="gallery"]) {
     animation-timing-function: ease-in-out;
 
     &:nth-child(1) {
-      animation-delay: .1s;
+      animation-delay: .5s;
     }
 
     &:nth-child(2) {
-      animation-delay: .2s;
+      animation-delay: .3s;
     }
 
     &:nth-child(3) {
-      animation-delay: .3s;
+      animation-delay: .2s;
     }
 
     &:nth-child(4) {
@@ -213,31 +206,31 @@ div :deep(img[data-fancybox="gallery"]) {
     }
 
     &:nth-child(5) {
-      animation-delay: .5s;
+      animation-delay: .2s;
     }
 
     &:nth-child(6) {
-      animation-delay: .6s;
+      animation-delay: .5s;
     }
 
     &:nth-child(7) {
-      animation-delay: .7s;
+      animation-delay: .3s;
     }
 
     &:nth-child(8) {
-      animation-delay: .8s;
+      animation-delay: .5s;
     }
 
     &:nth-child(9) {
-      animation-delay: .9s;
+      animation-delay: .4s;
     }
 
     &:nth-child(10) {
-      animation-delay: 1s;
+      animation-delay: .2s;
     }
 
     &:nth-child(11) {
-      animation-delay: 1.1s;
+      animation-delay: .7s;
     }
   }
 }

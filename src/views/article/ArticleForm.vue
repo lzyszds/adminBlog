@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { dayjs, ElMessageBox, ElNotification } from "element-plus";
+import { ElMessageBox, ElNotification } from "element-plus";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
-import { compressPic } from "@/utils/utils";
+import { compressPic, isEqual, toProxys } from "@/utils/utils";
 import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
 const articledata = useStorage("articledata", {} as ArticledataType);
 
@@ -37,16 +37,18 @@ const information = reactive<InformationTypes>({
     ? "/adminPublic" + props.data?.cover_img
     : "/api/article/getRandArticleImg"
 });
+const protoInformation = toProxys(props.data!);
 //确认提交
 const submitForm = () => {
   const isModify = props.type === "modify"
   const url = isModify ? "/article/updateArticle" : "/article/addArticle";
-  //当前是否保存
+  const data = setData()
+  //当前是否保存 缓存
   if (
     information.storage.text === information.text ||
     information.storage.html === information.html
   ) {
-    http("post", url, setData()).then((res: any) => {
+    http("post", url, data).then((res: any) => {
       if (res.code === 200) {
         if (isModify) {
           emit("switchMod", { flag: false, data: res.data, type: '修改' });
@@ -83,13 +85,11 @@ const resetForm = () => {
 };
 //本地图片上传到线上，并返回当前文件在线上的path
 const handleUploadImage = (event, insertImage, files) => {
-  console.log(event);
 
   //如果文件大小小于300kb，不进行压缩，按比例压缩
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5;
   //对图片进行压缩
   compressPic(files[0], scale).then(async ({ fileCompress }) => {
-    console.log(`lzy  fileCompress:`, fileCompress)
     // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
     let formData = new FormData();
     formData.append("upload-image", fileCompress);
@@ -115,20 +115,20 @@ const clicks = (text, html) => {
 
 function setData(): ArticledataType {
   const isModify = props.type === "modify";
-  return {
+  const data = {
     title: information.title,
     //文章开头第一段话
     partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
-    content: information.storage.text,
-    main: information.storage.html,
+    content: information.text,
+    main: information.html,
     cover_img: (information.cover || props.data?.cover_img)?.replace(
       "/adminPublic",
       ""
     )!,
     aid: isModify ? props.data?.aid! : null,
-    modified: dayjs().format("YYYY-MM-DD HH:mm:ss"),
     tags: tagDataTem.value,
-  };
+  }
+  return isEqual(data, protoInformation);
 }
 const coverFile = ref<HTMLInputElement>();
 //异步执行，等待dom渲染完成
@@ -167,7 +167,7 @@ const coverUpdate = () => {
 //标签弹窗控制flag
 const visible = ref<boolean>(false);
 //全部标签数据
-const tagData: any = ref([]);
+const tagData: any = ref(props.data?.tags || []);
 //当前文章的标签数据 当前文章的标签数据 是否已经有标签
 // tagData.value = props.data?.w ? props.data?.wtype.split(",") : [];
 //临时存储数据
@@ -186,7 +186,6 @@ try {
 const tagActive = (tag) => {
   //数量不能超过4个
   if (tagDataTem.value.length >= 4) {
-    console.log(123);
     ElNotification({
       title: "提示",
       message: "最多只能选择4个标签",
@@ -355,7 +354,7 @@ const addArticleType = async () => {
       font-size: 20px;
       white-space: nowrap;
       margin: 0 30px 0 0;
-      line-height: 35px;
+      line-height: 40px;
       cursor: var(--linkCup);
 
       &:deep(.el-tag.el-tag--info) {

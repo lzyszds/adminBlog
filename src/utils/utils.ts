@@ -192,6 +192,78 @@ export const setTime: any = (time: string) => {
 }
 
 
+/**
+ * 将代理对象转换为普通对象
+ *
+ * @param obj 要转换的代理对象
+ * @returns 转换后的普通对象
+ */
+export function toProxys(obj: any): any {
+
+  // 初始化结果对象
+  let result = {}
+
+  // 如果obj不是对象，则直接返回
+  if (typeof obj !== 'object') {
+    return obj
+  }
+
+  // 遍历obj的每个键值对
+  for (const key in obj) {
+
+    // 如果键对应的值是数组
+    if (obj[key] instanceof Array) {
+      // 使用展开运算符创建数组的深拷贝
+      result[key] = [...obj[key]]
+
+      // 如果键对应的值是对象
+    } else if (obj[key] instanceof Object) {
+      // 递归调用toProxys函数转换对象
+      result[key] = toProxys(obj[key])
+
+      // 否则直接将值赋值给结果对象
+    } else {
+      result[key] = obj[key]
+    }
+  }
+
+  // 返回转换后的结果对象
+  return result
+}
+
+
+/**
+ * 比较两个对象是否相等
+ *
+ * @param obj 要比较的第一个对象
+ * @param other 要比较的第二个对象
+ * @param newResult 用来存储比较结果的空对象
+ * @returns 比较结果对象，如果两个对象相等，则返回空对象，否则返回包含差异的键值对
+ */
+export function isEqual(obj: object, other: object, newResult: object = {}): any {
+  // 遍历第一个对象的每个键
+  for (const key in obj) {
+
+    // 如果键对应的值是数组
+    if (obj[key] instanceof Array && other[key] instanceof Array) {
+      // 递归比较两个数组
+      newResult[key] = obj[key].filter((item, index) => item !== other[key][index])
+      // 如果键对应的值是对象
+    } else if (obj[key] instanceof Object && other[key] instanceof Object) {
+      // 递归比较两个对象
+      newResult = isEqual(obj[key], other[key], newResult)
+
+      // 如果两个键对应的值不相等
+    } else if (obj[key] !== other[key]) {
+      // 将差异的键值对添加到结果对象中
+      newResult[key] = obj[key]
+    }
+  }
+
+  // 返回比较结果对象
+  return newResult
+}
+
 
 export default {
   splitArray,//把一个数组拆分成几个数组
@@ -207,4 +279,5 @@ export default {
   setCookie,//设置cookie
   unique,//数组对象去重（区别单数组以及数组中嵌套一层对象）
   setTime,//时间格式化处理
+  isEqual,//深度比较两个对象是否相等
 }
