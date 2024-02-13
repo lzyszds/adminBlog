@@ -42,7 +42,7 @@ export function getIpWeather() {
     'X-User-Token': 'iwKIaV2WP/9pLVldKr7qSFoeqAvBCO/n'
   }
   return new Promise((resolve, reject) => {
-    http('get', '/common/jinrishici/info', headers).then((res: any) => {
+    http('get', '/common/ipConfig', headers).then((res: any) => {
       console.log(`lzy  res:`, res)
       if (res.status = 'success') {
         resolve(res.data)
@@ -241,15 +241,19 @@ export function toProxys(obj: any): any {
  * @param newResult 用来存储比较结果的空对象
  * @returns 比较结果对象，如果两个对象相等，则返回空对象，否则返回包含差异的键值对
  */
-export function isEqual(obj: object, other: object, keepNeededValue: [] | string, newResult: object = {}): any {
+export function isEqual(obj: object, other: object, keepNeededValue: string[] | string, newResult: object = {}): any {
   // 遍历第一个对象的每个键
   for (const key in obj) {
+
+    if (typeof keepNeededValue === 'string') {
+      keepNeededValue = [keepNeededValue]
+    }
     // 如果需要保留的值存在
-    if (keepNeededValue && keepNeededValue.includes(key)) {
-      // 将需要保留的值添加到结果对象中
+    if (obj.hasOwnProperty(key)) {
       newResult[key] = obj[key]
       continue
     }
+
     // 如果键对应的值是数组
     if (obj[key] instanceof Array && other[key] instanceof Array) {
       // 递归比较两个数组

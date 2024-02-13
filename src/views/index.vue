@@ -7,6 +7,25 @@ import User from '@/views/user/User.vue'
 import Category from '@/views/category/Category.vue'
 import System from '@/views/system/System.vue'
 import Undefined from '@/views/undefined/Undefined.vue'
+import sockete from "socket.io-client";
+
+const socket = sockete.io('http://localhost:1022', { cors: true });
+
+// 监听连接成功事件
+socket.on('connect', () => {
+  console.log('已连接到服务器');
+
+  // 发送消息到服务器
+  socket.emit('message', localStorage.getItem('lzy_token'));
+});
+
+// 监听服务器发送的消息
+socket.on('message', (msg) => {
+  console.log('收到消息:', msg);
+});
+
+// // 断开连接
+// socket.disconnect();
 
 
 const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
