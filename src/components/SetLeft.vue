@@ -88,7 +88,7 @@ const changeComponent = async (index) => {
 //处理用户详情数据
 const infoData: any = ref();
 let data: any = [];
-const res = (await http("get", "/user/getUserInfoToken")) as any; // httpData
+const res = (await http({ url: "/user/getUserInfoToken", method: "get", })) as any; // httpData
 hide();
 data = res.data
 //处理用户签名

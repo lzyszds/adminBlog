@@ -66,7 +66,11 @@ const operateUser = async () => {
   }, {})
 
   try {
-    const res = await http('post', isAdd ? '/user/addUser' : '/user/updateUser', diffData)
+    const res = await http({
+      url: isAdd ? '/user/addUser' : '/user/updateUser',
+      method: 'post',
+      data: diffData
+    })
     if (res.code === 200) {
       ElNotification({
         title: '成功',
@@ -108,13 +112,22 @@ const resetForm = (formInstance: FormInstance | undefined) => {
   if (!formInstance) return
   formInstance.resetFields()
 }
-
+//@ts-expect-error
 var timer
 const handleExceed = async () => {
   timer = true;
   ruleForm.value.head_img = "/img/load.gif";
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  const { data } = await http<string>('get', '/user/getRandHeadImg')
+  const { data } = await http<string>({
+    url: '/user/getRandHeadImg',
+    method: 'get',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: {
+      time: Date.now()
+    }
+  })
   ruleForm.value.head_img = data;
   setTimeout(() => {
     timer = false;
@@ -141,8 +154,13 @@ const submitUpload = () => {
     let headers = {
       'Content-Type': 'multipart/form-data',
     }
-    //给后台上传头像图片，并获取后台返回新的图片地址
-    const res = await http('post', '/user/uploadHead', formData, headers)
+    //给后台上传头像图片，并获取后台返回新的图片地址 
+    const res = await http({
+      url: '/user/uploadHead',
+      method: 'post',
+      headers: headers,
+      data: formData,
+    })
     if (res.code === 200) {
       // const objectURL = URL.createObjectURL(blob);
       ruleForm.value.head_img = res.data;//显示的头像blob转化为可图片显示的src

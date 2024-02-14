@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import * as echarts from 'echarts';
-let { articleType } = defineProps<{ articleType: any }>()
+// let { articleType } = defineProps<{ articleType: any }>()
 onMounted(() => {
     var chartDom = document.getElementById('main') as HTMLDivElement;
     let myChart = echarts.init(chartDom);

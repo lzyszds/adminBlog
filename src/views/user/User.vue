@@ -41,7 +41,13 @@ const modifyThe = (event: User) => {
 
 //删除用户
 const _delete = async (event) => {
-  const res = await http('post', '/user/deleteUser', { uid: event.uid })
+  const res = await http({
+    url: '/user/deleteUser',
+    method: 'post',
+    data: {
+      id: event.id
+    }
+  })
   ElNotification({
     title: res.code == 200 ? '成功' : '失败',
     message: '用户' + res.msg,
@@ -61,7 +67,7 @@ const popup = reactive<Popup>({
 })
 //子组件传来的参数 关闭form表单
 const switchMod = (boolean: boolean, isAdd) => {
-  if(isAdd) {
+  if (isAdd) {
     popup.addVisible = boolean
   } else {
     popup.modifyVisible = boolean

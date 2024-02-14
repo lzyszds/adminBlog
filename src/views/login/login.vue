@@ -16,12 +16,6 @@ if (localStorage.getItem("lzy_token")) {
   //路由重定向
   router.replace("/");
 }
-interface getLoginData {
-  error: number;
-  data: string;
-  message: string;
-  code: number;
-}
 const tipsText = ref("");
 const load = ref(false);
 
@@ -56,9 +50,13 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.validate(async (valid, fields) => {
       if (valid) {
-        const res = (await http("post", "/user/login", ruleForm)) as getLoginData;
+        const res = await http<string>({
+          url: "/user/login",
+          method: "post",
+          data: ruleForm
+        });
         setTimeout(() => {
-          if (res.error === 0 || res.code === 200) {
+          if (res.code === 200) {
             show();
             localStorage.setItem("lzy_token", res.data);
             //设置cookie，cookie过期时间为14天，如果过期则需要重新登陆，销毁localStorage中token

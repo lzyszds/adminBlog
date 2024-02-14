@@ -2,6 +2,7 @@
 import { ref, reactive, provide } from "vue";
 import SetRight from "@/components/SetRight.vue";
 import http from "@/http/http";
+import { LNotification } from '@/utils/utils'
 import { ElTableColumn, dayjs } from "element-plus";
 
 import { ElNotification } from "element-plus";
@@ -31,23 +32,41 @@ const modifyData = ref<ArticleMultipleDataType>();
 
 const modifyThe = (event: ArticleMultipleDataType) => {
   //根据点击的文章id获取文章详情信息
-  http("get", "/article/getArticleInfo/" + event.aid).then((res: any) => {
+  http({
+    url: "/article/getArticleInfo/" + event.aid,
+    method: "get"
+  }).then((res: any) => {
     modifyData.value = res.data;
     popup.modifyVisible = true;
-
   });
 };
 
 //删除文章
 const _delete = async (event) => {
-  const res = await http("post", "/privateApis/deleteArticle", { id: event.aid });
-  ElNotification({
-    title: res.code == 200 ? "成功" : "失败",
-    message: "用户" + res.message,
-    type: res.code == 200 ? "success" : "error",
-  });
-  if (res.code != 200) return false;
-  await state.handleCurrentChange(requirement)
+  try {
+    const res = await http({
+      url: "/privateApis/deleteArticle",
+      method: "post",
+      data: { id: event.aid }
+    });
+
+    const notificationTitle = res.code === 200 ? "成功" : "失败";
+    const notificationMessage = `用户: ${res.message}`;
+    const notificationType = res.code === 200 ? "success" : "error";
+
+    ElNotification({
+      title: notificationTitle,
+      message: notificationMessage,
+      type: notificationType
+    });
+
+    return res.code === 200;
+  } catch (error) {
+    // 处理可能的异步错误
+    console.error("Error deleting article:", error);
+    LNotification("删除失败", 2000, "error");
+    return false;
+  }
 };
 
 const popup = reactive<Popup>({
@@ -134,7 +153,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column property="tags" label="类型" sortable  width="250">
+      <el-table-column property="tags" label="类型" sortable width="250">
         <template #default="{ row }">
           <div class="tags">
             <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{ item }}</el-tag>

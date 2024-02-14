@@ -7,7 +7,10 @@ const loading = ref(true)
 const state = useStore()
 
 const data: any = ref({})
-http("get", "/common/getAdminHomeData").then(res => {
+http({
+  method: "get",
+  url: "/common/getAdminHomeData"
+}).then(res => {
   data.value = res.data
   loading.value = false
   state.loading = false

@@ -9,24 +9,25 @@ import System from '@/views/system/System.vue'
 import Undefined from '@/views/undefined/Undefined.vue'
 import sockete from "socket.io-client";
 
-const socket = sockete.io('http://localhost:1022', { cors: true });
+// // 创建socket连接 
+// // @ts-expect-error
+// const socket = sockete.io('http://localhost:1022', { cors: true });
 
-// 监听连接成功事件
-socket.on('connect', () => {
-  console.log('已连接到服务器');
+// // 监听连接成功事件
+// socket.on('connect', () => {
+//   console.log('已连接到服务器');
 
-  // 发送消息到服务器
-  socket.emit('message', localStorage.getItem('lzy_token'));
-});
+//   // 发送消息到服务器
+//   socket.emit('message', localStorage.getItem('lzy_token'));
+// });
 
-// 监听服务器发送的消息
-socket.on('message', (msg) => {
-  console.log('收到消息:', msg);
-});
+// // 监听服务器发送的消息
+// socket.on('message', (msg) => {
+//   console.log('收到消息:', msg);
+// });
 
 // // 断开连接
 // socket.disconnect();
-
 
 const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
 
@@ -34,7 +35,7 @@ import { useStore } from '@/store'
 
 const state = useStore()
 
-const currentView = ref()
+const currentView = ref('System') // 默认值为'System'
 const componentsNames = [
   'System',
   'User',
@@ -54,33 +55,46 @@ const components = {
   Article,
   User,
   Category,
-  Undefined
+  Undefined,
 }
+
 const router = useRouter()
+
+/**
+ * 根据组件名切换组件
+ * @param componentName 组件名
+ */
 const changeComponent = (componentName: string) => {
-  // 如果当前路由和点击的路由一样，就不执行下方内容
-  if (currentView.value == componentName) return
+  if (currentView.value === componentName) return
   state.loading = true
-  if (componentName.indexOf('/login') == 0) {
+
+  // 如果组件名以'/login'开头，则销毁token并跳转到登录页面
+  if (componentName.startsWith('/login')) {
     // 销毁token
-    localStorage.clear()
+    localStorage.setItem('lzy_token', 'null')
     return router.push('/login')
   }
-  setTimeout(() => {
-    //判断页面是否有组件存在 如果存在则返回，不存在则返回404界面
-    currentView.value = componentName in components ? componentName : 'Undefined'
+
+  // 使用requestAnimationFrame来避免页面闪烁
+  requestAnimationFrame(() => {
+    // 如果组件名不在components中，则等待组件加载完成后再隐藏loading
     if (!(componentName in components)) {
       nextTick(() => {
         state.hideLoading()
       })
+    } else {
+      // 更新当前组件名
+      currentView.value = componentName
     }
-  }, 50)
+  })
 }
-watch(() => historyRouter.value, (val) => {
-  console.log(`lzy  val:`, val)
-  changeComponent(componentsNames[val])
-}, { immediate: true })
 
+watch(() => historyRouter.value, (val) => {
+  const componentName = componentsNames[val]
+  if (componentName) {
+    changeComponent(componentName)
+  }
+}, { immediate: true })
 
 </script>
 

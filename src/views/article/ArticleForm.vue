@@ -2,27 +2,10 @@
 import { ElMessageBox, ElNotification } from "element-plus";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
-import { compressPic, isEqual, toProxys } from "@/utils/utils";
+import { optimizeImage, isEqual, toProxys, tipNotify } from "@/utils/utils";
 import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
-const articledata = useStorage("articledata", {} as ArticledataType);
-
-if (articledata.value.title) {
-  ElMessageBox({
-    title: "提示",
-    message: h("p", null, [h("span", null, "是否继续完成上次内容?")]),
-    showCancelButton: true,
-    confirmButtonText: "可以",
-    cancelButtonText: "不了",
-  }).then(() => {
-    information.text = articledata.value.content;
-    information.title = articledata.value.title;
-    information.cover = articledata.value.cover_img;
-    // tagData.value = articledata.value.wtype.split(",");
-  }).catch(() => {
-    localStorage.removeItem("articledata");
-  })
-}
-
+// 获取数据
+const { value: { title, content, cover_img } } = useStorage("articledata", {} as ArticledataType);
 const emit = defineEmits(["switchMod", "switchAdd"]);
 const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  mark |left center right ul ol table hr | link image code tip music| save tips`;
 const props = defineProps<Props>();
@@ -37,32 +20,60 @@ const information = reactive<InformationTypes>({
     ? "/adminPublic" + props.data?.cover_img
     : "/api/article/getRandArticleImg"
 });
+const message = h("p", null, [h("span", null, "是否继续完成上次内容?")]);
+const config = {
+  title: "提示",
+  message,
+  showCancelButton: true,
+  confirmButtonText: "可以",
+  cancelButtonText: "不了",
+};
+
+
+// 异步函数，用于显示MessageBox
+(async () => {
+  try {
+    // 如果存在title
+    if (title) {
+      // 等待MessageBox显示结果
+      const result = await ElMessageBox(config);
+      // 如果点击了确认按钮
+      if (result === 'confirm') {
+        // 设置information对象的属性
+        information.text = content;
+        information.title = title;
+        information.cover = cover_img;
+        // 如果需要，可以在这里处理wtype的逻辑
+      }
+    }
+  } catch (error) {
+    // 打印错误信息
+    console.error('Error displaying MessageBox:', error);
+  }
+})();
+
+
 const protoInformation = toProxys(props.data!);
-//确认提交
-const submitForm = () => {
-  const isModify = props.type === "modify"
-  const url = isModify ? "/article/updateArticle" : "/article/addArticle";
-  const data = setData()
-  //当前是否保存 缓存
-  if (
-    information.storage.text === information.text ||
-    information.storage.html === information.html
-  ) {
-    http("post", url, data).then((res: any) => {
+// 确认提交
+const submitForm = async () => {
+  const { type } = props;
+  const url = type === "modify" ? "/article/updateArticle" : "/article/addArticle";
+  const data = setData();
+
+  // 检查内容是否相同
+  if (information.storage.text === information.text && information.storage.html === information.html) {
+    try {
+      const res = await http({
+        url,
+        method: "post",
+        data,
+      });
       if (res.code === 200) {
-        if (isModify) {
-          emit("switchMod", { flag: false, data: res.data, type: '修改' });
-        } else {
-          emit("switchAdd", { flag: false, data: res.data, type: '新增' });
-        }
+        emitResult(type, res.data, false);
       }
-    }).catch((e) => {
-      if (isModify) {
-        emit("switchMod", { flag: true, data: e, type: '修改' });
-      } else {
-        emit("switchAdd", { flag: true, data: e, type: '新增' });
-      }
-    })
+    } catch (e) {
+      emitResult(type, e, true);
+    }
   } else {
     ElMessageBox({
       title: "提示",
@@ -77,19 +88,30 @@ const submitForm = () => {
     });
   }
 };
+
+// 发送结果
+const emitResult = async (type, data, isError) => {
+  if (isError) {
+    emit(`switch${type}` as "switchMod" | "switchAdd", { flag: true, data, type: '修改' });
+  } else {
+    emit(`switch${type}` as "switchMod" | "switchAdd", { flag: false, data, type: '修改' });
+  }
+};
 //暂存按钮
 const resetForm = () => {
   const save = document.querySelector(".v-md-icon-save") as HTMLLIElement;
   save.click();
-  articledata.value = setData();
+  // articledata.value = setData();
 };
-//本地图片上传到线上，并返回当前文件在线上的path
-const handleUploadImage = (event, insertImage, files) => {
+const handleUploadImage = async (event, insertImage, files) => {
 
-  //如果文件大小小于300kb，不进行压缩，按比例压缩
+  // 如果文件大小小于300kb，不进行压缩，按比例压缩
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5;
-  //对图片进行压缩
-  compressPic(files[0], scale).then(async ({ fileCompress }) => {
+
+  try {
+    // 对图片进行压缩
+    const { fileCompress } = await optimizeImage(files[0], scale);
+
     // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
     let formData = new FormData();
     formData.append("upload-image", fileCompress);
@@ -97,38 +119,57 @@ const handleUploadImage = (event, insertImage, files) => {
     let headers = {
       "Content-Type": "multipart/form-data",
     };
+
     // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    const res = await http<string>("post", "/article/uploadArticleImg", formData, headers);
+    const res = await http<string>({
+      method: "post",
+      url: "/article/uploadArticleImg",
+      data: formData,
+      headers
+    });
+
     if (res.code === 200) {
       insertImage({
         url: "/adminPublic" + res.data,
         desc: "点击放大",
       });
     }
-  }).catch((e) => {
-    console.log(e);
-  })
+  } catch (e) {
+    console.error("图片上传或插入过程中出现错误:", e);
+    // 可以在这里添加错误处理逻辑，例如重试上传或通知用户
+  }
 };
-const clicks = (text, html) => {
+
+const saveToInformationStorage = (text, html) => {
+  // 确保information对象和storage属性已经定义
+  if (!information || !information.storage) {
+    throw new Error("information.storage未定义");
+  }
   information.storage = { text, html };
 };
 
+/**
+ * 设置数据
+ * @returns {ArticledataType} 文章数据
+ */
 function setData(): ArticledataType {
+  // 判断是否修改文章
   const isModify = props.type === "modify";
+  // 初始化文章数据
   const data = {
-    title: information.title,
-    //文章开头第一段话
-    partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!,
-    content: information.text,
-    main: information.html,
+    title: information.title, // 文章标题
+    partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!, // 文章开头第一段话
+    content: information.text, // 文章内容
+    main: information.html, // 文章主体内容
     cover_img: (information.cover || props.data?.cover_img)?.replace(
       "/adminPublic",
       ""
-    )!,
-    aid: isModify ? props.data?.aid! : null,
-    tags: tagDataTem.value,
+    )!, // 文章封面图片
+    aid: isModify ? props.data?.aid! : null, // 文章ID（修改时为当前文章ID，创建时为null）
+    tags: tagDataTem.value, // 文章标签
   }
-  return isEqual(data, protoInformation, 'aid')
+  // 判断数据是否与原始数据相同
+  return isEqual(data, protoInformation, 'aid');
 }
 const coverFile = ref<HTMLInputElement>();
 //异步执行，等待dom渲染完成
@@ -137,7 +178,7 @@ nextTick(() => {
   useEventListener(coverFile, "change", () => {
     const files = coverFile.value!.files as FileList;
     //对图片进行压缩
-    compressPic(files[0], 0.5).then(({ fileCompress }) => {
+    optimizeImage(files[0], 0.5).then(({ fileCompress }) => {
       // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
       let formData = new FormData();
       formData.append("upload-image", fileCompress);
@@ -146,15 +187,18 @@ nextTick(() => {
         "Content-Type": "multipart/form-data",
       };
       // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-      http("post", "/article/uploadArticleImg", formData, headers).then(
-        (res: HttpResonse<string>) => {
-          if (res.code === 200) {
-            information.cover = "/adminPublic" + res.data;
-          } else {
-            console.log(res.msg);
-          }
+      http({
+        url: "/article/uploadArticleImg",
+        method: "post",
+        data: formData,
+        headers
+      }).then((res: HttpResonse<string>) => {
+        if (res.code === 200) {
+          information.cover = "/adminPublic" + res.data;
+        } else {
+          console.log(res.msg);
         }
-      );
+      });
     });
   });
 });
@@ -174,17 +218,20 @@ const tagData: any = ref(props.data?.tags || []);
 const tagDataTem: any = ref(tagData.value);
 //标签列表
 const tagList = ref<TagDataType[]>();
-
+// 获取标签列表
 try {
-  //获取标签列表
-  const result = await http("get", "/article/getArticleTypeList") as any;
+  const result = await http<TagDataType[]>({
+    url: "/article/getArticleType",
+    method: "get",
+  });
   tagList.value = result.data;
 } catch (e) {
   console.log(e);
 }
 
+// 标签激活函数
 const tagActive = (tag) => {
-  //数量不能超过4个
+  // 数量不能超过4个
   if (tagDataTem.value.length >= 4) {
     ElNotification({
       title: "提示",
@@ -199,14 +246,23 @@ const tagActive = (tag) => {
     tagDataTem.value.push(tag);
   }
 };
+
+// 标签激活类名
 const tagActiveClass = (tag) => {
   return tagDataTem.value.includes(tag) ? "tag-active" : "";
 };
+
+// 添加标签
 const addTag = (flag: boolean) => {
-  if (flag == true) tagData.value = tagDataTem.value;
-  else tagDataTem.value = tagData.value;
+  if (flag) {
+    tagData.value = tagDataTem.value;
+  } else {
+    tagDataTem.value = tagData.value;
+  }
   visible.value = false;
 };
+
+// 输入类型
 const typeInput = ref("");
 //添加文章分类小标题
 const addArticleType = async () => {
@@ -221,10 +277,19 @@ const addArticleType = async () => {
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value);
   }
-  const result = await http<null>("post", "/article/addArticleType", { name: typeInput.value });
+  const result = await http<null>({
+    url: "/article/addArticleType",
+    method: "post",
+    data: {
+      name: typeInput.value,
+    },
+  });
   if (result.code == 200) {
-    const { data } = await http<TagDataType[]>("get", "/article/addArticleType");
-    console.log(data);
+    const { data } = await http<TagDataType[]>({
+      url: "/article/getArticleType",
+      method: "get",
+    });
+    tipNotify("添加成功",);
   }
 };
 </script>
@@ -269,7 +334,8 @@ const addArticleType = async () => {
         <input class="title" type="text" v-model="information.title" />
       </div>
       <v-md-editor class="markDowmLzy" v-model="information.text" :disabled-menus="[]" :left-toolbar="orderTool"
-        @save="clicks" @upload-image="handleUploadImage" :height="(tableheight! * 0.9) + 'px'" :toolbar="toolbar">
+        @save="saveToInformationStorage" @upload-image="handleUploadImage" :height="(tableheight! * 0.9) + 'px'"
+        :toolbar="toolbar">
       </v-md-editor>
     </div>
     <div class="btnTool">

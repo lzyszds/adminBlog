@@ -35,38 +35,54 @@ export function timeAgo(time) {
   return ([...mp].find(([n]) => n(t)).pop())(t) + '前'
 }
 
-//获取当前ip以及天气
-export function getIpWeather() {
+/**
+ * 获取IP天气信息
+ * @returns {Promise<any>} IP天气信息
+ */
+export async function getIpWeather(): Promise<any> {
   let headers = {
     'Content-Type': 'multipart/form-data',
-    'X-User-Token': 'iwKIaV2WP/9pLVldKr7qSFoeqAvBCO/n'
-  }
-  return new Promise((resolve, reject) => {
-    http('get', '/common/ipConfig', headers).then((res: any) => {
-      console.log(`lzy  res:`, res)
-      if (res.status = 'success') {
-        resolve(res.data)
-      } else {
-        reject(res.status)
-      }
+  };
+  try {
+    const response = await http({
+      url: '/common/ipConfig',
+      method: 'get', // 请求方式
+      headers: headers, // 请求头
     });
-  })
+    if (response.msg === 'success' || response.message === "success") {
+      return response.data;
+    } else {
+      throw new Error(response.message); // 抛出错误，让调用者处理
+    }
+  } catch (error) {
+    // 这里可以添加错误处理逻辑
+    console.error('Error fetching IP weather:', error);
+    throw error; // 重新抛出错误，让调用者知道发生了错误
+  }
 }
 
+
+/**
+ * 将base64编码的字符串转换为Blob对象
+ * @param {string} dataurl - base64编码的字符串
+ * @returns {Blob} - 转换后的Blob对象
+ */
 export function base64toBlob(dataurl) {
   // base64 转 二进制流(blob)
-  let arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
+  let arr = dataurl.split(","), // 将base64编码的字符串按逗号分割成数组
+    mime = arr[0].match(/:(.*?);/)[1], // 提取MIME类型
+    bstr = atob(arr[1]), // 将base64编码的字符串解码为二进制流
+    n = bstr.length, // 二进制流的长度
+    u8arr = new Uint8Array(n); // 创建一个指定长度的无符号8位整数数组
   while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
+    u8arr[n] = bstr.charCodeAt(n); // 将二进制流的每个字节转换为无符号8位整数并存入数组
   }
   return new Blob([u8arr], {
-    type: mime,
+    type: mime, // 设置Blob对象的MIME类型
   });
 }
+
+
 // 二进制流转换为base64 格式。
 export function getBase64(data, type) {
   return new Promise((resolve, reject) => {
@@ -78,27 +94,33 @@ export function getBase64(data, type) {
   });
 }
 
-//上传图片，图片太大，如何在前端实现图片压缩后上传
-export function compressPic(file, quality) {
+
+/**
+ * 压缩图片 
+ * @param file - 图片文件
+ * @param quality - 压缩质量 0-1之间  值越小压缩的越大 图片质量越差
+ * @returns Promise对象，包含base64格式的压缩图片和压缩后的文件对象
+ */
+export function optimizeImage(file, quality): Promise<{ base64: string, fileCompress: Blob }> {
   return new Promise((resolve, reject) => {
-    getBase64(file, file.type).then((res) => {
-      // 这里quality的范围是（0-1）
+    getBase64(file, file.type).then((res: string) => {
       const canvas = document.createElement("canvas") as HTMLCanvasElement;
-      const ctx: any = canvas.getContext("2d");
-      const img: any = new Image();
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
       img.src = res;
       img.onload = function () {
         canvas.width = img.width;
         canvas.height = img.height;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        // 转换成base64格式 quality为图片压缩质量 0-1之间  值越小压缩的越大 图片质量越差
+        ctx!.drawImage(img, 0, 0, img.width, img.height);
         const base64 = canvas.toDataURL(file.type, quality);
         const fileCompress = base64toBlob(base64);
-        resolve({ base64, fileCompress })
-        reject('压缩失败')
-      }
-    })
-  })
+        resolve({ base64, fileCompress });
+      };
+      img.onerror = function () {
+        reject(new Error('图片加载失败'));
+      };
+    });
+  });
 }
 
 // 默认弹窗
@@ -126,29 +148,40 @@ export const copyTip = () => {
 }
 
 // 提示通知
-export const tipNotify = (val: string, time?: number) => {
-  const style = `color: var(--themeColor); font-size: 16px;`
-  const icon = `<i class="iconfont icon-tongzhi" style="${style}"></i>`
-  LNotification(`${icon} ${val}`, time)
-}
+/**
+ * 创建一个提示通知。
+ * @param val 通知的内容
+ * @param time 可选的显示时间
+ */
+export const tipNotify = (val: string, time?: number): void => {
+  // 定义样式常量
+  const style = `color: var(--themeColor); font-size: 16px;`;
+
+  // 使用模板字符串构建图标字符串
+  const icon = `<i class="iconfont icon-tongzhi" style="${style}"></i>`;
+
+  // 调用 LNotification 函数创建通知
+  LNotification(`${icon} ${val}`, time);
+};
 
 
-
-//获取cookie
+// 获取cookie
 export const getCookie = (name: string) => {
-  let cookie = document.cookie.split('; ').map((item) => {
-    return item.split('=')
-  })
-  cookie = Object.fromEntries(cookie)
-  return cookie[name]
-}
+  const cookies = document.cookie.split('; ');
+  const cookie = cookies.find((item) => item.includes(`${name}=`));
+  if (cookie) {
+    console.log(`lzy  cookie:`, cookie)
+    const [nameValue, ...rest] = cookie.split('=');
+    return rest
+  }
+  return null;
+};
 
-//设置cookie
+// 设置cookie
 export const setCookie = (name: string, value: string, time: number) => {
-  let date = dayjs()
-  date = date.add(time, 'day')
-  document.cookie = `${name}=${value};expires=${date}`
-}
+  const date = dayjs().add(time, 'day').format('ddd, dd-MMM-yyyy HH:mm:ss');
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${date}`;
+};
 
 /* 数组去重 arr: 要处理数组, key: 去重的key值 单一数组不需要key */
 export const unique = (arr: any[], key?: string) => {
@@ -199,36 +232,36 @@ export const setTime: any = (time: string) => {
  * @returns 转换后的普通对象
  */
 export function toProxys(obj: any): any {
+  // 如果obj不是对象，则直接返回
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
 
   // 初始化结果对象
-  let result = {}
-
-  // 如果obj不是对象，则直接返回
-  if (typeof obj !== 'object') {
-    return obj
-  }
+  let result: any = {};
 
   // 遍历obj的每个键值对
   for (const key in obj) {
+    const value = obj[key];
 
     // 如果键对应的值是数组
-    if (obj[key] instanceof Array) {
+    if (Array.isArray(value)) {
       // 使用展开运算符创建数组的深拷贝
-      result[key] = [...obj[key]]
+      result[key] = [...value];
 
       // 如果键对应的值是对象
-    } else if (obj[key] instanceof Object) {
+    } else if (value && typeof value === 'object' && value !== null) {
       // 递归调用toProxys函数转换对象
-      result[key] = toProxys(obj[key])
+      result[key] = toProxys(value);
 
       // 否则直接将值赋值给结果对象
     } else {
-      result[key] = obj[key]
+      result[key] = value;
     }
   }
 
   // 返回转换后的结果对象
-  return result
+  return result;
 }
 
 
@@ -281,7 +314,7 @@ export default {
   getIpWeather,//获取当前ip以及天气
   base64toBlob,//base64转二进制流
   getBase64,//二进制流转换为base64 格式。
-  compressPic,//上传图片，图片太大，如何在前端实现图片压缩后上传
+  optimizeImage,//上传图片，图片太大，如何在前端实现图片压缩后上传
   copyTip,//复制内容提示版权信息
   tipNotify,//提示通知
   LNotification,//提示弹窗

@@ -13,15 +13,22 @@ import router from '@/router/index'; // 导入你的路由实例
 
 export interface HttpResonse<T> {
   code: number
-  data: {
-    data: T
-    total: number
-  } | T[],
+  data: T,
   msg?: string,
   total?: number,
   message?: string,
-  err?: object
+  err?: object,
+  error?: object,
 }
+
+export interface ResonseData<T> {
+  data: T
+  total: number
+}
+
+
+
+
 
 const instance = axios.create({
   baseURL: window.location.origin,
@@ -33,7 +40,7 @@ const instance = axios.create({
 instance.interceptors.response.use((response: AxiosResponse): any => {
   if (!getCookie('token_remderDay')) {
     // 如果没有名为 'token_remderDay' 的 Cookie，清空本地存储
-    localStorage.clear()
+    localStorage.setItem('lzy_token', 'null')
   }
   if (response.status === 200) {
     // 993登录过期
@@ -42,7 +49,7 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
         router.push('/login')
         ElMessageBox.close()
       }, 1000 * 2)
-      localStorage.clear() // 清空本地存储
+      localStorage.setItem('lzy_token', 'null') // 清空本地存储
       ElMessageBox.alert('登陆验证失败，请重新登陆！！(2秒后自动退出)', '提示', {
         // 弹出提示框，告知用户登录验证失败
         // 如果要禁用其自动对焦
@@ -68,14 +75,25 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
 })
 //导出ts接口
 
+/**
+ * HttpConfig 接口定义了HTTP请求的配置项
+ */
+interface HttpConfig {
+  url: string
+  method?: 'get' | 'post' | 'put' | 'delete'
+  data?: any
+  params?: any
+  headers?: any
+  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
+}
 
-
-// 2、封装请求方式
-// @param method(必须)  请求方法
-// @param url(必须)  接口地址
-// @param data(可选)  携带参数
-// @param headers(可选) 请求头可以自己设置，也可以使用默认的（不传）
-export default async function http<T>(method = 'get', url = '', data = {}, headers = {}): Promise<HttpResonse<T>> {
+/**
+ * 默认的HTTP请求函数
+ * @param httpConfig HTTP请求的配置项
+ * @returns 返回一个Promise，Promise的resolve值为HttpResonse对象
+ */
+export default async function http<T>(httpConfig: HttpConfig): Promise<HttpResonse<T>> {
+  let { method = 'get', url, data, params, headers } = httpConfig;
   // 设置默认头部信息
   const defaultHeaders: any = {
     'access-control-allow-origin': '*',

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import http from "@/http/http";
+import http, { ResonseData } from "@/http/http";
 import { tipNotify } from '@/utils/utils'
 import dayjs from 'dayjs';
 import { Requirement } from '@/types/SetRightType';
@@ -47,7 +47,10 @@ export const useStore = defineStore('main', {
       /* 此处有一个巨大的坑，接口如果没有返回toal就会导致此处的方法初始触发两次。 */
       requirement.pages = val ?? requirement.pages
       const pagePara = `${api}?pages=${requirement.pages}&limit=${limit}&search=${search}`
-      const { code, data, msg } = await http<T>('get', pagePara)
+      const { code, data, msg } = await http<ResonseData<T>>({
+        url: pagePara,
+        method: 'get',
+      })
 
       //如果 data.data 不是数组， 
       if (!Array.isArray(data)) {
