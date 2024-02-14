@@ -76,10 +76,6 @@ const popup = reactive<Popup>({
   modifyVisible: false,
   addWidth: "90%",
   modifyWidth: "90%",
-  addLeft: "0px",
-  modifyLeft: "0px",
-  addTop: "0px",
-  modifyTop: "0px",
   alignCenter: true
 });
 

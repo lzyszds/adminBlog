@@ -57,36 +57,26 @@ const protoInformation = toProxys(props.data!);
 // 确认提交
 const submitForm = async () => {
   const { type } = props;
-  const url = type === "modify" ? "/article/updateArticle" : "/article/addArticle";
-  const data = setData();
+  const data = setData(type);
+  console.log(`lzy  data:`, data)
 
   // 检查内容是否相同
-  if (information.storage.text === information.text && information.storage.html === information.html) {
-    try {
-      const res = await http({
-        url,
-        method: "post",
-        data,
-      });
-      if (res.code === 200) {
-        emitResult(type, res.data, false);
-      }
-    } catch (e) {
-      emitResult(type, e, true);
-    }
-  } else {
-    ElMessageBox({
-      title: "提示",
-      message: h("p", null, [h("span", null, "确定要发布文章吗？")]),
-      showCancelButton: true,
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-    }).then(() => {
-      const save = document.querySelector(".v-md-icon-save") as HTMLLIElement;
-      save.click();
-      submitForm();
+  try {
+    const res = await http({
+      url: type === "modify" ? "/article/updateArticle" : "/article/addArticle",
+      method: "post",
+      data,
     });
+    if (res.code === 200) {
+      emitResult(type === "modify" ? "Mod" : "Add", res.data, false);
+    }
+  } catch (e) {
+    //添加失败
+    tipNotify("添加失败", 2000);
   }
+
+  const save = document.querySelector(".v-md-icon-save") as HTMLLIElement;
+  save.click();
 };
 
 // 发送结果
@@ -152,9 +142,9 @@ const saveToInformationStorage = (text, html) => {
  * 设置数据
  * @returns {ArticledataType} 文章数据
  */
-function setData(): ArticledataType {
+function setData(type: "modify" | "add"): ArticledataType {
   // 判断是否修改文章
-  const isModify = props.type === "modify";
+  const isModify = type === "modify";
   // 初始化文章数据
   const data = {
     title: information.title, // 文章标题
@@ -221,7 +211,7 @@ const tagList = ref<TagDataType[]>();
 // 获取标签列表
 try {
   const result = await http<TagDataType[]>({
-    url: "/article/getArticleType",
+    url: "/article/getArticleTypeList",
     method: "get",
   });
   tagList.value = result.data;
@@ -231,16 +221,16 @@ try {
 
 // 标签激活函数
 const tagActive = (tag) => {
-  // 数量不能超过4个
-  if (tagDataTem.value.length >= 4) {
-    ElNotification({
-      title: "提示",
-      message: "最多只能选择4个标签",
-      type: "warning",
-    });
-    return;
-  }
   if (tagDataTem.value.includes(tag)) {
+    // 数量不能超过4个
+    if (tagDataTem.value.length >= 4) {
+      ElNotification({
+        title: "提示",
+        message: "最多只能选择4个标签",
+        type: "warning",
+      });
+      return;
+    }
     tagDataTem.value = tagDataTem.value.filter((item) => item !== tag) as any;
   } else {
     tagDataTem.value.push(tag);
@@ -286,7 +276,7 @@ const addArticleType = async () => {
   });
   if (result.code == 200) {
     const { data } = await http<TagDataType[]>({
-      url: "/article/getArticleType",
+      url: "/article/getArticleTypeList",
       method: "get",
     });
     tipNotify("添加成功",);

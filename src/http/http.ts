@@ -26,10 +26,6 @@ export interface ResonseData<T> {
   total: number
 }
 
-
-
-
-
 const instance = axios.create({
   baseURL: window.location.origin,
   // timeout: 5000,

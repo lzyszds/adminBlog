@@ -112,7 +112,7 @@ const resetForm = (formInstance: FormInstance | undefined) => {
   if (!formInstance) return
   formInstance.resetFields()
 }
-//@ts-expect-error
+// @ts-expect-error
 var timer
 const handleExceed = async () => {
   timer = true;
@@ -228,6 +228,7 @@ const submitUpload = () => {
 
 <style lang="less" scoped>
 .demo-ruleForm {
+
   :deep(.el-form-item__label) {
     flex-direction: row-reverse;
     gap: 10px;

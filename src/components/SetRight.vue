@@ -78,11 +78,13 @@ provide("requirement", {
   </div>
   <div v-if="popup">
     <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible"
-      :before-close="handleClose" title="新增文章" :align-center="popup.alignCenter" :width="popup.addWidth">
+      :before-close="handleClose" title="新增文章" :align-center="popup.alignCenter" :width="popup.addWidth"
+      :top="popup.addTop">
       <slot name="popupAdd" v-if="popup.addVisible"></slot>
     </el-dialog>
     <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
-      :before-close="handleClose" title="修改文章" :align-center="popup.alignCenter" :width="popup.modifyWidth">
+      :before-close="handleClose" title="修改文章" :align-center="popup.alignCenter" :width="popup.modifyWidth"
+      :top="popup.modifyTop">
       <slot name="popupModify" v-if="popup.modifyVisible"></slot>
     </el-dialog>
   </div>
@@ -138,7 +140,6 @@ div :deep(img[data-fancybox="gallery"]) {
   border: 2px solid #c3c6ce;
   transition: 0.5s ease-out;
   overflow: visible;
-  margin: 25px auto;
 
   .el-dialog__header {
     font-family: "almama";

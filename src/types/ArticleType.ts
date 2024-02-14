@@ -20,7 +20,7 @@ export interface TagDataType {
 
 
 export interface Props {
-  type: string,
+  type: "modify" | "add",
   data?: ArticleMultipleDataType,
   tableheight: number,
 }
