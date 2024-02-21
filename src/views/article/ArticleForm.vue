@@ -280,6 +280,7 @@ const addArticleType = async () => {
       method: "get",
     });
     tipNotify("添加成功",);
+    tagList.value = data;
   }
 };
 </script>
