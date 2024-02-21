@@ -1,12 +1,14 @@
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
 import { ElNotification, FormInstance, FormRules } from 'element-plus'
-import http from '@/http/http';
 const emit = defineEmits(['switchMod'])
 const props = defineProps({
   type: String,
   data: Object,
 })
+
+const { $axios } = window;
+
 // const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
@@ -66,7 +68,7 @@ const operateUser = async () => {
   }, {})
 
   try {
-    const res = await http({
+    const res = await $axios({
       url: isAdd ? '/user/addUser' : '/user/updateUser',
       method: 'post',
       data: diffData
@@ -118,7 +120,7 @@ const handleExceed = async () => {
   timer = true;
   ruleForm.value.head_img = "/img/load.gif";
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  const { data } = await http<string>({
+  const { data } = await $axios<string>({
     url: '/user/getRandHeadImg',
     method: 'get',
     headers: {
@@ -155,7 +157,7 @@ const submitUpload = () => {
       'Content-Type': 'multipart/form-data',
     }
     //给后台上传头像图片，并获取后台返回新的图片地址 
-    const res = await http({
+    const res = await $axios({
       url: '/user/uploadHead',
       method: 'post',
       headers: headers,

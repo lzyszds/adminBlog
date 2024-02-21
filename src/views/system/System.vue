@@ -1,26 +1,24 @@
-<script setup lang='ts'>
-import { useStore } from '@/store'
-import http from '@/http/http'
-import dayjs from 'dayjs';
-import SortTab from '@/components/SortTab.vue'
-const loading = ref(true)
-const state = useStore()
-
-const data: any = ref({})
-http({
+<script setup lang="ts">
+import { useStore } from "@/store";
+import dayjs from "dayjs";
+import SortTab from "@/components/SortTab.vue";
+const loading = ref(true);
+const state = useStore();
+const { $axios } = window;
+const data: any = ref({});
+$axios({
   method: "get",
-  url: "/common/getAdminHomeData"
-}).then(res => {
-  data.value = res.data
-  loading.value = false
-  state.loading = false
-})
-const classNames = ["one", "two", "three", "four", "five", "six"]
-
+  url: "/common/getAdminHomeData",
+}).then((res) => {
+  data.value = res.data;
+  loading.value = false;
+  state.loading = false;
+});
+const classNames = ["one", "two", "three", "four", "five", "six"];
 </script>
 
 <template>
-  <el-space direction="vertical" alignment="flex-start" class="" style="width: 100%;">
+  <el-space direction="vertical" alignment="flex-start" class="" style="width: 100%">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <section class="section">
@@ -28,9 +26,13 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
             <div class="activities">
               <h1>热门内容</h1>
               <div class="activity-container">
-                <div v-for="(item, index) in [1, 2, 3, 4, 5, 6]" :key="index" class="image-container"
-                  :class="'img-' + classNames[index]">
-                  <el-skeleton-item variant="image" style="height: 100%;" />
+                <div
+                  v-for="(item, index) in [1, 2, 3, 4, 5, 6]"
+                  :key="index"
+                  class="image-container"
+                  :class="'img-' + classNames[index]"
+                >
+                  <el-skeleton-item variant="image" style="height: 100%" />
                   <div class="overlay">
                     <h3><el-skeleton-item variant="text" /></h3>
                   </div>
@@ -42,25 +44,42 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
               <div class="weekly-schedule">
                 <h1>最新内容</h1>
                 <div class="calendar">
-                  <el-skeleton-item variant="text" class="day-and-activity" v-for="(item, index) in data.newArticle"
-                    :key="index" style="width: 550px;height:54px" />
+                  <el-skeleton-item
+                    variant="text"
+                    class="day-and-activity"
+                    v-for="(item, index) in data.newArticle"
+                    :key="index"
+                    style="width: 550px; height: 54px"
+                  />
                 </div>
               </div>
               <div class="personal-bests">
                 <h1>系统详情</h1>
-                <el-skeleton-item variant="image" style="width: 400px;height:350px;border-radius: 15px;" />
-                <div class="overlay" style="align-items:center">
-                  <el-skeleton-item variant="text" style="margin-bottom: 10px;width:90%;" />
+                <el-skeleton-item
+                  variant="image"
+                  style="width: 400px; height: 350px; border-radius: 15px"
+                />
+                <div class="overlay" style="align-items: center">
+                  <el-skeleton-item
+                    variant="text"
+                    style="margin-bottom: 10px; width: 90%"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <div class=" right-content">
+          <div class="right-content">
             <div class="user-info">
               <div class="icon-container">
-                <lzyicon height="25px" name="material-symbols:circle-notifications-outline" />
-                <lzyicon height="25px" name="material-symbols:notification-multiple-outline" />
+                <lzyicon
+                  height="25px"
+                  name="material-symbols:circle-notifications-outline"
+                />
+                <lzyicon
+                  height="25px"
+                  name="material-symbols:notification-multiple-outline"
+                />
               </div>
               <h4>欢迎访问</h4>
               <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
@@ -81,7 +100,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
               </div>
             </div>
 
-
             <div class="friends-activity">
               <h1>最新评论</h1>
               <div class="card-container">
@@ -89,12 +107,15 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   <div class="card-user-info">
                     <img
                       src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9290037d-a5b2-4f50-aea3-9f3f2b53b441"
-                      alt="" />
+                      alt=""
+                    />
                     <h2>Jane</h2>
                   </div>
-                  <img class="card-img"
+                  <img
+                    class="card-img"
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/bef54506-ea45-4e42-a1b6-23a48f61c5e8"
-                    alt="" />
+                    alt=""
+                  />
                   <p>We completed the 30-Day Running Streak Challenge!🏃‍♀️🎉</p>
                 </div>
 
@@ -102,12 +123,15 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   <div class="card-user-info">
                     <img
                       src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/42616ef2-ba96-49c7-80ea-c3cf1e2ecc89"
-                      alt="" />
+                      alt=""
+                    />
                     <h2>Mike</h2>
                   </div>
-                  <img class="card-img"
+                  <img
+                    class="card-img"
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/2dcc1b94-06c5-4c62-b886-53b9e433fd44"
-                    alt="" />
+                    alt=""
+                  />
                   <p>I just set a new record in cycling: 30 miles!💪</p>
                 </div>
               </div>
@@ -121,8 +145,12 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
             <div class="activities">
               <h1>热门内容</h1>
               <div class="activity-container">
-                <div v-for="(item, index) in data.hotArticle" :key="index" class="image-container"
-                  :class="'img-' + classNames[index]">
+                <div
+                  v-for="(item, index) in data.hotArticle"
+                  :key="index"
+                  class="image-container"
+                  :class="'img-' + classNames[index]"
+                >
                   <img :src="'/api/public' + item.cover_img" :alt="item.title" />
                   <div class="overlay">
                     <h3>{{ item.title }}</h3>
@@ -135,17 +163,19 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
               <div class="weekly-schedule">
                 <h1>最新内容</h1>
                 <div class="calendar">
-                  <div v-for="(item, index) in data.newArticle" :key="index" class="day-and-activity"
-                    :class="'activity-' + classNames[index]">
+                  <div
+                    v-for="(item, index) in data.newArticle"
+                    :key="index"
+                    class="day-and-activity"
+                    :class="'activity-' + classNames[index]"
+                  >
                     <div class="day">
-                      <h1>{{ dayjs(item.createTime).format('MM/DD') }}</h1>
-                      <p>{{ dayjs(item.createTime).format('YYYY') }}</p>
+                      <h1>{{ dayjs(item.createTime).format("MM/DD") }}</h1>
+                      <p>{{ dayjs(item.createTime).format("YYYY") }}</p>
                     </div>
                     <div class="activity">
                       <h2>{{ item.title }}</h2>
-                      <div class="participants">
-
-                      </div>
+                      <div class="participants"></div>
                     </div>
                     <button class="btn">查看</button>
                   </div>
@@ -162,8 +192,14 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
           <div class="right-content">
             <div class="user-info">
               <div class="icon-container">
-                <lzyicon height="25px" name="material-symbols:circle-notifications-outline" />
-                <lzyicon height="25px" name="material-symbols:notification-multiple-outline" />
+                <lzyicon
+                  height="25px"
+                  name="material-symbols:circle-notifications-outline"
+                />
+                <lzyicon
+                  height="25px"
+                  name="material-symbols:notification-multiple-outline"
+                />
               </div>
               <h4>欢迎访问</h4>
               <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
@@ -191,19 +227,22 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   <p>Fastest 5K Run: 22min</p>
                   <img
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/05dfc444-9ed3-44cc-96af-a9cf195f5820"
-                    alt="" />
+                    alt=""
+                  />
                 </div>
                 <div class="best-item box-two">
                   <p>Longest Distance Cycling: 4 miles</p>
                   <img
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9ca170e9-1252-4fa6-8677-36493540c1f2"
-                    alt="" />
+                    alt=""
+                  />
                 </div>
                 <div class="best-item box-three">
                   <p>Longest Roller-Skating: 2 hours</p>
                   <img
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/262d1611-ed4c-4297-981c-480cf7f95714"
-                    alt="" />
+                    alt=""
+                  />
                 </div>
               </div>
             </div>
@@ -215,12 +254,15 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   <div class="card-user-info">
                     <img
                       src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/9290037d-a5b2-4f50-aea3-9f3f2b53b441"
-                      alt="" />
+                      alt=""
+                    />
                     <h2>Jane</h2>
                   </div>
-                  <img class="card-img"
+                  <img
+                    class="card-img"
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/bef54506-ea45-4e42-a1b6-23a48f61c5e8"
-                    alt="" />
+                    alt=""
+                  />
                   <p>We completed the 30-Day Running Streak Challenge!🏃‍♀️🎉</p>
                 </div>
 
@@ -228,12 +270,15 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
                   <div class="card-user-info">
                     <img
                       src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/42616ef2-ba96-49c7-80ea-c3cf1e2ecc89"
-                      alt="" />
+                      alt=""
+                    />
                     <h2>Mike</h2>
                   </div>
-                  <img class="card-img"
+                  <img
+                    class="card-img"
                     src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/2dcc1b94-06c5-4c62-b886-53b9e433fd44"
-                    alt="" />
+                    alt=""
+                  />
                   <p>I just set a new record in cycling: 30 miles!💪</p>
                 </div>
               </div>
@@ -249,10 +294,10 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 
 #content::after {
   opacity: 0;
-  width: 0
+  width: 0;
 }
 </style>
-<style lang='less' scoped>
+<style lang="less" scoped>
 *,
 *::before,
 *::after {
@@ -274,7 +319,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 .left-content {
   display: grid;
   grid-template-rows: 50% 50%;
-  background: #EEF7FF;
+  background: #eef7ff;
   margin: 15px;
   padding: 20px;
   border-radius: 15px;
@@ -345,10 +390,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg,
-      transparent,
-      transparent,
-      rgba(3, 3, 185, 0.5));
+  background: linear-gradient(180deg, transparent, transparent, rgba(3, 3, 185, 0.5));
   border-radius: 10px;
   transition: all 0.6s linear;
 }
@@ -359,14 +401,10 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   img {
     transform: scale(1.1);
     transition: all 0.2s linear;
-
   }
 
   .overlay {
-    background: linear-gradient(180deg,
-        transparent,
-        transparent,
-        rgba(59, 59, 116, 0.8));
+    background: linear-gradient(180deg, transparent, transparent, rgba(59, 59, 116, 0.8));
     transition: all 0.6s linear;
     cursor: pointer;
 
@@ -430,9 +468,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 
 .activity-one {
   background-color: rgb(124, 136, 224, 0.5);
-  background-image: linear-gradient(240deg,
-      rgb(124, 136, 224) 0%,
-      #c3f4fc 100%);
+  background-image: linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%);
 }
 
 .activity-two {
@@ -465,7 +501,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   flex-direction: column;
   align-items: center;
   transform: translateY(-10px);
-  font-family: 'dindin';
+  font-family: "dindin";
 }
 
 .day h1 {
@@ -521,8 +557,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   box-shadow: inset 0 6px 30px rgb(255 0 0 / 10%);
   border-radius: 5px;
   cursor: pointer;
-  font-family: 'almama';
-
+  font-family: "almama";
 }
 
 .btn:hover,
@@ -534,7 +569,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 }
 
 @keyframes gelatine {
-
   0%,
   100% {
     transform: scale(1, 1);
@@ -566,7 +600,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   font-weight: 700;
   margin-bottom: 10px;
 }
-
 
 .best-item {
   display: flex;
@@ -632,12 +665,12 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
 .right-content {
   display: grid;
   grid-template-rows: 5% 20% 75%;
-  background: #EEF7FF;
+  background: #eef7ff;
   margin: 15px 15px 15px 0;
   padding: 10px 0;
   border-radius: 15px;
   font-size: 16px;
-  font-family: 'dindin';
+  font-family: "dindin";
 }
 
 /* USER INFO */
@@ -721,11 +754,13 @@ const classNames = ["one", "two", "three", "four", "five", "six"]
   position: relative;
   width: 80px;
   aspect-ratio: 1/1;
-  background: conic-gradient(from 0deg,
-      #590b94 0%,
-      #590b94 0% var(--i),
-      #b3b2b2 var(--i),
-      #b3b2b2 100%);
+  background: conic-gradient(
+    from 0deg,
+    #590b94 0%,
+    #590b94 0% var(--i),
+    #b3b2b2 var(--i),
+    #b3b2b2 100%
+  );
   border-radius: 50%;
   display: flex;
   justify-content: center;

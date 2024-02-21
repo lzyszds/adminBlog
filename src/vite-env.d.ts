@@ -6,6 +6,8 @@ declare module '*.vue' {
   export default component
 }
 
+
+
 declare module 'markdown-it-mark'
 declare module 'markdown-it-container'
 declare module 'markdown-it-bracketed-spans'
