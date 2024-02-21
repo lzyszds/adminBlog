@@ -2,7 +2,7 @@
 import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
-const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
+const historyRouter = useSessionStorage('historyRouter', "System") // returns Ref<number>
 //左侧菜单栏
 const items: Items = [
   {
@@ -81,8 +81,8 @@ type Items = {
 
 
 //点击左侧菜单栏，切换组件
-const changeComponent = async (index) => {
-  historyRouter.value = index
+const changeComponent = async (name) => {
+  historyRouter.value = name
 };
 
 //处理用户详情数据
@@ -119,8 +119,10 @@ infoData.value = data;
       </p> -->
     </div>
     <div class="list">
-      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(index)"
-        :class="{ active: historyRouter == index, animate__rubberBand: historyRouter == index }">
+      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(item.component)" :class="{
+        active: historyRouter == item.component,
+        animate__rubberBand: historyRouter == item.component
+      }">
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>

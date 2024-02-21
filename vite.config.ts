@@ -23,7 +23,7 @@ export default defineConfig(({ command, mode }): any => {
     plugins: [
       vue(),
       AutoImport({
-        imports: ['vue', 'vue-router', '@vueuse/core', 'pinia']
+        imports: ['vue', 'vue-router', '@vueuse/core', 'pinia'],
       }),
       prismjs({
         languages: ['json', 'js', 'ts', 'css', 'less', 'html', 'markdown', 'sql', 'typescript', 'vim', "git", "bash"],

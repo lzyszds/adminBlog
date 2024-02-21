@@ -19,12 +19,16 @@ import { createPinia } from 'pinia' //状态管理
 import VueMarkdownEditor from '@/utils/markDownCreate'; //markdown配置
 import lzyIcon from '@/components/lzyIcon.vue'
 import Imgloading from "@/utils/lazy";
-import loading from './utils/loading';
+import loading from '@/utils/loading';
+import http from '@/http/http';
+
+window.$axios = http;
 
 
 const pinia = createPinia()
 const app = createApp(App)
 
+// vue3全局变量挂载
 app.config.globalProperties.$fancyapps = { Fancybox, }
 // 添加vue指令
 app.directive('ImgLoading', Imgloading)

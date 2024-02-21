@@ -29,26 +29,13 @@ import sockete from "socket.io-client";
 // // 断开连接
 // socket.disconnect();
 
-const historyRouter = useSessionStorage('historyRouter', 0) // returns Ref<number>
+const historyRouter = useSessionStorage('historyRouter', "System") // returns Ref<number>
 
 import { useStore } from '@/store'
 
 const state = useStore()
 
 const currentView = ref('System') // 默认值为'System'
-const componentsNames = [
-  'System',
-  'User',
-  'Article',
-  'Comment',
-  'Category',
-  'EmailMessage',
-  'LinkControl',
-  'Setting',
-  'Login',
-  'Home',
-]
-
 const components = {
   System,
   Comment,
@@ -64,12 +51,11 @@ const router = useRouter()
  * 根据组件名切换组件
  * @param componentName 组件名
  */
-const changeComponent = (componentName: string) => {
-  if (currentView.value === componentName) return
+const changeComponent = (componentName) => {
+  const name = componentName.__name
   state.loading = true
-
   // 如果组件名以'/login'开头，则销毁token并跳转到登录页面
-  if (componentName.startsWith('/login')) {
+  if (name === 'Login') {
     // 销毁token
     localStorage.setItem('lzy_token', 'null')
     return router.push('/login')
@@ -78,21 +64,21 @@ const changeComponent = (componentName: string) => {
   // 使用requestAnimationFrame来避免页面闪烁
   requestAnimationFrame(() => {
     // 如果组件名不在components中，则等待组件加载完成后再隐藏loading
-    if (!(componentName in components)) {
-      nextTick(() => {
+    if (name === 'Undefined') {
+      setTimeout(() => {
         state.hideLoading()
-      })
-    } else {
-      // 更新当前组件名
-      currentView.value = componentName
+      }, 1000)
     }
+    currentView.value = name
   })
 }
 
 watch(() => historyRouter.value, (val) => {
-  const componentName = componentsNames[val]
+  const componentName = components[val]
   if (componentName) {
     changeComponent(componentName)
+  } else {
+    changeComponent({ __name: 'Undefined' })
   }
 }, { immediate: true })
 

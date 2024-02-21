@@ -4,6 +4,7 @@ const router = useRouter();
 onMounted(() => {
   !localStorage.getItem("lzy_token") && router.push('/login')
 })
+
 </script>
 <template>
   <Suspense>

@@ -72,9 +72,9 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
 //导出ts接口
 
 /**
- * HttpConfig 接口定义了HTTP请求的配置项
+ * IHttpConfig 接口定义了HTTP请求的配置项
  */
-interface HttpConfig {
+interface IHttpConfig {
   url: string
   method?: 'get' | 'post' | 'put' | 'delete'
   data?: any
@@ -88,7 +88,7 @@ interface HttpConfig {
  * @param httpConfig HTTP请求的配置项
  * @returns 返回一个Promise，Promise的resolve值为HttpResonse对象
  */
-export default async function http<T>(httpConfig: HttpConfig): Promise<HttpResonse<T>> {
+export default async function http<T>(httpConfig: IHttpConfig): Promise<HttpResonse<T>> {
   let { method = 'get', url, data, params, headers } = httpConfig;
   // 设置默认头部信息
   const defaultHeaders: any = {
@@ -118,6 +118,7 @@ export default async function http<T>(httpConfig: HttpConfig): Promise<HttpReson
   } catch (error) {
     return Promise.reject(error);
   }
+
 }
 
 function identifyCode(code: number | string, err: any) {
