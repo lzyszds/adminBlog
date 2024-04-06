@@ -36,7 +36,7 @@ const instance = axios.create({
 instance.interceptors.response.use((response: AxiosResponse): any => {
   if (!getCookie('token_remderDay')) {
     // 如果没有名为 'token_remderDay' 的 Cookie，清空本地存储
-    localStorage.setItem('lzy_token', 'null')
+    localStorage.setItem('lzy_token', '')
   }
   if (response.status === 200) {
     // 993登录过期
@@ -45,7 +45,7 @@ instance.interceptors.response.use((response: AxiosResponse): any => {
         router.push('/login')
         ElMessageBox.close()
       }, 1000 * 2)
-      localStorage.setItem('lzy_token', 'null') // 清空本地存储
+      localStorage.setItem('lzy_token', '') // 清空本地存储
       ElMessageBox.alert('登陆验证失败，请重新登陆！！(2秒后自动退出)', '提示', {
         // 弹出提示框，告知用户登录验证失败
         // 如果要禁用其自动对焦

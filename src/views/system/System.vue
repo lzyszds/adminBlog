@@ -10,7 +10,7 @@ $axios({
   method: "get",
   url: "/common/getAdminHomeData",
 }).then((res) => {
-  data.value = res.data;
+  data.value = res;
   loading.value = false;
   state.loading = false;
 });
@@ -18,7 +18,12 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
 </script>
 
 <template>
-  <el-space direction="vertical" alignment="flex-start" class="" style="width: 100%">
+  <el-space
+    direction="vertical"
+    alignment="flex-start"
+    class=""
+    style="width: 100%"
+  >
     <el-skeleton :loading="loading" animated>
       <template #template>
         <section class="section">
@@ -151,7 +156,10 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
                   class="image-container"
                   :class="'img-' + classNames[index]"
                 >
-                  <img :src="'/api/public' + item.cover_img" :alt="item.title" />
+                  <img
+                    :src="'/api/public' + item.cover_img"
+                    :alt="item.title"
+                  />
                   <div class="overlay">
                     <h3>{{ item.title }}</h3>
                   </div>
@@ -325,8 +333,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   border-radius: 15px;
 }
 
-/* ACTIVITIES */
-
 .activities h1 {
   margin: 0 0 20px;
   font-size: 1.4rem;
@@ -338,6 +344,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(2, 175px);
   column-gap: 10px;
+  overflow: hidden;
 }
 
 .img-one {
@@ -390,7 +397,12 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, transparent, transparent, rgba(3, 3, 185, 0.5));
+  background: linear-gradient(
+    180deg,
+    transparent,
+    transparent,
+    rgba(3, 3, 185, 0.5)
+  );
   border-radius: 10px;
   transition: all 0.6s linear;
 }
@@ -404,7 +416,12 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 
   .overlay {
-    background: linear-gradient(180deg, transparent, transparent, rgba(59, 59, 116, 0.8));
+    background: linear-gradient(
+      180deg,
+      transparent,
+      transparent,
+      rgba(59, 59, 116, 0.8)
+    );
     transition: all 0.6s linear;
     cursor: pointer;
 
@@ -468,7 +485,11 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
 
 .activity-one {
   background-color: rgb(124, 136, 224, 0.5);
-  background-image: linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%);
+  background-image: linear-gradient(
+    240deg,
+    rgb(124, 136, 224) 0%,
+    #c3f4fc 100%
+  );
 }
 
 .activity-two {
@@ -857,56 +878,36 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 }
 
-@media (max-width: 1500px) {
-  main {
-    grid-template-columns: 6% 94%;
-  }
-
-  .main-menu h1 {
-    display: none;
-  }
-
-  .logo {
-    display: block;
-    width: 30px;
-    margin: 20px auto;
-  }
-
-  .nav-text {
-    display: none;
-  }
-
-  .content {
-    grid-template-columns: 70% 30%;
+@media (max-width: 1520px) {
+  .section {
+    grid-template-columns: 1fr;
+    .right-content {
+      display: none;
+    }
   }
 }
 
 @media (max-width: 1310px) {
-  main {
-    grid-template-columns: 8% 92%;
-    margin: 30px;
-  }
-
-  .content {
-    grid-template-columns: 65% 35%;
-  }
-
-  .day-and-activity {
-    margin-bottom: 10px;
-  }
-
-  .btn {
-    padding: 8px 16px;
-    margin: 10px 0;
-    margin-right: 10px;
-    font-size: 1rem;
-  }
-
   .personal-bests-container {
     grid-template-rows: repeat(3, 98px);
     gap: 15px;
   }
+  .left-content {
+    overflow: hidden;
+    overflow-y: auto;
+  }
 
+  .personal-bests {
+    width: 100% !important;
+    .main {
+      width: 100% !important;
+      height: 350px;
+    }
+  }
+  .left-bottom {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
   .box-one {
     flex-direction: row;
     justify-content: space-between;
@@ -953,14 +954,16 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 
   .left-content {
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 350px 1fr;
     margin: 15px;
     padding: 20px;
   }
-
-  .btn {
-    padding: 8px 8px;
-    font-size: 0.9rem;
+  .personal-bests {
+    width: 100% !important;
+    .main {
+      width: 100% !important;
+      height: 350px;
+    }
   }
 
   .personal-bests-container {
@@ -1005,11 +1008,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   .right-content {
     grid-template-rows: 4% 19% 36% 41%;
   }
-
-  .personal-bests {
-    display: none;
-  }
-
   .mobile-personal-bests {
     display: block;
     margin: 0 10px;
@@ -1046,7 +1044,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 
   .left-content {
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 350px 1fr;
     padding: 30px 20px 20px;
   }
 
@@ -1080,12 +1078,6 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 }
 
-@media (max-width: 800px) {
-  .content {
-    grid-template-columns: 52% 48%;
-  }
-}
-
 @media (max-width: 700px) {
   main {
     grid-template-columns: 15% 85%;
@@ -1101,8 +1093,9 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
 
   .left-content {
     grid-area: leftContent;
-    grid-template-rows: 45% 55%;
-    padding: 10px 20px 10px;
+    grid-template-rows: 350px 1fr;
+    padding: 10px;
+    margin: 0;
   }
 
   .right-content {
@@ -1115,6 +1108,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
 
   .activities,
   .weekly-schedule {
+    overflow: hidden;
     margin-top: 10px;
   }
 

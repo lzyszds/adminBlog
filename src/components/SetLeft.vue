@@ -4,7 +4,7 @@ import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
 import { useRouter } from "vue-router";
 const router = useRouter();
-const historyRouter = useSessionStorage('historyRouter', "System") // returns Ref<number>
+const historyRouter = useSessionStorage("historyRouter", "System"); // returns Ref<number>
 //左侧菜单栏
 const items: Items[] = [
   {
@@ -63,7 +63,6 @@ const items: Items[] = [
   },
 ];
 
-
 const datalist = ref<IWeather>(); //天气数据
 const cip = ref<string>(); //ip
 // data:天气数据   cid:城市id
@@ -85,8 +84,6 @@ type Items = {
   handle?: () => void;
 };
 
-
-
 //点击左侧菜单栏，切换组件
 const changeComponent = async (item: Items) => {
   if (item.handle) {
@@ -100,14 +97,20 @@ const changeComponent = async (item: Items) => {
 //处理用户详情数据
 const infoData: any = ref();
 let data: any = [];
-const res = (await http({ url: "/user/getUserInfoToken", method: "get", })) as any; // httpData
+const res = (await http({
+  url: "/user/getUserInfoToken",
+  method: "get",
+})) as any; // httpData
 hide();
-data = res.data
+data = res.data;
 //处理用户签名
 if (data.signature) {
-  if (data.signature.indexOf(",") == -1) data.signature = data.signature.split("，");
-  else data.signature = data.signature ? data.signature.split(",") : "这个人很懒，什么都没留下";
-
+  if (data.signature.indexOf(",") == -1)
+    data.signature = data.signature.split("，");
+  else
+    data.signature = data.signature
+      ? data.signature.split(",")
+      : "这个人很懒，什么都没留下";
 } else {
   data.signature = ["这个人很懒", "什么都没留下"];
 }
@@ -123,7 +126,9 @@ infoData.value = data;
         <img :src="'/api/public' + infoData.head_img" alt="" />
       </div>
       <h3>{{ infoData.uname }}</h3>
-      <p v-for="(item, index) in infoData.signature" :key="index">「{{ item }} 」</p>
+      <p v-for="(item, index) in infoData.signature" :key="index">
+        「{{ item }} 」
+      </p>
 
       <!-- <p class="essCount">
         <lzyIcon :name="`icon-youxiang`" :fill="`#5161ce`"></lzyIcon>
@@ -131,10 +136,16 @@ infoData.value = data;
       </p> -->
     </div>
     <div class="list">
-      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(item)" :class="{
+      <div
+        class="list_item"
+        v-for="(item, index) in items"
+        :key="index"
+        @click="changeComponent(item)"
+        :class="{
           active: historyRouter == item.component,
-          animate__rubberBand: historyRouter == item.component
-        }">
+          animate__rubberBand: historyRouter == item.component,
+        }"
+      >
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>
@@ -179,7 +190,7 @@ infoData.value = data;
   }
 
   .userinfo {
-    transition: .5s all;
+    transition: 0.5s all;
 
     text-align: center;
     width: 330px;

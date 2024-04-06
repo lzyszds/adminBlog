@@ -55,6 +55,7 @@ html,
   font-size: 10px;
   margin: 0;
   padding: 0;
+  min-width: 380px;
 }
 
 a {
@@ -217,5 +218,3 @@ html.dark {
 #nprogress .bar {
   background: rgb(255, 0, 119) !important;
 }
-
-

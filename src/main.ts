@@ -5,6 +5,8 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/base.css'
 import '@/assets/css/loading.css';
 import 'animate.css';
+import '@/assets/css/media.less';
+
 
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
@@ -20,9 +22,9 @@ import VueMarkdownEditor from '@/utils/markDownCreate'; //markdown配置
 import lzyIcon from '@/components/lzyIcon.vue'
 import Imgloading from "@/utils/lazy";
 import loading from '@/utils/loading';
-import http from '@/http/http';
+import request from '@/http/request';
 
-window.$axios = http;
+window.$axios = request;
 
 
 const pinia = createPinia()
