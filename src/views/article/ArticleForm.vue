@@ -3,13 +3,19 @@ import { ElMessageBox, ElNotification } from "element-plus";
 import http, { HttpResonse } from "@/http/http";
 import toolbar from "@/utils/toolbar";
 import { optimizeImage, isEqual, toProxys, tipNotify } from "@/utils/utils";
-import { TagDataType, Props, InformationTypes, ArticledataType } from "@/types/ArticleType";
+import {
+  TagDataType,
+  Props,
+  InformationTypes,
+  ArticledataType,
+} from "@/types/ArticleType";
 // 获取数据
-const { value: { title, content, cover_img } } = useStorage("articledata", {} as ArticledataType);
+const {
+  value: { title, content, cover_img },
+} = useStorage("articledata", {} as ArticledataType);
 const emit = defineEmits(["switchMod", "switchAdd"]);
 const orderTool = `emoji undo redo clear |h bold italic strikethrough quote addTag  mark |left center right ul ol table hr | link image code tip music| save tips`;
 const props = defineProps<Props>();
-
 
 const information = reactive<InformationTypes>({
   storage: { text: "", html: "" },
@@ -18,8 +24,9 @@ const information = reactive<InformationTypes>({
   title: props.data?.title || "",
   cover: props.data?.cover_img
     ? "/adminPublic" + props.data?.cover_img
-    : "/api/article/getRandArticleImg"
+    : "/api/article/getRandArticleImg?time=" + new Date().getTime(),
 });
+
 const message = h("p", null, [h("span", null, "是否继续完成上次内容?")]);
 const config = {
   title: "提示",
@@ -29,7 +36,6 @@ const config = {
   cancelButtonText: "不了",
 };
 
-
 // 异步函数，用于显示MessageBox
 (async () => {
   try {
@@ -38,7 +44,7 @@ const config = {
       // 等待MessageBox显示结果
       const result = await ElMessageBox(config);
       // 如果点击了确认按钮
-      if (result === 'confirm') {
+      if (result === "confirm") {
         // 设置information对象的属性
         information.text = content;
         information.title = title;
@@ -48,18 +54,15 @@ const config = {
     }
   } catch (error) {
     // 打印错误信息
-    console.error('Error displaying MessageBox:', error);
+    console.error("Error displaying MessageBox:", error);
   }
 })();
-
 
 const protoInformation = toProxys(props.data!);
 // 确认提交
 const submitForm = async () => {
   const { type } = props;
   const data = setData(type);
-  console.log(`lzy  data:`, data)
-
   // 检查内容是否相同
   try {
     const res = await http({
@@ -69,6 +72,8 @@ const submitForm = async () => {
     });
     if (res.code === 200) {
       emitResult(type === "modify" ? "Mod" : "Add", res.data, false);
+    } else {
+      tipNotify("添加失败" + res.msg, 2000);
     }
   } catch (e) {
     //添加失败
@@ -81,11 +86,12 @@ const submitForm = async () => {
 
 // 发送结果
 const emitResult = async (type, data, isError) => {
-  if (isError) {
-    emit(`switch${type}` as "switchMod" | "switchAdd", { flag: true, data, type: '修改' });
-  } else {
-    emit(`switch${type}` as "switchMod" | "switchAdd", { flag: false, data, type: '修改' });
-  }
+  const emitName = `switch${type}` as "switchMod" | "switchAdd";
+  emit(emitName, {
+    flag: isError,
+    data,
+    type: type === "Mod" ? "修改" : "新增",
+  });
 };
 //暂存按钮
 const resetForm = () => {
@@ -94,7 +100,6 @@ const resetForm = () => {
   // articledata.value = setData();
 };
 const handleUploadImage = async (event, insertImage, files) => {
-
   // 如果文件大小小于300kb，不进行压缩，按比例压缩
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5;
 
@@ -115,7 +120,7 @@ const handleUploadImage = async (event, insertImage, files) => {
       method: "post",
       url: "/article/uploadArticleImg",
       data: formData,
-      headers
+      headers,
     });
 
     if (res.code === 200) {
@@ -146,21 +151,24 @@ function setData(type: "modify" | "add"): ArticledataType {
   // 判断是否修改文章
   const isModify = type === "modify";
   // 初始化文章数据
+  console.log(information.html);
   const data = {
     title: information.title, // 文章标题
-    partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!.innerHTML!, // 文章开头第一段话
+    partial_content: document.querySelector(".vuepress-markdown-body")
+      ?.firstElementChild!.innerHTML!, // 文章开头第一段话
     content: information.text, // 文章内容
-    main: information.html, // 文章主体内容
+    main: document.querySelector(".vuepress-markdown-body")?.innerHTML!, // 文章主体内容
     cover_img: (information.cover || props.data?.cover_img)?.replace(
       "/adminPublic",
       ""
     )!, // 文章封面图片
     aid: isModify ? props.data?.aid! : null, // 文章ID（修改时为当前文章ID，创建时为null）
     tags: tagDataTem.value, // 文章标签
-  }
+  };
   // 判断数据是否与原始数据相同
-  return isEqual(data, protoInformation, 'aid');
+  return isEqual(data, protoInformation, "aid");
 }
+
 const coverFile = ref<HTMLInputElement>();
 //异步执行，等待dom渲染完成
 nextTick(() => {
@@ -181,7 +189,7 @@ nextTick(() => {
         url: "/article/uploadArticleImg",
         method: "post",
         data: formData,
-        headers
+        headers,
       }).then((res: HttpResonse<string>) => {
         if (res.code === 200) {
           information.cover = "/adminPublic" + res.data;
@@ -279,7 +287,7 @@ const addArticleType = async () => {
       url: "/article/getArticleTypeList",
       method: "get",
     });
-    tipNotify("添加成功",);
+    tipNotify("添加成功");
     tagList.value = data;
   }
 };
@@ -290,23 +298,44 @@ const addArticleType = async () => {
     <div class="headelement">
       <div class="markDowmInput">
         <span>类别：</span>
-        <el-popover :width="380" placement="bottom" :visible="visible" trigger="click">
+        <el-popover
+          :width="380"
+          placement="bottom"
+          :visible="visible"
+          trigger="click"
+        >
           <template #reference>
             <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
             <div class="boxType" @click="visible = true">
-              <el-tag class="ml-1" type="info" v-for="(item, index) in tagData" :key="index">{{ item }}</el-tag>
+              <el-tag
+                class="ml-1"
+                type="info"
+                v-for="(item, index) in tagData"
+                :key="index"
+                >{{ item }}</el-tag
+              >
             </div>
             <!-- </el-tooltip> -->
           </template>
           <template #default>
             <div class="typePopover">
               <div class="item-search">
-                <input v-model="typeInput" @keydown.enter="addArticleType" type="text" placeholder="自定义标签" />
+                <input
+                  v-model="typeInput"
+                  @keydown.enter="addArticleType"
+                  type="text"
+                  placeholder="自定义标签"
+                />
                 <button @click="addArticleType">添加</button>
               </div>
               <div class="item-box">
-                <el-tag type="info" v-for="(item, index) in tagList" :key="index" @click="tagActive(item.name)"
-                  :class="tagActiveClass(item.name)">{{ item.name }}
+                <el-tag
+                  type="info"
+                  v-for="(item, index) in tagList"
+                  :key="index"
+                  @click="tagActive(item.name)"
+                  :class="tagActiveClass(item.name)"
+                  >{{ item.name }}
                 </el-tag>
               </div>
               <div class="item-tool">
@@ -324,13 +353,22 @@ const addArticleType = async () => {
         <span>文章标题：</span>
         <input class="title" type="text" v-model="information.title" />
       </div>
-      <v-md-editor class="markDowmLzy" v-model="information.text" :disabled-menus="[]" :left-toolbar="orderTool"
-        @save="saveToInformationStorage" @upload-image="handleUploadImage" :height="(tableheight! * 0.9) + 'px'"
-        :toolbar="toolbar">
+      <v-md-editor
+        class="markDowmLzy"
+        v-model="information.text"
+        :disabled-menus="[]"
+        :left-toolbar="orderTool"
+        @save="saveToInformationStorage"
+        @upload-image="handleUploadImage"
+        :height="(tableheight! * 0.9) + 'px'"
+        :toolbar="toolbar"
+      >
       </v-md-editor>
     </div>
     <div class="btnTool">
-      <el-button class="card-button" type="primary" @click="submitForm()">发布内容</el-button>
+      <el-button class="card-button" type="primary" @click="submitForm()"
+        >发布内容</el-button
+      >
       <el-button class="card-button" @click="resetForm()">暂存内容</el-button>
     </div>
   </div>
@@ -465,7 +503,7 @@ const addArticleType = async () => {
   }
 }
 
-.el-popper.is-light>.typePopover {
+.el-popper.is-light > .typePopover {
   .item-search {
     display: flex;
     border-bottom: 2px solid var(--themeColor);
@@ -523,4 +561,3 @@ const addArticleType = async () => {
   }
 }
 </style>
-

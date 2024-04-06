@@ -2,9 +2,11 @@
 import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const historyRouter = useSessionStorage('historyRouter', "System") // returns Ref<number>
 //左侧菜单栏
-const items: Items = [
+const items: Items[] = [
   {
     name: "欢迎使用",
     uicon: '<i class="iconfont">&#xe608;</i>',
@@ -48,7 +50,11 @@ const items: Items = [
   {
     name: "退出登陆",
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: "Login",
+    handle: () => {
+      localStorage.removeItem("lzy_token");
+      localStorage.removeItem("nowWeatherData");
+      router.push("/login");
+    },
   },
   {
     name: "前往首页",
@@ -75,14 +81,20 @@ if (weather) {
 type Items = {
   name: string;
   uicon: string;
-  component: string;
-}[];
+  component?: string;
+  handle?: () => void;
+};
 
 
 
 //点击左侧菜单栏，切换组件
-const changeComponent = async (name) => {
-  historyRouter.value = name
+const changeComponent = async (item: Items) => {
+  if (item.handle) {
+    item.handle();
+    return;
+  } else {
+    historyRouter.value = item.component!;
+  }
 };
 
 //处理用户详情数据
@@ -119,10 +131,10 @@ infoData.value = data;
       </p> -->
     </div>
     <div class="list">
-      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(item.component)" :class="{
-        active: historyRouter == item.component,
-        animate__rubberBand: historyRouter == item.component
-      }">
+      <div class="list_item" v-for="(item, index) in items" :key="index" @click="changeComponent(item)" :class="{
+          active: historyRouter == item.component,
+          animate__rubberBand: historyRouter == item.component
+        }">
         <span v-html="item.uicon"></span>
         <span>{{ item.name }}</span>
       </div>

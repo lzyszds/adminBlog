@@ -2,7 +2,7 @@
 import { ref, reactive, provide } from "vue";
 import SetRight from "@/components/SetRight.vue";
 import http from "@/http/http";
-import { LNotification } from '@/utils/utils'
+import { LNotification } from "@/utils/utils";
 import { ElTableColumn, dayjs } from "element-plus";
 
 import { ElNotification } from "element-plus";
@@ -34,7 +34,7 @@ const modifyThe = (event: ArticleMultipleDataType) => {
   //根据点击的文章id获取文章详情信息
   http({
     url: "/article/getArticleInfo/" + event.aid,
-    method: "get"
+    method: "get",
   }).then((res: any) => {
     modifyData.value = res.data;
     popup.modifyVisible = true;
@@ -45,22 +45,18 @@ const modifyThe = (event: ArticleMultipleDataType) => {
 const _delete = async (event) => {
   try {
     const res = await http({
-      url: "/privateApis/deleteArticle",
+      url: "/article/deleteArticle",
       method: "post",
-      data: { id: event.aid }
+      data: { id: event.aid },
     });
-
-    const notificationTitle = res.code === 200 ? "成功" : "失败";
-    const notificationMessage = `用户: ${res.message}`;
-    const notificationType = res.code === 200 ? "success" : "error";
 
     ElNotification({
-      title: notificationTitle,
-      message: notificationMessage,
-      type: notificationType
+      title: res.code === 200 ? "成功" : "失败",
+      message: `${res.data}`,
+      type: res.code === 200 ? "success" : "error",
     });
 
-    return res.code === 200;
+    await state.handleCurrentChange(requirement);
   } catch (error) {
     // 处理可能的异步错误
     console.error("Error deleting article:", error);
@@ -76,12 +72,19 @@ const popup = reactive<Popup>({
   modifyVisible: false,
   addWidth: "90%",
   modifyWidth: "90%",
-  alignCenter: true
+  alignCenter: true,
 });
 
 //子组件传来的参数 关闭form表单
-const switchMod = async (arr: { flag: boolean, data: any, type: '修改' | '新增' }) => {
-  arr.type == '修改' ? popup.modifyVisible = arr.flag : popup.addVisible = arr.flag;
+const switchMod = async (arr: {
+  flag: boolean;
+  data: any;
+  type: "修改" | "新增";
+}) => {
+  console.log(`lzy  arr:`, arr);
+  arr.type == "修改"
+    ? (popup.modifyVisible = arr.flag)
+    : (popup.addVisible = arr.flag);
   if (arr.flag) {
     return ElNotification({
       title: arr.type + "失败",
@@ -91,7 +94,7 @@ const switchMod = async (arr: { flag: boolean, data: any, type: '修改' | '新�
   }
   ElNotification({
     title: arr.type + "成功",
-    message: arr.type + "文章",
+    message: arr.data,
     type: "success",
   });
   await state.handleCurrentChange(requirement);
@@ -104,27 +107,54 @@ const switchMod = async (arr: { flag: boolean, data: any, type: '修改' | '新�
 
 provide("setRightProps", {
   popup,
-  requirement
-})
-
+  requirement,
+});
 </script>
 
 <template>
   <SetRight>
     <template #table>
-      <el-table-column property="aid" label="Id" sortable width="80" align="center"></el-table-column>
-      <el-table-column property="uname" label="作者" width="80" show-overflow-tooltip>
+      <el-table-column
+        property="aid"
+        label="Id"
+        sortable
+        width="80"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        property="uname"
+        label="作者"
+        width="80"
+        show-overflow-tooltip
+      >
       </el-table-column>
       <el-table-column label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
-            <img v-ImgLoading :src="'/adminPublic' + row.cover_img" data-fancybox="gallery" title="o" alt="" />
+            <img
+              v-ImgLoading
+              :src="'/adminPublic' + row.cover_img"
+              data-fancybox="gallery"
+              title="o"
+              alt=""
+            />
           </div>
         </template>
       </el-table-column>
-      <el-table-column property="title" label="文章标题" sortable width="160" show-overflow-tooltip>
+      <el-table-column
+        property="title"
+        label="文章标题"
+        sortable
+        width="160"
+        show-overflow-tooltip
+      >
       </el-table-column>
-      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
+      <el-table-column
+        label="创建时间"
+        sortable
+        :sort-method="formatter"
+        width="160"
+      >
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
@@ -132,11 +162,20 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="最近修改时间" sortable :sort-method="formatter" width="150">
+      <el-table-column
+        label="最近修改时间"
+        sortable
+        :sort-method="formatter"
+        width="150"
+      >
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
-            {{ row.modified_date ? dayjs(row.modified_date).format("YYYY.MM.DD") : "暂无修改记录" }}
+            {{
+              row.modified_date
+                ? dayjs(row.modified_date).format("YYYY.MM.DD")
+                : "暂无修改记录"
+            }}
           </div>
         </template>
       </el-table-column>
@@ -152,26 +191,45 @@ provide("setRightProps", {
       <el-table-column property="tags" label="类型" sortable width="250">
         <template #default="{ row }">
           <div class="tags">
-            <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{ item }}</el-tag>
+            <el-tag
+              type="info"
+              v-for="(item, index) in row.tags"
+              :key="index"
+              >{{ item }}</el-tag
+            >
           </div>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
-            <el-button type="primary" size="small" @click="modifyThe(row)">修改</el-button>
-            <el-button type="danger" size="small" @click="_delete(row)">删除</el-button>
+            <el-button type="primary" size="small" @click="modifyThe(row)"
+              >修改</el-button
+            >
+            <el-button type="danger" size="small" @click="_delete(row)"
+              >删除</el-button
+            >
           </div>
         </template>
       </el-table-column>
     </template>
     <!-- 新增文章 -->
     <template #popupAdd>
-      <article-form type="add" :data="([] as any)" :tableheight="740" @switchAdd="switchMod"></article-form>
+      <ArticleForm
+        type="add"
+        :data="([] as any)"
+        :tableheight="740"
+        @switchAdd="switchMod"
+      ></ArticleForm>
     </template>
     <!-- 修改文章 -->
     <template #popupModify>
-      <article-form type="modify" :data="modifyData!" :tableheight="740" @switchMod="switchMod"></article-form>
+      <ArticleForm
+        type="modify"
+        :data="modifyData!"
+        :tableheight="740"
+        @switchMod="switchMod"
+      ></ArticleForm>
     </template>
   </SetRight>
 </template>

@@ -19,6 +19,8 @@ if (localStorage.getItem("lzy_token")) {
 const tipsText = ref("");
 const load = ref(false);
 
+const cardWH = ref("100%")
+
 // 表单验证 需要捆绑的ref项，需要验证的表单项
 const ruleFormRef = ref<FormInstance>();
 // 账号密码数据，用于提交
@@ -82,13 +84,17 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     console.error(e);
   }
 }, 1000);
+setTimeout(() => {
+  cardWH.value = "80%"
+}, 50)
 </script>
 
 <template>
   <div class="login">
-    <div class="card">
+    <div class="card" :style="['width:' + cardWH, 'height:' + cardWH]">
       <div class="item center" :class="{ loadBtn: load }">
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
+          <p class="title">欢迎登陆</p>
           <el-form-item prop="username">
             <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
               <template #prepend>账号</template>
@@ -110,6 +116,9 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
           </el-form-item>
         </el-form>
       </div>
+      <div class="illustartion">
+        <img src="/api/public/img/loginCover.png" alt="logo" />
+      </div>
       <p class="pwdTips" :class="{ error: tipsText.length }">{{ tipsText }}</p>
     </div>
   </div>
@@ -119,7 +128,8 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
 .login {
   width: 100vw;
   height: 100vh;
-  background: url("@/assets/image/login/dark-l1.png") center; //var(--themeColor);
+
+  // background: url("@/assets/image/login/dark-l1.png") center; //var(--themeColor);
   background-position: center;
   display: flex;
   justify-content: center;
@@ -128,25 +138,52 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   top: 0;
   left: 0;
 
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45vw;
+    height: 45vw;
+    border-radius: 50%;
+    // background: #FFFCF5;
+    background: url("/api/public/img/moon.png") no-repeat center;
+    background-size: 120%;
+    border: 5px solid #000;
+    z-index: -1;
+  }
+
   .card {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(3px);
-    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
     box-shadow: 0 1px 8px 10px rgba(0, 0, 0, 0.2);
     transition: 0.6s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    justify-content: center;
     align-items: center;
     font-family: "almama";
+    overflow: hidden;
+    border: 10px solid #000;
 
     &:focus-within {
       box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1),
         0px -30px 4px -10px rgba(255, 255, 255, 0.3),
         0px -60px 4px -20px rgba(255, 255, 255, 0.2),
         0px -90px 4px -30px rgba(255, 255, 255, 0.1);
+    }
+
+    .illustartion {
+      text-align: center;
+
+      img {
+        width: 600px;
+        position: absolute;
+        right: 10%;
+        bottom: -20%;
+      }
     }
 
     .item {
@@ -192,80 +229,91 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
       &.center {
         padding: 20px 20px 0;
         margin-top: 10px;
-        width: 300px;
 
-        & :deep(.el-form-item) {
-          & .el-form-item__content {
-            justify-content: center;
-          }
+        :deep(.el-form) {
+          width: 55%;
 
-          .el-input .el-input__icon {
+          p.title {
+            font-size: 40px;
+            font-weight: 600;
             color: var(--themeColor);
+            flex: 3;
           }
 
-          &.is-error .el-input__icon {
-            color: var(--el-color-danger) !important;
-          }
-
-          .el-form-item__error {
-            user-select: none;
-          }
-
-          .el-input-group__prepend {
-            background-color: var(--themeColor);
-            box-shadow: none;
-            border: 1px solid var(--themeColor);
-            border-radius: 15px 0 0 15px;
-            color: #fff;
-            user-select: none;
-            transition: 0.6s;
-          }
-
-
-          .el-input__wrapper {
-            box-shadow: none;
-            border: 1px solid var(--themeColor);
-            border-left: transparent;
-            border-radius: 0 15px 15px 0;
-
-            input {
-              font-weight: 600;
-              font-family: "firaCode";
-              color: #000;
+          .el-form-item {
+            & .el-form-item__content {
+              justify-content: center;
             }
-          }
 
-          .yzm .el-input__wrapper {
-            border-radius: 0;
-            border: 1px solid var(--themeColor);
-            border-right: transparent;
-
-          }
-
-          .el-input-group__append {
-            padding: 0px 15px 0px 10px;
-            border-radius: 0 15px 15px 0;
-            border: 1px solid var(--themeColor);
-            background: #fff;
-
-            &:hover {
+            .el-input .el-input__icon {
               color: var(--themeColor);
             }
-          }
 
-          .el-button {
-            text-align: center;
-            margin: 20px 10px 0;
-            font-size: 16px;
-            width: 100%;
-            line-height: 34px;
-            height: 35px;
-            background-color: var(--themeColor);
-            display: flex;
-            overflow: hidden;
-            border: none;
+            &.is-error .el-input__icon {
+              color: var(--el-color-danger) !important;
+            }
+
+            .el-form-item__error {
+              user-select: none;
+            }
+
+            .el-input-group__prepend {
+              background-color: var(--themeColor);
+              box-shadow: none;
+              border: 1px solid var(--themeColor);
+              border-radius: 15px 0 0 15px;
+              color: #fff;
+              user-select: none;
+              transition: 0.6s;
+            }
+
+
+            .el-input__wrapper {
+              box-shadow: none;
+              border: 1px solid var(--themeColor);
+              border-left: transparent;
+              border-radius: 0 15px 15px 0;
+
+              input {
+                font-weight: 600;
+                font-family: "firaCode";
+                color: #000;
+              }
+            }
+
+            .yzm .el-input__wrapper {
+              border-radius: 0;
+              border: 1px solid var(--themeColor);
+              border-right: transparent;
+
+            }
+
+            .el-input-group__append {
+              padding: 0px 15px 0px 10px;
+              border-radius: 0 15px 15px 0;
+              border: 1px solid var(--themeColor);
+              background: #fff;
+
+              &:hover {
+                color: var(--themeColor);
+              }
+            }
+
+            .el-button {
+              text-align: center;
+              margin: 20px 10px 0;
+              font-size: 16px;
+              width: 100%;
+              line-height: 34px;
+              height: 35px;
+              background-color: var(--themeColor);
+              display: flex;
+              overflow: hidden;
+              border: none;
+            }
           }
         }
+
       }
     }
 
