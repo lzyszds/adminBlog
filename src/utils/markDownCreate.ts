@@ -2,7 +2,7 @@ import '@kangc/v-md-editor/lib/style/base-editor.css';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
 import '@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css';
-import '@/assets/css/essay.less'
+import '@/assets/css/essay.scss'
 
 /* ------------Markdown-------------- */
 import VueMarkdownEditor from '@kangc/v-md-editor';

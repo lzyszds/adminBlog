@@ -76,11 +76,13 @@ provide("setRightProps", {
       <el-table-column label="操作" width="150px">
         <template #default="{ row }">
           <el-button type="primary" size="small" @click="edit">编辑</el-button>
-          <el-button type="danger" size="small" @click="del(row.type_id)">删除</el-button>
+          <el-button type="danger" size="small" @click="del(row.type_id)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </template>
   </SetRight>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="scss" scoped></style>

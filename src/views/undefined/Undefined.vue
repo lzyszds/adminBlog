@@ -1,14 +1,11 @@
-<script setup lang='ts'>
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="undefined">
-    内容暂未开发,敬请期待
-  </div>
+  <div class="undefined">内容暂未开发,敬请期待</div>
 </template>
 
-<style lang='less' scoped>
-@themeColor: var(--themeColor);
+<style lang="scss" scoped>
+$themeColor: var(--themeColor);
 
 .undefined {
   display: flex;
@@ -16,11 +13,11 @@
   align-items: center;
   height: 100%;
   font-size: 50px;
-  color: @themeColor;
+  color: $themeColor;
   font-weight: bold;
   background-color: #fff;
   flex-direction: column;
-  font-family: 'dindin';
+  font-family: "dindin";
 
   .undefined {
     font-size: 20px;

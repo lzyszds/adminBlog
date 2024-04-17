@@ -23,7 +23,7 @@ const information = reactive<InformationTypes>({
   html: props.data?.main,
   title: props.data?.title || "",
   cover: props.data?.cover_img
-    ? "/adminPublic" + props.data?.cover_img
+    ? "/api/public" + props.data?.cover_img
     : "/api/article/getRandArticleImg?time=" + new Date().getTime(),
 });
 
@@ -125,7 +125,7 @@ const handleUploadImage = async (event, insertImage, files) => {
 
     if (res.code === 200) {
       insertImage({
-        url: "/adminPublic" + res.data,
+        url: "/api/public" + res.data,
         desc: "点击放大",
       });
     }
@@ -159,7 +159,7 @@ function setData(type: "modify" | "add"): ArticledataType {
     content: information.text, // 文章内容
     main: document.querySelector(".vuepress-markdown-body")?.innerHTML!, // 文章主体内容
     cover_img: (information.cover || props.data?.cover_img)?.replace(
-      "/adminPublic",
+      "/api/public",
       ""
     )!, // 文章封面图片
     aid: isModify ? props.data?.aid! : null, // 文章ID（修改时为当前文章ID，创建时为null）
@@ -192,7 +192,7 @@ nextTick(() => {
         headers,
       }).then((res: HttpResonse<string>) => {
         if (res.code === 200) {
-          information.cover = "/adminPublic" + res.data;
+          information.cover = "/api/public" + res.data;
         } else {
           console.log(res.msg);
         }
@@ -374,7 +374,7 @@ const addArticleType = async () => {
   </div>
 </template>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .headelement {
   & .v-md-editor {
     box-shadow: 1px 1px 5px 1px #0000001a;

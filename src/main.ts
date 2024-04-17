@@ -5,7 +5,7 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/base.css'
 import '@/assets/css/loading.css';
 import 'animate.css';
-import '@/assets/css/media.less';
+import '@/assets/css/media.scss';
 
 
 import { createApp } from 'vue'

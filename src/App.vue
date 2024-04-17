@@ -1,10 +1,9 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 const router = useRouter();
 onMounted(() => {
-  !localStorage.getItem("lzy_token") && router.push('/login')
-})
-
+  !localStorage.getItem("lzy_token") && router.push("/login");
+});
 </script>
 <template>
   <Suspense>
@@ -12,6 +11,6 @@ onMounted(() => {
   </Suspense>
 </template>
 
-<style lang="less">
-@import url('@/assets/css/admin.less');
+<style lang="scss">
+@import url("@/assets/css/admin.scss");
 </style>

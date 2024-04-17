@@ -74,7 +74,7 @@ useEventListener("resize", () => {
   <div class="main" id="main"></div>
 </template>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .main {
   overflow: hidden;
   width: 450px;

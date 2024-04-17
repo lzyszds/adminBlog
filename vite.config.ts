@@ -26,7 +26,7 @@ export default defineConfig(({ command, mode }): any => {
         imports: ['vue', 'vue-router', '@vueuse/core', 'pinia'],
       }),
       prismjs({
-        languages: ['json', 'js', 'ts', 'css', 'less', 'html', 'markdown', 'sql', 'typescript', 'vim', "git", "bash"],
+        languages: ['json', 'js', 'ts', 'css', 'scss', 'html', 'markdown', 'sql', 'typescript', 'vim', "git", "bash"],
         theme: 'okaidia',
       }),
     ],

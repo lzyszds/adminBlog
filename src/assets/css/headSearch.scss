@@ -2,7 +2,6 @@
   height: 100%;
 }
 
-
 .empty {
   display: flex;
   flex-direction: column;
@@ -17,7 +16,6 @@
   font-size: 12px;
 }
 
-// 旋转一圈，使用动画
 @keyframes rotate {
   0% {
     transform: rotate(0);

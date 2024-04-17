@@ -6,6 +6,8 @@ import Comment from "@/views/comment/Comment.vue";
 import User from "@/views/user/User.vue";
 import Category from "@/views/category/Category.vue";
 import System from "@/views/system/System.vue";
+import WebSet from "@/views/webset/WebSet.vue";
+import Ai from "@/views/ai/Ai.vue";
 import Undefined from "@/views/undefined/Undefined.vue";
 import sockete from "socket.io-client";
 
@@ -35,7 +37,7 @@ import { useStore } from "@/store";
 
 const state = useStore();
 
-const currentView = ref("System"); // 默认值为'System'
+const currentView = ref(historyRouter.value || "System"); // 默认值为'System'
 const components = {
   System,
   Comment,
@@ -43,6 +45,8 @@ const components = {
   User,
   Category,
   Undefined,
+  WebSet,
+  Ai,
 };
 
 const router = useRouter();

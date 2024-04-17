@@ -1,5 +1,4 @@
 @media screen and (max-width: 1720px) {
-
   #tool {
     flex: 2;
     margin-right: 10px;
@@ -24,24 +23,15 @@
   }
 }
 
-@media screen and (max-width: 1520px) {
-  #content {
-    width: 1100px;
-
-  }
-}
-
-@media screen and (max-width: 1320px) {
+@media screen and (max-width: 1600px) {
   #content {
     width: calc(100vw - 250px);
     min-width: 800px;
   }
 }
 
-
 //1024x768 像素: 通常用于旧款台式电脑显示器和一些较小的笔记本电脑。 也可能在一些平板电脑或大屏手机上出现。
 @media screen and (max-width: 1024px) {
-
   #tool {
     flex: 1;
     margin-right: 5px;
@@ -116,7 +106,6 @@
       }
 
       .headPortrait {
-
         &::before {
           margin: 17px auto;
           border-width: 2px;
@@ -135,7 +124,6 @@
     }
 
     .setleft .list {
-
       .list_item {
         padding: 0;
         height: 30px;
@@ -154,7 +142,6 @@
         }
       }
     }
-
   }
 
   #content {
@@ -162,8 +149,6 @@
     width: calc(100vw - 100px);
 
     .el-table {
-
-
       .headImg {
         height: 46px;
         width: 46px;
@@ -185,7 +170,7 @@
     }
 
     .toolfooter {
-      &>div:nth-child(1) {
+      & > div:nth-child(1) {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -208,15 +193,14 @@
       }
     }
 
-    &>div:nth-child(2) {
+    & > div:nth-child(2) {
       font-size: 5px;
     }
   }
 }
 
-// 媒体查询，适用于小屏幕设备（手机端） 
+// 媒体查询，适用于小屏幕设备（手机端）
 @media screen and (max-width: 600px) {
-
   #app {
     display: flex !important;
     overflow: hidden;
@@ -239,9 +223,7 @@
           font-size: 12px;
         }
       }
-
     }
-
   }
 
   #tool {
@@ -256,14 +238,10 @@
     height: auto;
 
     .toolfooter {
-
-      &>div {
+      & > div {
         width: 85%;
       }
-
     }
-
-
   }
 
   .example-demonstration {

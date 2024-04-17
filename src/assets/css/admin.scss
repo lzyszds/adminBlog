@@ -13,20 +13,14 @@
 }
 
 .admin {
-  // width: 90%;
-  // height: 90%;
   background-color: #eef7ff;
   border-radius: 10px;
   display: flex;
 
-  // overflow: hidden;
-
-  &>.tool {
-    // width: 400px;
+  & > .tool {
     height: 100%;
     background-color: #fff;
     border-radius: 10px 0 0 10px;
-    // box-shadow: 0 0 4px 3px rgba(0, 0, 0, 0.1);
     margin-right: 15px;
     flex: 3;
   }
@@ -45,15 +39,14 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       height: 170px;
       width: 120px;
       position: absolute;
       top: -60px;
       right: 0;
-      // transform: translateX(-50%);
-      background: url('@/assets/image/没有更多笔记.svg') no-repeat;
+      background: url("@/assets/image/没有更多笔记.svg") no-repeat;
       z-index: 1;
       opacity: 1;
     }
@@ -61,7 +54,6 @@
 }
 
 .tableuser {
-  // height: calc(100% - 100px);
   max-height: 743px;
   overflow: auto;
 
@@ -87,7 +79,7 @@
     line-height: 60px;
     font-weight: 600;
     font-size: 1.5rem;
-    font-family: 'almama';
+    font-family: "almama";
     align-items: center;
     padding: 3px 0;
 
@@ -112,7 +104,6 @@
       }
     }
   }
-
 
   .power {
     display: flex;
@@ -160,7 +151,6 @@
       font-size: 25px;
     }
   }
-
 }
 
 .tableuser {
@@ -168,7 +158,6 @@
     display: none !important;
   }
 }
-
 
 /* From uiverse.io by @varoonrao */
 .checkbox-con {
@@ -185,7 +174,6 @@
   height: 27px;
   border: 2px solid rgb(255, 91, 91);
   border-radius: 20px;
-  // background: #f1e1e1;
   position: relative;
   box-sizing: border-box;
   cursor: var(--linkCup) !important;
@@ -196,7 +184,6 @@
   width: 18px;
   height: 18px;
   background: rgb(255, 91, 91);
-  // border: 2px solid #ea0707;
   border-radius: 50%;
   position: absolute;
   top: 0;
@@ -222,7 +209,6 @@
   transform: translate(132%, 14%);
   transition: all 0.3s ease-in-out;
 }
-
 
 .checkbox-con label {
   margin-left: 10px;
@@ -251,9 +237,7 @@
 
     .example-demonstration {
       font-size: 12px;
-      // 不换行
       white-space: nowrap;
-      // 超出部分隐藏
       margin-bottom: 10px;
     }
 
@@ -293,7 +277,6 @@
   0% {
     transform: translateX(0);
     transform-origin: 50% 50%;
-
   }
 
   30% {
@@ -339,7 +322,6 @@
   0% {
     transform: translateX(0);
     transform-origin: 50% 50%;
-
   }
 
   30% {

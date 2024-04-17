@@ -28,69 +28,91 @@ const addToPop = () => {
   popup!.addVisible = true;
 };
 
-//分页事件、切换页码时提供load效果
-// const currentChange = async (event: number) => {
-//   console.log(`lzy  event:`, event)
-//   requirement.currentPage = event;
-//   state.formLoading = true; //开启load效果
-//   state.handleCurrentChange(requirement, event);
-// };
-watch(() => requirement.pages, async (event) => {
-  state.formLoading = true; //开启load效果
-  state.handleCurrentChange(requirement, event);
-}, { deep: true })
+watch(
+  () => requirement.pages,
+  async (event) => {
+    state.formLoading = true; //开启load效果
+    state.handleCurrentChange(requirement, event);
+  },
+  { deep: true }
+);
 
 provide("requirement", {
-  requirement
-})
+  requirement,
+});
 </script>
 
 <template>
-  <div class="mainTem">
-    <div class="topTool">
-      <Search :requirement="requirement" />
-      <el-button v-if="popup" class="add" type="primary" @click="addToPop">{{ popup!.addName }}</el-button>
-    </div>
-    <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
-    <div class="tableuser">
-      <el-table class="tableuser" :data="state.tableData" row-class-name="animate__duration animate__bounceInUp"
-        style="width: 100%">
-        <template #empty>
-          <div class="empty">
-            <img src="@/assets/image/暂无文档.svg" alt="" />
-            <span>暂无数据</span>
-          </div>
-        </template>
-        <slot name="table"></slot>
-      </el-table>
-    </div>
-    <div class="toolfooter">
-      <div class="example-pagination-block lzyColor">
-        <div class="example-demonstration">
-
+  <div>
+    <div class="mainTem">
+      <div class="topTool">
+        <Search :requirement="requirement" />
+        <el-button v-if="popup" class="add" type="primary" @click="addToPop">{{
+          popup!.addName
+        }}</el-button>
+      </div>
+      <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
+      <div class="tableuser">
+        <el-table
+          class="tableuser"
+          :data="state.tableData"
+          row-class-name="animate__duration animate__bounceInUp"
+          style="width: 100%"
+        >
+          <template #empty>
+            <div class="empty">
+              <img src="@/assets/image/暂无文档.svg" alt="" />
+              <span>暂无数据</span>
+            </div>
+          </template>
+          <slot name="table"></slot>
+        </el-table>
+      </div>
+      <div class="toolfooter">
+        <div class="example-pagination-block lzyColor">
+          <div class="example-demonstration"></div>
+          <el-pagination
+            small
+            v-model:current-page="requirement.pages"
+            background
+            :page-count="state.total"
+            layout="prev, pager, next, jumper"
+          >
+          </el-pagination>
         </div>
-        <el-pagination small v-model:current-page="requirement.pages" background :page-count="state.total"
-          layout="prev, pager, next, jumper">
-
-        </el-pagination>
       </div>
     </div>
-  </div>
-  <div v-if="popup">
-    <el-dialog v-if="popup" class="articleDialog" :close-on-press-escape="false" v-model="popup.addVisible"
-      :before-close="handleClose" title="新增文章" :align-center="popup.alignCenter" :width="popup.addWidth"
-      :top="popup.addTop">
-      <slot name="popupAdd" v-if="popup.addVisible"></slot>
-    </el-dialog>
-    <el-dialog class="articleDialog" :close-on-press-escape="false" v-model="popup.modifyVisible"
-      :before-close="handleClose" title="修改文章" :align-center="popup.alignCenter" :width="popup.modifyWidth"
-      :top="popup.modifyTop">
-      <slot name="popupModify" v-if="popup.modifyVisible"></slot>
-    </el-dialog>
+    <div v-if="popup">
+      <el-dialog
+        v-if="popup"
+        class="articleDialog"
+        :close-on-press-escape="false"
+        v-model="popup.addVisible"
+        :before-close="handleClose"
+        :title="popup.addName"
+        :align-center="popup.alignCenter"
+        :width="popup.addWidth"
+        :top="popup.addTop"
+      >
+        <slot name="popupAdd" v-if="popup.addVisible"></slot>
+      </el-dialog>
+      <el-dialog
+        class="articleDialog"
+        :close-on-press-escape="false"
+        v-model="popup.modifyVisible"
+        :before-close="handleClose"
+        :title="popup.modifyName"
+        :align-center="popup.alignCenter"
+        :width="popup.modifyWidth"
+        :top="popup.modifyTop"
+      >
+        <slot name="popupModify" v-if="popup.modifyVisible"></slot>
+      </el-dialog>
+    </div>
   </div>
 </template>
-<style lang="less" scoped>
-@import url("@/assets/css/headSearch.less");
+<style lang="scss" scoped>
+@import url("@/assets/css/headSearch.scss");
 
 .topTool {
   display: flex;
@@ -191,47 +213,47 @@ div :deep(img[data-fancybox="gallery"]) {
     animation-timing-function: ease-in-out;
 
     &:nth-child(1) {
-      animation-delay: .5s;
+      animation-delay: 0.5s;
     }
 
     &:nth-child(2) {
-      animation-delay: .3s;
+      animation-delay: 0.3s;
     }
 
     &:nth-child(3) {
-      animation-delay: .2s;
+      animation-delay: 0.2s;
     }
 
     &:nth-child(4) {
-      animation-delay: .4s;
+      animation-delay: 0.4s;
     }
 
     &:nth-child(5) {
-      animation-delay: .2s;
+      animation-delay: 0.2s;
     }
 
     &:nth-child(6) {
-      animation-delay: .5s;
+      animation-delay: 0.5s;
     }
 
     &:nth-child(7) {
-      animation-delay: .3s;
+      animation-delay: 0.3s;
     }
 
     &:nth-child(8) {
-      animation-delay: .5s;
+      animation-delay: 0.5s;
     }
 
     &:nth-child(9) {
-      animation-delay: .4s;
+      animation-delay: 0.4s;
     }
 
     &:nth-child(10) {
-      animation-delay: .2s;
+      animation-delay: 0.2s;
     }
 
     &:nth-child(11) {
-      animation-delay: .7s;
+      animation-delay: 0.7s;
     }
   }
 }

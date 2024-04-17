@@ -19,7 +19,7 @@ if (localStorage.getItem("lzy_token")) {
 const tipsText = ref("");
 const load = ref(false);
 
-const cardWH = ref("100%")
+const cardWH = ref("100%");
 
 // 表单验证 需要捆绑的ref项，需要验证的表单项
 const ruleFormRef = ref<FormInstance>();
@@ -27,8 +27,8 @@ const ruleFormRef = ref<FormInstance>();
 const ruleForm = reactive({
   username: "",
   password: "",
-  email: '',
-  code: ''
+  email: "",
+  code: "",
 });
 // 表单验证规则
 const rules = reactive<FormRules>({
@@ -55,7 +55,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
         const res = await http<string>({
           url: "/user/login",
           method: "post",
-          data: ruleForm
+          data: ruleForm,
         });
         setTimeout(() => {
           if (res.code === 200) {
@@ -85,46 +85,67 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
   }
 }, 1000);
 setTimeout(() => {
-  cardWH.value = "80%"
-}, 50)
+  cardWH.value = "80%";
+}, 50);
 </script>
 
 <template>
   <div class="login">
     <div class="card" :style="['width:' + cardWH, 'height:' + cardWH]">
       <div class="item center" :class="{ loadBtn: load }">
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm" status-icon>
+        <el-form
+          ref="ruleFormRef"
+          :model="ruleForm"
+          :rules="rules"
+          class="demo-ruleForm"
+          status-icon
+        >
           <p class="title">欢迎登陆</p>
           <el-form-item prop="username">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" v-model="ruleForm.username">
+            <el-input
+              @keydown.enter="submitForm(ruleFormRef)"
+              class="input"
+              v-model="ruleForm.username"
+            >
               <template #prepend>账号</template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input @keydown.enter="submitForm(ruleFormRef)" class="input" type="password" v-model="ruleForm.password"
-              show-password>
+            <el-input
+              @keydown.enter="submitForm(ruleFormRef)"
+              class="input"
+              type="password"
+              v-model="ruleForm.password"
+              show-password
+            >
               <template #prepend>密码</template>
             </el-input>
-
           </el-form-item>
 
           <el-form-item style="margin: 0">
-            <el-button type="primary" style="margin-top: 10px" @click="submitForm(ruleFormRef)">
-              <lzyicon name="majesticons:scan-fingerprint-line" style="margin-right: 5px"></lzyicon>
+            <el-button
+              type="primary"
+              style="margin-top: 10px"
+              @click="submitForm(ruleFormRef)"
+            >
+              <lzyicon
+                name="majesticons:scan-fingerprint-line"
+                style="margin-right: 5px"
+              ></lzyicon>
               <span class="spanTEXT">登陆</span>
             </el-button>
           </el-form-item>
         </el-form>
       </div>
       <div class="illustartion">
-        <img src="/api/public/img/loginCover.png" alt="logo" />
+        <img :src="'/api/public/img/loginCover.png'" alt="logo" />
       </div>
       <p class="pwdTips" :class="{ error: tipsText.length }">{{ tipsText }}</p>
     </div>
   </div>
 </template>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .login {
   width: 100vw;
   height: 100vh;
@@ -139,7 +160,7 @@ setTimeout(() => {
   left: 0;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -267,7 +288,6 @@ setTimeout(() => {
               transition: 0.6s;
             }
 
-
             .el-input__wrapper {
               box-shadow: none;
               border: 1px solid var(--themeColor);
@@ -285,7 +305,6 @@ setTimeout(() => {
               border-radius: 0;
               border: 1px solid var(--themeColor);
               border-right: transparent;
-
             }
 
             .el-input-group__append {
@@ -313,7 +332,6 @@ setTimeout(() => {
             }
           }
         }
-
       }
     }
 
@@ -333,7 +351,6 @@ setTimeout(() => {
 }
 
 @keyframes shake {
-
   10%,
   90% {
     transform: translate3d(-1px, 0, 0);
@@ -357,7 +374,6 @@ setTimeout(() => {
 }
 
 @keyframes animate_line {
-
   0%,
   100% {
     top: 0;

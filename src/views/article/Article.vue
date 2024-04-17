@@ -133,7 +133,7 @@ provide("setRightProps", {
           <div>
             <img
               v-ImgLoading
-              :src="'/adminPublic' + row.cover_img"
+              :src="'/api/public' + row.cover_img"
               data-fancybox="gallery"
               title="o"
               alt=""
@@ -233,6 +233,6 @@ provide("setRightProps", {
     </template>
   </SetRight>
 </template>
-<style lang="less" scoped>
-@import url("@/assets/css/headSearch.less");
+<style lang="scss" scoped>
+@import url("@/assets/css/headSearch.scss");
 </style>

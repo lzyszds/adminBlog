@@ -9,6 +9,8 @@ import UserForm from "@/views/user/UserForm.vue";
 import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
 import { LNotification } from "@/utils/utils";
+const { $axios } = window;
+
 const state = useStore();
 //页面配置
 const requirement = reactive<Requirement>({
@@ -40,7 +42,7 @@ const modifyThe = (event: User) => {
 
 //删除用户
 const _delete = async (event) => {
-  const res = await window.requestAxios({
+  const res = await $axios({
     url: "/user/deleteUser",
     method: "post",
     data: {
@@ -127,7 +129,12 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column> -->
-      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
+      <el-table-column
+        label="创建时间"
+        sortable
+        :sort-method="formatter"
+        width="160"
+      >
         <template #default="{ row }">
           <div class="svgTem">
             <lzyicon name="memory:calendar-month"></lzyicon>
@@ -148,11 +155,18 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="注册时的IP" sortable :sort-method="formatter" width="160">
+      <el-table-column
+        label="注册时的IP"
+        sortable
+        :sort-method="formatter"
+        width="160"
+      >
         <template #default="{ row }">
           <div class="svgTem">
             <lzyicon name="memory:calendar-month"></lzyicon>
-            <span>{{ row.create_ip == "::1" ? "127.0.0.1" : row.create_ip }}</span>
+            <span>{{
+              row.create_ip == "::1" ? "127.0.0.1" : row.create_ip
+            }}</span>
           </div>
         </template>
       </el-table-column>
@@ -187,11 +201,10 @@ provide("setRightProps", {
     </template>
   </SetRight>
 </template>
-<style lang="less" scoped>
-@import url("@/assets/css/headSearch.less");
+<style lang="scss" scoped>
+@import url("@/assets/css/headSearch.scss");
 
 :deep(.el-dialog).articleDialog {
   padding: 5rem;
 }
 </style>
-@/store

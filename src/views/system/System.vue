@@ -305,7 +305,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   width: 0;
 }
 </style>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 *,
 *::before,
 *::after {

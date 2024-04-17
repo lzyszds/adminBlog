@@ -1,3 +1,7 @@
+:root {
+  --el-color-primary: var(--themeColor) !important;
+}
+
 .el-checkbox__input.is-checked .el-checkbox__inner {
   border-color: var(--themeColor) !important;
   background-color: var(--themeColor) !important;
@@ -19,7 +23,6 @@
 .lzyColor .el-pager li:hover {
   color: var(--themeColor);
 }
-
 
 .toolfooter .el-input__wrapper.is-focus {
   border-color: var(--themeColor) !important;
@@ -66,7 +69,6 @@
   background: #5161ce10 !important;
 }
 
-
 .el-table td.el-table__cell,
 .el-table th.el-table__cell.is-leaf {
   border: none;
@@ -82,7 +84,7 @@
   color: #fff;
 }
 
-.el-message-box__btns>.el-button:hover {
+.el-message-box__btns > .el-button:hover {
   transform: scale(1.1);
   background-color: var(--themeColor);
   color: #fff;
@@ -121,7 +123,6 @@ button {
       &:hover {
         background-color: #5161ce99;
         border: 1px solid #000;
-
       }
 
       &.is-disabled {
@@ -162,7 +163,7 @@ span.el-tag.purple {
 
   .el-notification__content {
     // color: var(--themeColor) !important;
-    font-family: 'almama';
+    font-family: "almama";
   }
 
   .el-icon {
@@ -180,7 +181,6 @@ span.el-tag.purple {
 }
 
 .tableuser {
-
   .el-table--border .el-table__inner-wrapper::after,
   .el-table--border::after,
   .el-table--border::before,
