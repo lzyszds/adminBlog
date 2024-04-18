@@ -128,10 +128,10 @@ setTimeout(() => {
               style="margin-top: 10px"
               @click="submitForm(ruleFormRef)"
             >
-              <lzyicon
+              <LzyIcon
                 name="majesticons:scan-fingerprint-line"
                 style="margin-right: 5px"
-              ></lzyicon>
+              ></LzyIcon>
               <span class="spanTEXT">登陆</span>
             </el-button>
           </el-form-item>

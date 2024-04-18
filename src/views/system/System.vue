@@ -77,11 +77,11 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
           <div class="right-content">
             <div class="user-info">
               <div class="icon-container">
-                <lzyicon
+                <LzyIcon
                   height="25px"
                   name="material-symbols:circle-notifications-outline"
                 />
-                <lzyicon
+                <LzyIcon
                   height="25px"
                   name="material-symbols:notification-multiple-outline"
                 />
@@ -200,11 +200,11 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
           <div class="right-content">
             <div class="user-info">
               <div class="icon-container">
-                <lzyicon
+                <LzyIcon
                   height="25px"
                   name="material-symbols:circle-notifications-outline"
                 />
-                <lzyicon
+                <LzyIcon
                   height="25px"
                   name="material-symbols:notification-multiple-outline"
                 />

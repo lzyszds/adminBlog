@@ -106,7 +106,6 @@ const formatDate = (date) => {
       <AiForm type="add" @switchMod="switchMod" />
     </template>
   </SetRight>
-  <!--  </div> -->
 </template>
 
 <style lang="scss" scoped>

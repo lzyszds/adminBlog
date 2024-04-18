@@ -12,7 +12,7 @@ const props = defineProps<Props>();
 
 <template>
   <Icon
-    class="lzyIcon"
+    class="LzyIcon"
     :icon="name"
     :width="props.height ?? '20px'"
     :height="props.height ?? '20px'"
@@ -21,7 +21,7 @@ const props = defineProps<Props>();
 </template>
 
 <style lang="scss" scoped>
-.lzyIcon {
+.LzyIcon {
   cursor: var(--linkCup);
   vertical-align: text-bottom;
 }

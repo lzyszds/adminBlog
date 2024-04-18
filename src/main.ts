@@ -23,6 +23,7 @@ import lzyIcon from '@/components/lzyIcon.vue'
 import Imgloading from "@/utils/lazy";
 import loading from '@/utils/loading';
 import request from '@/http/request';
+import LzyBtn from './components/LzyBtn.vue'
 
 window.$axios = request;
 
@@ -37,7 +38,8 @@ app.directive('ImgLoading', Imgloading)
 app.directive('zyloading', loading)
 
 app.directive('transition', transition)
-app.component('lzyicon', lzyIcon)
+
+app.component('LzyIcon', lzyIcon).component('LzyBtn', LzyBtn)
 
 app.use(ElementPlus, { locale: zhCn, })
 app.use(hljsVuePlugin)

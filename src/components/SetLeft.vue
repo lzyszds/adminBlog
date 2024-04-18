@@ -166,7 +166,7 @@ infoData.value = data;
                 datalist?.temperature
               }}℃</span>
               <span>
-                <lzyicon name="wi:night-alt-cloudy"></lzyicon>
+                <LzyIcon name="wi:night-alt-cloudy"></LzyIcon>
               </span>
             </span>
           </el-tooltip>

@@ -137,7 +137,7 @@ provide("setRightProps", {
       >
         <template #default="{ row }">
           <div class="svgTem">
-            <lzyicon name="memory:calendar-month"></lzyicon>
+            <LzyIcon name="memory:calendar-month"></LzyIcon>
             <span> {{ formatDate(row.create_date) }}</span>
           </div>
         </template>
@@ -150,7 +150,7 @@ provide("setRightProps", {
       >
         <template #default="{ row }">
           <div class="svgTem">
-            <lzyicon name="memory:calendar-month"></lzyicon>
+            <LzyIcon name="memory:calendar-month"></LzyIcon>
             <span>{{ formatDate(row.last_login_date) }}</span>
           </div>
         </template>
@@ -163,7 +163,7 @@ provide("setRightProps", {
       >
         <template #default="{ row }">
           <div class="svgTem">
-            <lzyicon name="memory:calendar-month"></lzyicon>
+            <LzyIcon name="memory:calendar-month"></LzyIcon>
             <span>{{
               row.create_ip == "::1" ? "127.0.0.1" : row.create_ip
             }}</span>
