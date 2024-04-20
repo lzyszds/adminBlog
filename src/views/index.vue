@@ -7,7 +7,6 @@ import User from "@/views/user/User.vue";
 import Category from "@/views/category/Category.vue";
 import System from "@/views/system/System.vue";
 import WebSet from "@/views/webset/WebSet.vue";
-import Ai from "@/views/ai/Ai.vue";
 import Undefined from "@/views/undefined/Undefined.vue";
 import sockete from "socket.io-client";
 
@@ -46,7 +45,6 @@ const components = {
   Category,
   Undefined,
   WebSet,
-  Ai,
 };
 
 const router = useRouter();

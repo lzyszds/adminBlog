@@ -2,7 +2,6 @@
 interface Props {
   name: string;
   title?: string;
-  handle?: () => void;
   tipsContent?: string;
   position?: "top" | "right" | "left" | "bottom" | "center";
 }
@@ -10,7 +9,7 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <button class="button" @click="props.handle">
+  <button class="button">
     <LzyIcon :name="props.name" :style="{ 'vertical-align': '-5px' }" />
     <span>{{ props.title }}</span>
     <span

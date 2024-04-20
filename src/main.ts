@@ -39,6 +39,7 @@ app.directive('zyloading', loading)
 
 app.directive('transition', transition)
 
+//useLzyUI
 app.component('LzyIcon', lzyIcon).component('LzyBtn', LzyBtn)
 
 app.use(ElementPlus, { locale: zhCn, })

@@ -43,11 +43,6 @@ const items: Items[] = [
     component: "LinkControl",
   },
   {
-    name: "AiK 配置",
-    uicon: '<i class="iconfont">&#xe60a;</i>',
-    component: "Ai",
-  },
-  {
     name: "网站设置",
     uicon: '<i class="iconfont">&#xe60a;</i>',
     component: "WebSet",
