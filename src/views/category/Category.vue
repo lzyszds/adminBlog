@@ -13,8 +13,6 @@ setTimeout(() => {
 //页面配置
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
-  pages: 1, //当前页数
-  limit: 7, //每页显示条数
   api: "/article/getArticleTypeList",
 });
 //自动加载数据
@@ -76,9 +74,7 @@ provide("setRightProps", {
       <el-table-column label="操作" width="150px">
         <template #default="{ row }">
           <el-button type="primary" size="small" @click="edit">编辑</el-button>
-          <el-button type="danger" size="small" @click="del(row.type_id)"
-            >删除</el-button
-          >
+          <el-button type="danger" size="small" @click="del(row.type_id)">删除</el-button>
         </template>
       </el-table-column>
     </template>

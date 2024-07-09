@@ -105,8 +105,7 @@ hide();
 data = res.data;
 //处理用户签名
 if (data.signature) {
-  if (data.signature.indexOf(",") == -1)
-    data.signature = data.signature.split("，");
+  if (data.signature.indexOf(",") == -1) data.signature = data.signature.split("，");
   else
     data.signature = data.signature
       ? data.signature.split(",")
@@ -126,9 +125,7 @@ infoData.value = data;
         <img :src="'/api/public' + infoData.head_img" alt="" />
       </div>
       <h3>{{ infoData.uname }}</h3>
-      <p v-for="(item, index) in infoData.signature" :key="index">
-        「{{ item }} 」
-      </p>
+      <p v-for="(item, index) in infoData.signature" :key="index">「{{ item }} 」</p>
 
       <!-- <p class="essCount">
         <lzyIcon :name="`icon-youxiang`" :fill="`#5161ce`"></lzyIcon>
@@ -193,7 +190,7 @@ infoData.value = data;
     transition: 0.5s all;
 
     text-align: center;
-    width: 330px;
+    width: 100%;
 
     .headPortrait {
       border-radius: 50%;

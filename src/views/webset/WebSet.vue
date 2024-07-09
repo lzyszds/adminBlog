@@ -13,7 +13,9 @@ const result: WebSystemType[] = await $axios({
   url: "/common/getSystemConfig",
   method: "get",
 });
-state.loading = false;
+setTimeout(() => {
+  state.loading = false;
+}, 1000);
 
 //更新系统配置
 const updateSystemData = async (key: string, val: string, id: number) => {
@@ -30,6 +32,7 @@ const updateSystemData = async (key: string, val: string, id: number) => {
     return LNotification("更新成功", 2000, "bottom-right", "success");
   } catch (err) {}
 };
+console.log(123345);
 </script>
 
 <template>
@@ -43,10 +46,12 @@ const updateSystemData = async (key: string, val: string, id: number) => {
 
 <style lang="scss" scoped>
 .webset-container {
+  height: calc(100% - 40px);
   padding: 20px;
   display: grid;
-  grid-template-rows: 25px 1fr 300px 240px;
+  grid-template-rows: 25px 260px 300px 1fr;
   color: var(--themeColor);
+  overflow: auto;
 
   & > h3 {
     font-size: 20px;

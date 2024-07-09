@@ -10,6 +10,7 @@ interface Props {
   requirement: Requirement;
 }
 const state = useStore();
+console.log(`lzy  state:`, state);
 const { popup, requirement } = inject("setRightProps") as Props;
 
 //开启表单时点击空白地方 关闭form表单时的提示
@@ -68,7 +69,7 @@ provide("requirement", {
           <slot name="table"></slot>
         </el-table>
       </div>
-      <div class="toolfooter">
+      <div class="toolfooter" v-if="requirement.pages">
         <div class="example-pagination-block lzyColor">
           <div class="example-demonstration"></div>
           <el-pagination

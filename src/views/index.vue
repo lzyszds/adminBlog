@@ -8,7 +8,6 @@ import Category from "@/views/category/Category.vue";
 import System from "@/views/system/System.vue";
 import WebSet from "@/views/webset/WebSet.vue";
 import Undefined from "@/views/undefined/Undefined.vue";
-import sockete from "socket.io-client";
 
 // // 创建socket连接
 // // @ts-expect-error
@@ -74,6 +73,7 @@ const changeComponent = (componentName) => {
     currentView.value = name;
   });
 };
+console.log(230200);
 
 watch(
   () => historyRouter.value,

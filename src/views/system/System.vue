@@ -15,15 +15,11 @@ $axios({
   state.loading = false;
 });
 const classNames = ["one", "two", "three", "four", "five", "six"];
+console.log(1234);
 </script>
 
 <template>
-  <el-space
-    direction="vertical"
-    alignment="flex-start"
-    class=""
-    style="width: 100%"
-  >
+  <el-space direction="vertical" alignment="flex-start" class="" style="width: 100%">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <section class="section">
@@ -156,10 +152,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
                   class="image-container"
                   :class="'img-' + classNames[index]"
                 >
-                  <img
-                    :src="'/api/public' + item.cover_img"
-                    :alt="item.title"
-                  />
+                  <img :src="'/api/public' + item.cover_img" :alt="item.title" />
                   <div class="overlay">
                     <h3>{{ item.title }}</h3>
                   </div>
@@ -397,12 +390,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    transparent,
-    rgba(3, 3, 185, 0.5)
-  );
+  background: linear-gradient(180deg, transparent, transparent, rgba(3, 3, 185, 0.5));
   border-radius: 10px;
   transition: all 0.6s linear;
 }
@@ -416,12 +404,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
   }
 
   .overlay {
-    background: linear-gradient(
-      180deg,
-      transparent,
-      transparent,
-      rgba(59, 59, 116, 0.8)
-    );
+    background: linear-gradient(180deg, transparent, transparent, rgba(59, 59, 116, 0.8));
     transition: all 0.6s linear;
     cursor: pointer;
 
@@ -485,11 +468,7 @@ const classNames = ["one", "two", "three", "four", "five", "six"];
 
 .activity-one {
   background-color: rgb(124, 136, 224, 0.5);
-  background-image: linear-gradient(
-    240deg,
-    rgb(124, 136, 224) 0%,
-    #c3f4fc 100%
-  );
+  background-image: linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%);
 }
 
 .activity-two {

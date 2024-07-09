@@ -7,7 +7,7 @@ import { ElTableColumn, dayjs } from "element-plus";
 
 import { ElNotification } from "element-plus";
 import { ArticleMultipleDataType } from "@/types/ArticleType";
-import ArticleForm from "@/Views/article/ArticleForm.vue";
+import ArticleForm from "@/views/article/ArticleForm.vue";
 
 import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
@@ -76,15 +76,9 @@ const popup = reactive<Popup>({
 });
 
 //子组件传来的参数 关闭form表单
-const switchMod = async (arr: {
-  flag: boolean;
-  data: any;
-  type: "修改" | "新增";
-}) => {
+const switchMod = async (arr: { flag: boolean; data: any; type: "修改" | "新增" }) => {
   console.log(`lzy  arr:`, arr);
-  arr.type == "修改"
-    ? (popup.modifyVisible = arr.flag)
-    : (popup.addVisible = arr.flag);
+  arr.type == "修改" ? (popup.modifyVisible = arr.flag) : (popup.addVisible = arr.flag);
   if (arr.flag) {
     return ElNotification({
       title: arr.type + "失败",
@@ -121,12 +115,7 @@ provide("setRightProps", {
         width="80"
         align="center"
       ></el-table-column>
-      <el-table-column
-        property="uname"
-        label="作者"
-        width="80"
-        show-overflow-tooltip
-      >
+      <el-table-column property="uname" label="作者" width="80" show-overflow-tooltip>
       </el-table-column>
       <el-table-column label="文章封面" width="180" align="center">
         <template #default="{ row }">
@@ -149,12 +138,7 @@ provide("setRightProps", {
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
-        label="创建时间"
-        sortable
-        :sort-method="formatter"
-        width="160"
-      >
+      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
@@ -162,12 +146,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column
-        label="最近修改时间"
-        sortable
-        :sort-method="formatter"
-        width="150"
-      >
+      <el-table-column label="最近修改时间" sortable :sort-method="formatter" width="150">
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
@@ -191,12 +170,9 @@ provide("setRightProps", {
       <el-table-column property="tags" label="类型" sortable width="250">
         <template #default="{ row }">
           <div class="tags">
-            <el-tag
-              type="info"
-              v-for="(item, index) in row.tags"
-              :key="index"
-              >{{ item }}</el-tag
-            >
+            <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{
+              item
+            }}</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -206,9 +182,7 @@ provide("setRightProps", {
             <el-button type="primary" size="small" @click="modifyThe(row)"
               >修改</el-button
             >
-            <el-button type="danger" size="small" @click="_delete(row)"
-              >删除</el-button
-            >
+            <el-button type="danger" size="small" @click="_delete(row)">删除</el-button>
           </div>
         </template>
       </el-table-column>

@@ -57,9 +57,8 @@ const getLevel = (data: any) => {
   <div class="setFooterOrAi">
     <div class="setAikey">
       <ElTable
-        :data="[...aiKeyData, ...aiKeyData]"
-        style="width: 100%"
-        height="230"
+        :data="[...aiKeyData, ...aiKeyData, ...aiKeyData]"
+        style="width: 100%; max-height: 420px; overflow-y: auto"
       >
         <ElTableColumn prop="keyName" label="AiKey" width="100">
           <template #default="scope">
@@ -73,7 +72,7 @@ const getLevel = (data: any) => {
         </ElTableColumn>
         <ElTableColumn prop="操作" width="80px">
           <template #default>
-            <ElButton type="text" size="small">删除</ElButton>
+            <ElButton size="small">删除</ElButton>
           </template>
         </ElTableColumn>
       </ElTable>
@@ -89,16 +88,10 @@ const getLevel = (data: any) => {
           <span class="custom-tree-node">
             <span v-if="getLevel(data) === 1">{{ data.footer_content }}</span>
             <ElInput v-else v-model="data.footer_content" size="small" />
-            <ElInput
-              v-if="data.footer_url"
-              v-model="data.footer_url"
-              size="small"
-            />
+            <ElInput v-if="data.footer_url" v-model="data.footer_url" size="small" />
             <span>
               <a v-if="getLevel(data) === 1" @click="save(data)"> 保存设置 </a>
-              <a v-if="getLevel(data) !== 1" @click="remove(node, data)">
-                删除
-              </a>
+              <a v-if="getLevel(data) !== 1" @click="remove(node, data)"> 删除 </a>
               <a v-if="getLevel(data) !== 3" @click="append(data)"> 新增 </a>
             </span>
           </span>
@@ -139,6 +132,7 @@ const getLevel = (data: any) => {
     overflow-y: auto;
     border-radius: 0;
     padding: 5px 0;
+    border-radius: 0 10px 10px 0;
   }
 }
 </style>

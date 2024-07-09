@@ -14,7 +14,7 @@ const state = useStore();
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
-  limit: 10, //每页显示条数
+  limit: 15, //每页显示条数
   api: "/comment/getAllComment",
 });
 //自动加载数据
@@ -54,11 +54,7 @@ provide("setRightProps", {
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="user_name"
-        label="用户名"
-        width="90"
-      ></el-table-column>
+      <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
       <el-table-column
         prop="email"
         label="邮箱"
@@ -78,32 +74,11 @@ provide("setRightProps", {
           </span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="comment_id"
-        label="评论id"
-        width="70"
-      ></el-table-column>
-      <el-table-column
-        prop="article_id"
-        label="文章id"
-        width="70"
-      ></el-table-column>
-      <el-table-column
-        prop="ground_id"
-        label="评论楼层"
-        width="80"
-      ></el-table-column>
-      <el-table-column
-        prop="reply_id"
-        label="回复id"
-        width="70"
-      ></el-table-column>
-      <el-table-column
-        prop="user_ip"
-        label="用户ip"
-        width="160"
-        show-overflow-tooltip
-      >
+      <el-table-column prop="comment_id" label="评论id" width="70"></el-table-column>
+      <el-table-column prop="article_id" label="文章id" width="70"></el-table-column>
+      <el-table-column prop="ground_id" label="评论楼层" width="80"></el-table-column>
+      <el-table-column prop="reply_id" label="回复id" width="70"></el-table-column>
+      <el-table-column prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="140">
         <template #default="scope">
@@ -117,10 +92,7 @@ provide("setRightProps", {
             @confirm="topCom(scope.row)"
           >
             <template #reference>
-              <el-button
-                :disabled="scope.row.ground_id != 0"
-                type="primary"
-                size="small"
+              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small"
                 >置顶</el-button
               >
             </template>

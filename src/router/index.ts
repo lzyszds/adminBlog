@@ -11,7 +11,7 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/views/login/login.vue'),
+        component: () => import('@/views/login/Login.vue'),
     },
     // {
     //     path: "/:catchAll(.*)",

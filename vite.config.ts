@@ -49,8 +49,6 @@ export default defineConfig(({ command, mode }): any => {
       }
     },
     server: {
-      hmr: true,
-      usePolling: false,
       host: '0.0.0.0',
       port: 1025,
       proxy: {

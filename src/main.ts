@@ -19,7 +19,7 @@ import { Fancybox, Carousel, Panzoom } from "@fancyapps/ui";//图片放大
 import transition from '@/utils/transition'
 import { createPinia } from 'pinia' //状态管理
 import VueMarkdownEditor from '@/utils/markDownCreate'; //markdown配置
-import lzyIcon from '@/components/lzyIcon.vue'
+import lzyIcon from '@/components/LzyIcon.vue'
 import Imgloading from "@/utils/lazy";
 import loading from '@/utils/loading';
 import request from '@/http/request';

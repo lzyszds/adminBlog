@@ -25,13 +25,14 @@ function save(item: WebSystemType) {
     >
       <ElInput class="inputKey" v-model="item.config_key" />
       <ElInput class="inputValue" v-model="item.config_value" />
-      <LzyBtn
-        class="btn"
-        name="gg:clipboard"
-        tipsContent="保存"
-        position="center"
-        @click="save(item)"
-      ></LzyBtn>
+      <div>
+        <LzyBtn
+          class="btn"
+          name="gg:clipboard"
+          position="center"
+          @click="save(item)"
+        ></LzyBtn>
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +43,7 @@ function save(item: WebSystemType) {
   gap: 8px;
   grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
   overflow-y: auto;
-  padding: 5px;
+  padding: 10px;
   padding-left: 0;
   .rows {
     display: grid;
@@ -104,7 +105,7 @@ function save(item: WebSystemType) {
       border-left: none;
       border-radius: 0 7px 7px 0;
       padding: 0 10px;
-      height: 36.8px;
+      height: 38px;
     }
 
     :deep(.el-input__wrapper) {

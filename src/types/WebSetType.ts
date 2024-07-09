@@ -3,7 +3,7 @@ export interface WebDataType {
   weather_key: string;
   github_key: string;
   management_system_title: string;
-  loadGif: string;
+  load_animation_gif: string;
 }
 
 export interface WebSystemType {

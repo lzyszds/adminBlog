@@ -8,12 +8,14 @@
   width: auto;
 }
 
-.tags &:deep(.el-tag.el-tag--info) {
-  background-color: var(--themeColor);
-  color: #fff;
-  border: 2px solid #000;
-  margin-right: 5px;
-  font-size: 12px;
+.tags {
+  &:deep(.el-tag.el-tag--info) {
+    background-color: var(--themeColor);
+    color: #fff;
+    border: 2px solid #000;
+    margin-right: 5px;
+    font-size: 12px;
+  }
 }
 
 @keyframes rotate {

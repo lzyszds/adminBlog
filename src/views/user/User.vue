@@ -9,6 +9,7 @@ import UserForm from "@/views/user/UserForm.vue";
 import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
 import { LNotification } from "@/utils/utils";
+console.log(1233145);
 const { $axios } = window;
 
 const state = useStore();
@@ -129,12 +130,7 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column> -->
-      <el-table-column
-        label="创建时间"
-        sortable
-        :sort-method="formatter"
-        width="160"
-      >
+      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <LzyIcon name="memory:calendar-month"></LzyIcon>
@@ -155,18 +151,11 @@ provide("setRightProps", {
           </div>
         </template>
       </el-table-column>
-      <el-table-column
-        label="注册时的IP"
-        sortable
-        :sort-method="formatter"
-        width="160"
-      >
+      <el-table-column label="注册时的IP" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <LzyIcon name="memory:calendar-month"></LzyIcon>
-            <span>{{
-              row.create_ip == "::1" ? "127.0.0.1" : row.create_ip
-            }}</span>
+            <span>{{ row.create_ip == "::1" ? "127.0.0.1" : row.create_ip }}</span>
           </div>
         </template>
       </el-table-column>

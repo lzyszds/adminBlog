@@ -16,18 +16,20 @@
   background-color: #eef7ff;
   border-radius: 10px;
   display: flex;
+  width: 90vw;
 
-  & > .tool {
+  &>.tool {
     height: 100%;
     background-color: #fff;
     border-radius: 10px 0 0 10px;
     margin-right: 15px;
     flex: 3;
+    max-width: 308px;
   }
 
   .content {
-    width: 1350px;
-    height: 865px;
+    width: 85vw;
+    height: 83vh;
     background-color: #fff;
     border-radius: 0 10px 10px 0;
     position: relative;
@@ -35,7 +37,8 @@
 
     .mainTem {
       display: grid;
-      grid-template-rows: 50px 735px 72px;
+      grid-template-rows: 50px 72vh 72px;
+      padding: 20px 0 0;
     }
 
     &::after {
@@ -54,8 +57,12 @@
 }
 
 .tableuser {
-  max-height: 743px;
+  max-height: 85vh;
   overflow: auto;
+
+  :deep(.el-scrollbar__bar) {
+    display: none !important;
+  }
 
   .svgTem {
     display: flex;
@@ -153,11 +160,6 @@
   }
 }
 
-.tableuser {
-  :deep(.el-scrollbar__bar) {
-    display: none !important;
-  }
-}
 
 /* From uiverse.io by @varoonrao */
 .checkbox-con {
