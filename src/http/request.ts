@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { ElMessage } from 'element-plus';
 
 interface AxiosConfig {
   baseURL?: string;
@@ -62,6 +63,11 @@ export default async function makeRequest<T = any>({
       data,
       headers
     });
+    //@ts-ignore
+    if (response.code !== 200) {
+      //@ts-ignore
+      ElMessage.error(response.msg);
+    }
     if (response.data !== undefined) {
       return response.data;
     }

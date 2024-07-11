@@ -10,9 +10,10 @@ const state = useStore();
 const { $axios } = window;
 
 const result: WebSystemType[] = await $axios({
-  url: "/common/getSystemConfig",
+  url: "/common/getSystemConfig?type=admin",
   method: "get",
 });
+console.log(`lzy  result:`, result);
 setTimeout(() => {
   state.loading = false;
 }, 1000);
