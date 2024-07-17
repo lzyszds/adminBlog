@@ -93,7 +93,7 @@ setTimeout(() => {
   <div class="login">
     <div class="card" :style="['width:' + cardWH, 'height:' + cardWH]">
       <div class="item center" :class="{ loadBtn: load }">
-        <el-form
+        <ElForm
           ref="ruleFormRef"
           :model="ruleForm"
           :rules="rules"
@@ -101,17 +101,17 @@ setTimeout(() => {
           status-icon
         >
           <p class="title">欢迎登陆</p>
-          <el-form-item prop="username">
-            <el-input
+          <ElFormItem prop="username">
+            <ElInput
               @keydown.enter="submitForm(ruleFormRef)"
               class="input"
               v-model="ruleForm.username"
             >
               <template #prepend>账号</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
+            </ElInput>
+          </ElFormItem>
+          <ElFormItem prop="password">
+            <ElInput
               @keydown.enter="submitForm(ruleFormRef)"
               class="input"
               type="password"
@@ -119,11 +119,11 @@ setTimeout(() => {
               show-password
             >
               <template #prepend>密码</template>
-            </el-input>
-          </el-form-item>
+            </ElInput>
+          </ElFormItem>
 
-          <el-form-item style="margin: 0">
-            <el-button
+          <ElFormItem style="margin: 0">
+            <ElButton
               type="primary"
               style="margin-top: 10px"
               @click="submitForm(ruleFormRef)"
@@ -133,9 +133,9 @@ setTimeout(() => {
                 style="margin-right: 5px"
               ></LzyIcon>
               <span class="spanTEXT">登陆</span>
-            </el-button>
-          </el-form-item>
-        </el-form>
+            </ElButton>
+          </ElFormItem>
+        </ElForm>
       </div>
       <div class="illustartion">
         <img :src="'/api/public/img/loginCover.png'" alt="logo" />
@@ -318,7 +318,7 @@ setTimeout(() => {
               }
             }
 
-            .el-button {
+            .ElButton {
               text-align: center;
               margin: 20px 10px 0;
               font-size: 16px;
@@ -384,4 +384,3 @@ setTimeout(() => {
   }
 }
 </style>
-@/types/NowWeatherData @/utils/utils

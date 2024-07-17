@@ -366,10 +366,10 @@ const addArticleType = async () => {
       </v-md-editor>
     </div>
     <div class="btnTool">
-      <el-button class="card-button" type="primary" @click="submitForm()"
-        >发布内容</el-button
+      <ElButton class="card-button" type="primary" @click="submitForm()"
+        >发布内容</ElButton
       >
-      <el-button class="card-button" @click="resetForm()">暂存内容</el-button>
+      <ElButton class="card-button" @click="resetForm()">暂存内容</ElButton>
     </div>
   </div>
 </template>

@@ -128,7 +128,7 @@ export const LNotification = (val: string, time: number = 2000, postion: any = '
   ElNotification.closeAll()
   ElNotification({
     dangerouslyUseHTMLString: true,
-    message: val,
+    message: "操作提示:" + val,
     position: postion,
     duration: time,
     customClass: 'copy-success',

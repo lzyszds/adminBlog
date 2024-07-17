@@ -92,36 +92,36 @@ provide("setRightProps", {
 <template>
   <SetRight>
     <template #table>
-      <el-table-column
+      <ElTableColumn
         property="uid"
         label="Id"
         sortable
         width="80"
         align="center"
-      ></el-table-column>
+      ></ElTableColumn>
 
-      <el-table-column label="头像" width="70">
+      <ElTableColumn label="头像" width="70">
         <template #default="{ row }">
           <div class="headImg">
-            <el-avatar :src="setheadImg(row.head_img)" alt=""></el-avatar>
+            <ElAvatar :src="setheadImg(row.head_img)" alt=""></ElAvatar>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column label="用户名" width="150" show-overflow-tooltip>
+      </ElTableColumn>
+      <ElTableColumn label="用户名" width="150" show-overflow-tooltip>
         <template #default="{ row }">
           {{ row.uname }}
         </template>
-      </el-table-column>
-      <el-table-column property="username" label="登陆账号" min-width="180" />
-      <el-table-column label="权限" width="100px" align="center">
+      </ElTableColumn>
+      <ElTableColumn property="username" label="登陆账号" min-width="180" />
+      <ElTableColumn label="权限" width="100px" align="center">
         <template #default="{ row }">
           <div class="power">
             <span v-if="row.power === 0" class="powerAdmin">管理员</span>
             <span v-else>普通用户</span>
           </div>
         </template>
-      </el-table-column>
-      <!-- <el-table-column label="允许" width="100px" align="center">
+      </ElTableColumn>
+      <!-- <ElTableColumn label="允许" width="100px" align="center">
         <template #default="{ row }">
           <div class="power">
             <div class="checkbox-con">
@@ -129,16 +129,16 @@ provide("setRightProps", {
             </div>
           </div>
         </template>
-      </el-table-column> -->
-      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
+      </ElTableColumn> -->
+      <ElTableColumn label="创建时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <LzyIcon name="memory:calendar-month"></LzyIcon>
             <span> {{ formatDate(row.create_date) }}</span>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column
+      </ElTableColumn>
+      <ElTableColumn
         label="上一次登陆时间"
         sortable
         :sort-method="formatter"
@@ -150,35 +150,35 @@ provide("setRightProps", {
             <span>{{ formatDate(row.last_login_date) }}</span>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column label="注册时的IP" sortable :sort-method="formatter" width="160">
+      </ElTableColumn>
+      <ElTableColumn label="注册时的IP" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <LzyIcon name="memory:calendar-month"></LzyIcon>
             <span>{{ row.create_ip == "::1" ? "127.0.0.1" : row.create_ip }}</span>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="140">
+      </ElTableColumn>
+      <ElTableColumn fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
-            <el-button type="primary" size="small" @click="modifyThe(row)"
-              >修改</el-button
+            <ElButton type="primary" size="small" @click="modifyThe(row)"
+              >修改</ElButton
             >
-            <el-popconfirm
+            <ElPopconfirm
               width="220"
               @confirm="_delete(row)"
               confirm-button-text="确定"
-              cancel-button-text="取消"
+              cancElButton-text="取消"
               title="你确定要删除吗?"
             >
               <template #reference>
-                <el-button type="danger" size="small">删除</el-button>
+                <ElButton type="danger" size="small">删除</ElButton>
               </template>
-            </el-popconfirm>
+            </ElPopconfirm>
           </div>
         </template>
-      </el-table-column>
+      </ElTableColumn>
     </template>
     <!-- 新增文章 -->
     <template #popupAdd>

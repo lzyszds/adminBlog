@@ -23,14 +23,14 @@ const search = () => {
 
 <template>
   <div class="search">
-    <el-input
+    <ElInput
       class="searchInput"
       @keydown.enter="search"
       v-model="searchInput"
       placeholder="search"
       clearable
     />
-    <el-button class="btn" @click="search" type="primary">Go</el-button>
+    <ElButton class="btn" @click="search" type="primary">Go</ElButton>
   </div>
 </template>
 

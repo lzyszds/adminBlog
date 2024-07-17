@@ -48,13 +48,13 @@ provide("requirement", {
     <div class="mainTem">
       <div class="topTool">
         <Search :requirement="requirement" />
-        <el-button v-if="popup" class="add" type="primary" @click="addToPop">{{
+        <ElButton v-if="popup" class="add" type="primary" @click="addToPop">{{
           popup!.addName
-        }}</el-button>
+        }}</ElButton>
       </div>
       <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
       <div class="tableuser">
-        <el-table
+        <ElTable
           class="tableuser"
           :data="state.tableData"
           row-class-name="animate__duration animate__bounceInUp"
@@ -67,13 +67,13 @@ provide("requirement", {
             </div>
           </template>
           <slot name="table"></slot>
-        </el-table>
+        </ElTable>
       </div>
-      <div class="toolfooter" v-if="requirement.pages">
+      <div class="toolfooter" v-if="state.total">
         <div class="example-pagination-block lzyColor">
           <div class="example-demonstration"></div>
           <el-pagination
-            small
+            size="small"
             v-model:current-page="requirement.pages"
             background
             :page-count="state.total"
@@ -84,7 +84,7 @@ provide("requirement", {
       </div>
     </div>
     <div v-if="popup">
-      <el-dialog
+      <ElDialog
         v-if="popup"
         class="articleDialog"
         :close-on-press-escape="false"
@@ -96,8 +96,8 @@ provide("requirement", {
         :top="popup.addTop"
       >
         <slot name="popupAdd" v-if="popup.addVisible"></slot>
-      </el-dialog>
-      <el-dialog
+      </ElDialog>
+      <ElDialog
         class="articleDialog"
         :close-on-press-escape="false"
         v-model="popup.modifyVisible"
@@ -108,7 +108,7 @@ provide("requirement", {
         :top="popup.modifyTop"
       >
         <slot name="popupModify" v-if="popup.modifyVisible"></slot>
-      </el-dialog>
+      </ElDialog>
     </div>
   </div>
 </template>

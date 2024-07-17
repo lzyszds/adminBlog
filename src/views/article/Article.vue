@@ -108,16 +108,16 @@ provide("setRightProps", {
 <template>
   <SetRight>
     <template #table>
-      <el-table-column
+      <ElTableColumn
         property="aid"
         label="Id"
         sortable
         width="80"
         align="center"
-      ></el-table-column>
-      <el-table-column property="uname" label="作者" width="80" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column label="文章封面" width="180" align="center">
+      ></ElTableColumn>
+      <ElTableColumn property="uname" label="作者" width="80" show-overflow-tooltip>
+      </ElTableColumn>
+      <ElTableColumn label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
             <img
@@ -129,24 +129,24 @@ provide("setRightProps", {
             />
           </div>
         </template>
-      </el-table-column>
-      <el-table-column
+      </ElTableColumn>
+      <ElTableColumn
         property="title"
         label="文章标题"
         sortable
         width="160"
         show-overflow-tooltip
       >
-      </el-table-column>
-      <el-table-column label="创建时间" sortable :sort-method="formatter" width="160">
+      </ElTableColumn>
+      <ElTableColumn label="创建时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
             {{ dayjs(row.create_date).format("YYYY.MM.DD") }}
           </div>
         </template>
-      </el-table-column>
-      <el-table-column label="最近修改时间" sortable :sort-method="formatter" width="150">
+      </ElTableColumn>
+      <ElTableColumn label="最近修改时间" sortable :sort-method="formatter" width="150">
         <template #default="{ row }">
           <div class="svgTem">
             <i class="iconfont">&#x100d9;</i>
@@ -157,8 +157,8 @@ provide("setRightProps", {
             }}
           </div>
         </template>
-      </el-table-column>
-      <el-table-column property="guid" label="文章路径" sortable>
+      </ElTableColumn>
+      <ElTableColumn property="guid" label="文章路径" sortable>
         <template #default="{ row }">
           <div class="guidCup">
             <a target="_blank" :href="'/home/detail/' + row.aid">
@@ -166,8 +166,8 @@ provide("setRightProps", {
             </a>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column property="tags" label="类型" sortable width="250">
+      </ElTableColumn>
+      <ElTableColumn property="tags" label="类型" sortable width="250">
         <template #default="{ row }">
           <div class="tags">
             <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{
@@ -175,17 +175,15 @@ provide("setRightProps", {
             }}</el-tag>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="140">
+      </ElTableColumn>
+      <ElTableColumn fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
-            <el-button type="primary" size="small" @click="modifyThe(row)"
-              >修改</el-button
-            >
-            <el-button type="danger" size="small" @click="_delete(row)">删除</el-button>
+            <ElButton type="primary" size="small" @click="modifyThe(row)">修改</ElButton>
+            <ElButton type="danger" size="small" @click="_delete(row)">删除</ElButton>
           </div>
         </template>
-      </el-table-column>
+      </ElTableColumn>
     </template>
     <!-- 新增文章 -->
     <template #popupAdd>

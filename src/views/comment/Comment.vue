@@ -27,17 +27,16 @@ const topCom = (_row: getComType) => {
 };
 //删除评论
 const _delete = async (row: getComType) => {
-  LNotification("success");
   const res: any = await http<string>({
     method: "post",
     url: "/comment/deleteComment",
-    data: { comId: row.comId, aid: row.article_id },
+    data: { ids: row.comment_id },
   });
   if (res.data === "删除成功") {
     state.handleCurrentChange(requirement);
   }
+  LNotification(res.data, 100000000, "top-right");
 };
-console.log(`lzy  requirement:`, requirement);
 provide("setRightProps", {
   requirement: requirement,
 });
@@ -46,75 +45,74 @@ provide("setRightProps", {
 <template>
   <SetRight>
     <template #table>
-      <el-table-column prop="" label="头像" width="65">
+      <ElTableColumn prop="" label="头像" width="65">
         <template #default="{ row }">
-          <el-avatar
+          <ElAvatar
             :src="'/api/public' + row.head_img"
             style="width: 40px; height: 40px"
-          ></el-avatar>
+          ></ElAvatar>
         </template>
-      </el-table-column>
-      <el-table-column prop="user_name" label="用户名" width="90"></el-table-column>
-      <el-table-column
+      </ElTableColumn>
+      <ElTableColumn prop="user_name" label="用户名" width="90"></ElTableColumn>
+      <ElTableColumn
         prop="email"
         label="邮箱"
         width="180"
         show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
+      ></ElTableColumn>
+      <ElTableColumn
         prop="content"
         label="评论内容"
         width="220"
         show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column prop="time" label="评论时间" show-overflow-tooltip>
+      ></ElTableColumn>
+      <ElTableColumn prop="time" label="评论时间" show-overflow-tooltip>
         <template #default="{ row }">
           <span>
             {{ dayjs.unix(row.time).format("YYYY.MM.DD HH:mm") }}
           </span>
         </template>
-      </el-table-column>
-      <el-table-column prop="comment_id" label="评论id" width="70"></el-table-column>
-      <el-table-column prop="article_id" label="文章id" width="70"></el-table-column>
-      <el-table-column prop="ground_id" label="评论楼层" width="80"></el-table-column>
-      <el-table-column prop="reply_id" label="回复id" width="70"></el-table-column>
-      <el-table-column prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="140">
+      </ElTableColumn>
+      <ElTableColumn prop="comment_id" label="评论id" width="70"></ElTableColumn>
+      <ElTableColumn prop="article_id" label="文章id" width="70"></ElTableColumn>
+      <ElTableColumn prop="ground_id" label="评论楼层" width="80"></ElTableColumn>
+      <ElTableColumn prop="reply_id" label="回复id" width="70"></ElTableColumn>
+      <ElTableColumn prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
+      </ElTableColumn>
+      <ElTableColumn fixed="right" label="操作" width="140">
         <template #default="scope">
           <!-- 如果当前评论不为一级评论，不给予置顶功能 -->
-          <el-popconfirm
+          <ElPopconfirm
             width="220"
             confirm-button-text="OK"
-            cancel-button-text="No, Thanks"
+            cancElButton-text="No, Thanks"
             icon-color="#626AEF"
             title="Are you sure to delete this?"
             @confirm="topCom(scope.row)"
           >
             <template #reference>
-              <el-button :disabled="scope.row.ground_id != 0" type="primary" size="small"
-                >置顶</el-button
-              >
+              <ElButton :disabled="scope.row.ground_id != 0" type="primary" size="small">
+                置顶
+              </ElButton>
             </template>
-          </el-popconfirm>
-          <el-popconfirm
+          </ElPopconfirm>
+          <ElPopconfirm
             width="220"
-            confirm-button-text="OK"
-            cancel-button-text="No, Thanks"
+            confirm-button-text="确定"
+            cancElButton-text="取消"
             icon-color="#626AEF"
-            title="Are you sure to delete this?"
+            title="确定要删除这条评论吗?"
             @confirm="_delete(scope.row)"
           >
             <template #reference>
-              <el-button type="danger" size="small">删除</el-button>
+              <ElButton type="danger" size="small">删除</ElButton>
             </template>
-          </el-popconfirm>
+          </ElPopconfirm>
         </template>
-      </el-table-column>
+      </ElTableColumn>
     </template>
   </SetRight>
 </template>
 <style lang="scss" scoped>
 @import url("@/assets/css/headSearch.scss");
 </style>
-@/store

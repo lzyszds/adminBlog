@@ -176,7 +176,7 @@ const submitUpload = () => {
 </script>
 
 <template>
-  <el-form
+  <ElForm
     ref="ruleFormRef"
     :model="ruleForm"
     :rules="rules"
@@ -187,17 +187,17 @@ const submitUpload = () => {
   >
     <!-- 修改用户信息标签 -->
     <div class="headelement">
-      <el-avatar
+      <ElAvatar
         v-ImgLoading
         :size="100"
         :src="'/api/public' + ruleForm.head_img"
       >
-      </el-avatar>
+      </ElAvatar>
       <div class="upload-demo">
         <div class="fileBtn">
           <div class="fileUpload">
             <label class="ui_button ui_button_primary" for="xFile">
-              <el-button type="primary" @click="upClick">上传本地</el-button>
+              <ElButton type="primary" @click="upClick">上传本地</ElButton>
             </label>
             <form action="" method="post">
               <input
@@ -209,9 +209,9 @@ const submitUpload = () => {
               />
             </form>
           </div>
-          <el-button class="recommended" @click="handleExceed">
+          <ElButton class="recommended" @click="handleExceed">
             系统推荐
-          </el-button>
+          </ElButton>
         </div>
         <div
           class="el-upload__tip text-red"
@@ -221,24 +221,24 @@ const submitUpload = () => {
         </div>
       </div>
     </div>
-    <el-form-item label="Name(名称)" prop="uname">
-      <el-input v-model="ruleForm.uname" />
-    </el-form-item>
-    <el-form-item label="UserName(账号)" prop="username">
-      <el-input v-model="ruleForm.username" />
-    </el-form-item>
-    <el-form-item
+    <ElFormItem label="Name(名称)" prop="uname">
+      <ElInput v-model="ruleForm.uname" />
+    </ElFormItem>
+    <ElFormItem label="UserName(账号)" prop="username">
+      <ElInput v-model="ruleForm.username" />
+    </ElFormItem>
+    <ElFormItem
       label="PassWord(密码)"
       :prop="props.type == 'add' ? 'password' : ''"
     >
-      <el-input
+      <ElInput
         v-model="ruleForm.password"
         type="password"
         show-password
         placeholder="不填就是不修改密码"
       />
-    </el-form-item>
-    <el-form-item label="power(权限)" prop="power">
+    </ElFormItem>
+    <ElFormItem label="power(权限)" prop="power">
       <el-select
         style="width: 100%"
         v-model="ruleForm.power"
@@ -247,8 +247,8 @@ const submitUpload = () => {
         <el-option label="admin" :value="0" />
         <el-option label="user" :value="1" />
       </el-select>
-    </el-form-item>
-    <el-form-item label="create(创建)" prop="date">
+    </ElFormItem>
+    <ElFormItem label="create(创建)" prop="date">
       <el-date-picker
         style="width: 100%"
         v-model="ruleForm.create_date"
@@ -256,30 +256,30 @@ const submitUpload = () => {
         placeholder="Pick a day"
         disabled
       />
-    </el-form-item>
-    <el-form-item
+    </ElFormItem>
+    <ElFormItem
       class="pertextarea"
       style="flex-direction: column"
       prop="delivery"
     >
-      <el-input
+      <ElInput
         v-model="ruleForm.signature"
         :autosize="{ minRows: 4, maxRows: 4 }"
         type="textarea"
       />
-    </el-form-item>
-    <el-form-item>
-      <el-button
+    </ElFormItem>
+    <ElFormItem>
+      <ElButton
         class="card-button"
         type="primary"
         @click="submitForm(ruleFormRef)"
-        >Create</el-button
+        >Create</ElButton
       >
-      <el-button class="card-button" @click="resetForm(ruleFormRef)"
-        >Reset</el-button
+      <ElButton class="card-button" @click="resetForm(ruleFormRef)"
+        >Reset</ElButton
       >
-    </el-form-item>
-  </el-form>
+    </ElFormItem>
+  </ElForm>
 </template>
 
 <style lang="scss" scoped>

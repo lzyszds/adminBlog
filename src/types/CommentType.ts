@@ -1,5 +1,5 @@
 export interface getComType {
-  comId: number;  // 评论id
+  comment_id: number;  // 评论id
   content: string;  // 评论内容
   article_id: number; // 文章id
   reply_id: number; // 回复id

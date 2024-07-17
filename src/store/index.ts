@@ -51,18 +51,20 @@ export const useStore = defineStore('main', {
         url: pagePara,
         method: 'get',
       })
-
+      console.log(!Array.isArray(data));
       //如果 data.data 不是数组， 
       if (!Array.isArray(data)) {
         if (data.total == 0) {
           //如果 data.total 等于 0，那么 this.tableData 被设置为空数组，this.total 被设置为 data.total。
           //这可能表示没有数据可用，所以清空表格数据并设置总数为0。
           this.tableData = []
+          this.total = data.total
         } else if (code == 500) {
           //如果 data.code 等于 500，那么会调用 tipNotify 函数显示一个消息，持续时间为2000毫秒，
           //然后 this.tableData 被设置为空数组。这可能表示服务器返回了一个错误，所以清空表格数据并显示一个提示。
           tipNotify(msg!, 2000)
           this.tableData = []
+          this.total = 0
         } else {
           //如果 data.data 存在，那么会将它赋值给 this.tableData，这可能表示服务器返回了一个数据数组，所以将它赋值给表格数据。
           this.tableData = data.data

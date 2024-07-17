@@ -122,7 +122,13 @@ const getLevel = (data: any) => {
   .setAikey {
     border: 3px solid var(--themeColor);
     border-radius: 10px 0 0 10px;
-    .el-table {
+    /* 隐藏滚动条 */
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    .ElTable {
       border-radius: 10px;
     }
   }

@@ -85,7 +85,7 @@
   color: #fff;
 }
 
-.el-message-box__btns > .el-button:hover {
+.el-message-box__btns>.el-button:hover {
   transform: scale(1.1);
   background-color: var(--themeColor);
   color: #fff;
@@ -159,7 +159,7 @@ span.el-tag.purple {
 }
 
 .copy-success {
-  border: 1px solid var(--themeColor) !important;
+  border: 1px solid var(--delColor) !important;
   display: flex;
 
   .el-notification__content {
@@ -182,11 +182,22 @@ span.el-tag.purple {
 }
 
 .tableuser {
+
   .el-table--border .el-table__inner-wrapper::after,
   .el-table--border::after,
   .el-table--border::before,
   .el-table__inner-wrapper::before {
     z-index: 1;
     display: none;
+  }
+}
+
+.el-table__body-wrapper {
+  min-height: 850px;
+
+  .el-scrollbar,
+  .el-scrollbar__view,
+  .el-table__empty-block {
+    min-height: 850px;
   }
 }
