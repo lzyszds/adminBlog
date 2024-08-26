@@ -9,7 +9,7 @@ const { result } = defineProps<{
 const emit = defineEmits(["updateSystemData"]);
 
 const loadGifList = await $axios({
-  url: "/common/getLoadGif",
+  url: "/system/getSystemLoadImages",
   method: "get",
 });
 

@@ -10,7 +10,7 @@ const state = useStore();
 const { $axios } = window;
 
 const result: WebSystemType[] = await $axios({
-  url: "/common/getSystemConfig?type=admin",
+  url: "/system/getSystemConfig?type=admin",
   method: "get",
 });
 console.log(`lzy  result:`, result);
@@ -21,19 +21,23 @@ setTimeout(() => {
 //更新系统配置
 const updateSystemData = async (key: string, val: string, id: number) => {
   try {
-    await $axios({
-      url: "/common/updateSystemConfig",
+    const resoult = await $axios({
+      url: "/system/updateSystemConfig",
       method: "post",
       data: {
+        config_id: id,
         config_key: key,
         config_value: val,
-        config_id: id,
       },
     });
-    return LNotification("更新成功", 2000, "bottom-right", "success");
+    return LNotification(
+      resoult,
+      2000,
+      "top-right",
+      resoult.indexOf("失败") ? "error" : "success"
+    );
   } catch (err) {}
 };
-console.log(123345);
 </script>
 
 <template>
