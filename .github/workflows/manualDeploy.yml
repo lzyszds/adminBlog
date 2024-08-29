@@ -1,9 +1,8 @@
-name: 博客后台部署
+name: 博客后台部署 (手动触发)
 
-# 提交后的触发器
+# 手动触发器
 on:
-  push:
-    branches: [master]
+  workflow_dispatch:
 
 jobs:
   deploy:
