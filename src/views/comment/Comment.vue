@@ -69,13 +69,13 @@ provide("setRightProps", {
       <ElTableColumn prop="time" label="评论时间" show-overflow-tooltip>
         <template #default="{ row }">
           <span>
-            {{ dayjs.unix(row.time).format("YYYY.MM.DD HH:mm") }}
+            {{ dayjs.unix(row.create_date).format("YYYY.MM.DD HH:mm") }}
           </span>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="comment_id" label="评论id" width="70"></ElTableColumn>
-      <ElTableColumn prop="article_id" label="文章id" width="70"></ElTableColumn>
-      <ElTableColumn prop="ground_id" label="评论楼层" width="80"></ElTableColumn>
+      <ElTableColumn prop="comment_id" label="评论id" width="100"></ElTableColumn>
+      <ElTableColumn prop="article_id" label="文章id" width="100"></ElTableColumn>
+      <ElTableColumn prop="ground_id" label="评论楼层" width="100"></ElTableColumn>
       <ElTableColumn prop="reply_id" label="回复id" width="70"></ElTableColumn>
       <ElTableColumn prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
       </ElTableColumn>
