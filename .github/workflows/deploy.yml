@@ -3,7 +3,7 @@ name: 博客后台部署
 # 提交后的触发器
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   deploy:
