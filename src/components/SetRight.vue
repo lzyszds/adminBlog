@@ -53,22 +53,21 @@ provide("requirement", {
         }}</ElButton>
       </div>
       <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
-      <div class="tableuser">
-        <ElTable
-          class="tableuser"
-          :data="state.tableData"
-          row-class-name="animate__duration animate__bounceInUp"
-          style="width: 100%"
-        >
-          <template #empty>
-            <div class="empty">
-              <img src="@/assets/image/暂无文档.svg" alt="" />
-              <span>暂无数据</span>
-            </div>
-          </template>
-          <slot name="table"></slot>
-        </ElTable>
-      </div>
+      <ElTable
+        class="tableuser"
+        :data="state.tableData"
+        row-class-name="animate__duration animate__bounceInUp"
+        :stripe="true"
+        style="width: 98%"
+      >
+        <template #empty>
+          <div class="empty">
+            <img src="@/assets/image/暂无文档.svg" alt="" />
+            <span>暂无数据</span>
+          </div>
+        </template>
+        <slot name="table"></slot>
+      </ElTable>
       <div class="toolfooter" v-if="state.total">
         <div class="example-pagination-block lzyColor">
           <div class="example-demonstration"></div>
@@ -120,7 +119,7 @@ provide("requirement", {
   justify-content: left;
   align-items: center;
   margin-bottom: 10px;
-  padding: 0 20px;
+  padding: 0 10px;
   height: 50px;
   background-color: #fff;
   border-radius: 10px;

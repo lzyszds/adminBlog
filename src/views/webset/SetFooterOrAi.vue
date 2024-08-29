@@ -1,25 +1,53 @@
 <script setup lang="ts">
 const { $axios } = window;
+import LzyBtn from "@/components/LzyBtn.vue";
 import { LNotification } from "@/utils/utils";
 const aiKeyData = await $axios({
   url: "/aiService/getAiKeysList",
   method: "get",
 });
 
-const footerData = await $axios({
-  url: "/common/getFooterInfo",
-  method: "get",
-});
-const footerRefData = ref(footerData);
+const footerRefData = ref(); //页脚数据
+
+const footerVisible = ref(false); //页脚弹窗是否显示
+const footerNewForm = reactive({
+  footer_type: 1,
+  footer_content: "",
+  footer_url: "",
+  footer_order: 0,
+}); //页脚新表单
+
+async function getFooterInfoList() {
+  footerRefData.value = await $axios({
+    url: "/system/getFooterInfo",
+    method: "get",
+  });
+}
+getFooterInfoList();
 
 const append = (data: any) => {
-  const newChild = {};
-  if (!data.children) {
-    data.children = [];
+  footerVisible.value = true;
+  if (data) {
+    footerNewForm.footer_type = data.footer_content;
+    footerNewForm.footer_order = data.footer_order;
   }
-  data.children.push(newChild);
-  footerRefData.value = [...footerRefData.value];
 };
+function addFormFooter() {
+  $axios({
+    url: "/system/addFooterInfo",
+    method: "post",
+    data: {
+      footer_type: footerNewForm.footer_type,
+      footer_content: footerNewForm.footer_content,
+      footer_url: footerNewForm.footer_url,
+      footer_order: footerNewForm.footer_order,
+    },
+  }).then(async (res) => {
+    LNotification(res, 2000, "bottom-right", "success");
+    await getFooterInfoList();
+    footerVisible.value = false;
+  });
+}
 
 const remove = (node: Node, data: any) => {
   //@ts-ignore
@@ -32,7 +60,7 @@ const remove = (node: Node, data: any) => {
 
 const save = async (data) => {
   const result = await $axios({
-    url: "/common/updateFooterInfo",
+    url: "/system/updateFooterInfo",
     method: "post",
     data: data,
   });
@@ -56,9 +84,10 @@ const getLevel = (data: any) => {
 <template>
   <div class="setFooterOrAi">
     <div class="setAikey">
+      <h3 class="header">AiKey设置</h3>
       <ElTable
         :data="[...aiKeyData, ...aiKeyData, ...aiKeyData]"
-        style="width: 100%; max-height: 420px; overflow-y: auto"
+        style="width: 100%; max-height: 420px; overflow-y: auto; border-radius: 10px"
       >
         <ElTableColumn prop="keyName" label="AiKey" width="100">
           <template #default="scope">
@@ -78,8 +107,36 @@ const getLevel = (data: any) => {
       </ElTable>
     </div>
     <div class="setFooter">
+      <h3 class="header">页脚数据设置</h3>
+      <ElDialog v-model="footerVisible" :show-close="false" width="500">
+        <template #header="{ close }">
+          <div class="my-header">
+            <h1 style="margin: 0">页脚数据设置</h1>
+            <LzyBtn name="gg:close" @click="close"></LzyBtn>
+          </div>
+        </template>
+        <ElForm>
+          <ElFormItem label="页脚类型">
+            <ElInput v-model="footerNewForm.footer_type" disabled />
+          </ElFormItem>
+          <ElFormItem label="页脚级别">
+            <ElInput v-model="footerNewForm.footer_order" disabled />
+          </ElFormItem>
+
+          <ElFormItem label="页脚内容">
+            <ElInput v-model="footerNewForm.footer_content" />
+          </ElFormItem>
+          <ElFormItem label="页脚链接">
+            <ElInput v-model="footerNewForm.footer_url" />
+          </ElFormItem>
+        </ElForm>
+        <template #footer>
+          <ElButton @click="footerVisible = false">取 消</ElButton>
+          <ElButton type="primary" @click.stop="addFormFooter">保存设置</ElButton>
+        </template>
+      </ElDialog>
       <el-tree
-        style="max-width: 600px"
+        style="max-width: 800px"
         :data="footerRefData"
         node-key="footer_id"
         default-expand-all
@@ -90,13 +147,40 @@ const getLevel = (data: any) => {
             <ElInput v-else v-model="data.footer_content" size="small" />
             <ElInput v-if="data.footer_url" v-model="data.footer_url" size="small" />
             <span>
-              <a v-if="getLevel(data) === 1" @click="save(data)"> 保存设置 </a>
-              <a v-if="getLevel(data) !== 1" @click="remove(node, data)"> 删除 </a>
-              <a v-if="getLevel(data) !== 3" @click="append(data)"> 新增 </a>
+              <ElButton
+                type="primary"
+                size="small"
+                v-if="getLevel(data) === 1"
+                @click.stop="save(data)"
+              >
+                保存设置
+              </ElButton>
+              <ElButton
+                type="danger"
+                size="small"
+                v-if="getLevel(data) !== 1"
+                @click.stop="remove(node, data)"
+              >
+                删除
+              </ElButton>
+              <ElButton
+                type="primary"
+                size="small"
+                v-if="getLevel(data) !== 3"
+                @click.stop="append(data)"
+              >
+                新增
+              </ElButton>
             </span>
           </span>
         </template>
       </el-tree>
+      <div class="tools">
+        <ElButton type="primary" size="small" @click.stop="append">新增</ElButton>
+        <ElButton type="primary" size="small" @click.stop="save(footerRefData)">
+          保存设置
+        </ElButton>
+      </div>
     </div>
   </div>
 </template>
@@ -116,10 +200,17 @@ const getLevel = (data: any) => {
 </style>
 <style lang="scss" scoped>
 .setFooterOrAi {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
+  display: flex;
+  width: 100%;
+  h3.header {
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    background-color: var(--themeColor);
+    color: #fff;
+  }
   .setAikey {
+    width: 50%;
     border: 3px solid var(--themeColor);
     border-radius: 10px 0 0 10px;
     /* 隐藏滚动条 */
@@ -133,12 +224,32 @@ const getLevel = (data: any) => {
     }
   }
   .setFooter {
+    width: 50%;
     border: 3px solid var(--themeColor);
     border-left: none;
-    overflow-y: auto;
     border-radius: 0;
-    padding: 5px 0;
+    padding: 0;
+    position: relative;
     border-radius: 0 10px 10px 0;
+
+    .el-tree {
+      height: 370px;
+      overflow-y: auto;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    .tools {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      padding: 10px;
+      background-color: #fff;
+    }
   }
+}
+
+.my-header {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

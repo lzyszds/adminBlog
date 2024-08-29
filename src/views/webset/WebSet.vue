@@ -34,7 +34,7 @@ const updateSystemData = async (key: string, val: string, id: number) => {
       resoult,
       2000,
       "top-right",
-      resoult.indexOf("失败") ? "error" : "success"
+      resoult.indexOf("失败") >= 0 ? "error" : "success"
     );
   } catch (err) {}
 };
