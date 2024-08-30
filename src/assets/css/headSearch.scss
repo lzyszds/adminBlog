@@ -1,6 +1,11 @@
 .mainTem {
   height: 100%;
 }
+:deep(.el-table__inner-wrapper) {
+  .is-vertical {
+    display: none;
+  }
+}
 
 .empty {
   display: flex;
