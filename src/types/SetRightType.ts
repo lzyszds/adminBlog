@@ -1,3 +1,5 @@
+
+import { HttpResonse } from '@/http'
 export interface Popup {
   addName: string,
   modifyName: string,
@@ -16,5 +18,5 @@ export interface Requirement {
   search: string,
   pages: number,
   limit: number,
-  api: string
+  api: <T>(params: any) => Promise<HttpResonse<T>>
 }

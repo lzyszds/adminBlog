@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, reactive, provide } from "vue";
 import SetRight from "@/components/SetRight.vue";
-import http from "@/http/http";
-import { LNotification } from "@/utils/utils";
+import http from "@/http";
+import { LNotification, setMession } from "@/utils/utils";
 import { ElTableColumn, dayjs } from "element-plus";
+import { articleDelete, articleDetail, articleList } from "@/api/article";
 
 import { ElNotification } from "element-plus";
-import { ArticleMultipleDataType } from "@/types/ArticleType";
+import { ArticleMultipleDataType, Article } from "@/types/ArticleType";
+import { PaginatedResponse } from "@/types/PublicType";
 import ArticleForm from "@/views/article/ArticleForm.vue";
 
 import { useStore } from "@/store";
@@ -17,11 +19,11 @@ const state = useStore();
 const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
-  limit: 7, //每页显示条数
-  api: "/article/getArticleList",
+  limit: 9, //每页显示条数
+  api: articleList,
 });
 //自动加载数据
-await state.handleCurrentChange(requirement);
+await state.handleCurrentChange<Article[]>(requirement);
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
 const formatter = () => {
   return 0;
@@ -32,10 +34,7 @@ const modifyData = ref<ArticleMultipleDataType>();
 
 const modifyThe = (event: ArticleMultipleDataType) => {
   //根据点击的文章id获取文章详情信息
-  http({
-    url: "/article/getArticleInfo/" + event.aid,
-    method: "get",
-  }).then((res: any) => {
+  articleDetail(event.aid).then((res: any) => {
     modifyData.value = res.data;
     popup.modifyVisible = true;
   });
@@ -44,17 +43,10 @@ const modifyThe = (event: ArticleMultipleDataType) => {
 //删除文章
 const _delete = async (event) => {
   try {
-    const res = await http({
-      url: "/article/deleteArticle",
-      method: "post",
-      data: { id: event.aid },
-    });
+    const res = await articleDelete<string>({ id: event.aid });
+    console.log(`lzy  res:`, res);
 
-    ElNotification({
-      title: res.code === 200 ? "成功" : "失败",
-      message: `${res.data}`,
-      type: res.code === 200 ? "success" : "error",
-    });
+    setMession(res.code === 200 ? "success" : "error", res.data);
 
     await state.handleCurrentChange(requirement);
   } catch (error) {
@@ -115,26 +107,26 @@ provide("setRightProps", {
         width="80"
         align="center"
       ></ElTableColumn>
-      <ElTableColumn property="uname" label="作者" width="80" show-overflow-tooltip>
-      </ElTableColumn>
-      <ElTableColumn label="文章封面" width="180" align="center">
+      <!-- <ElTableColumn property="uname" label="作者" width="80" show-overflow-tooltip>
+      </ElTableColumn> -->
+      <!-- <ElTableColumn label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
             <img
               v-ImgLoading
-              :src="'/api/public' + row.cover_img"
+              :src="'/adminPublic' + row.cover_img"
               data-fancybox="gallery"
               title="o"
               alt=""
             />
           </div>
         </template>
-      </ElTableColumn>
+      </ElTableColumn> -->
       <ElTableColumn
         property="title"
         label="文章标题"
         sortable
-        width="160"
+        width="300"
         show-overflow-tooltip
       >
       </ElTableColumn>
@@ -158,7 +150,7 @@ provide("setRightProps", {
           </div>
         </template>
       </ElTableColumn>
-      <ElTableColumn property="guid" label="文章路径" sortable>
+      <!-- <ElTableColumn property="guid" label="文章路径" sortable>
         <template #default="{ row }">
           <div class="guidCup">
             <a target="_blank" :href="'/home/detail/' + row.aid">
@@ -166,8 +158,8 @@ provide("setRightProps", {
             </a>
           </div>
         </template>
-      </ElTableColumn>
-      <ElTableColumn property="tags" label="类型" sortable width="250">
+      </ElTableColumn> -->
+      <ElTableColumn property="tags" label="类型" sortable>
         <template #default="{ row }">
           <div class="tags">
             <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{

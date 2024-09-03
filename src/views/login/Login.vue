@@ -8,7 +8,7 @@ import { NowWeatherData } from "@/types/NowWeatherData";
 import { show } from "@/utils/loading";
 
 import { dayjs } from "element-plus";
-import http from "@/http/http";
+import http from "@/http";
 import { useRouter } from "vue-router";
 const router = useRouter();
 //进入页面先判断是否登陆着,localStorage.getItem('token')是登陆时候存的token
@@ -138,7 +138,7 @@ setTimeout(() => {
         </ElForm>
       </div>
       <div class="illustartion">
-        <img :src="'/api/public/img/loginCover.png'" alt="logo" />
+        <img :src="'/adminPublic/img/loginCover.png'" alt="logo" />
       </div>
       <p class="pwdTips" :class="{ error: tipsText.length }">{{ tipsText }}</p>
     </div>
@@ -169,7 +169,7 @@ setTimeout(() => {
     height: 45vw;
     border-radius: 50%;
     // background: #FFFCF5;
-    background: url("/api/public/img/moon.png") no-repeat center;
+    background: url("/adminPublic/img/moon.png") no-repeat center;
     background-size: 120%;
     border: 5px solid #000;
     z-index: -1;

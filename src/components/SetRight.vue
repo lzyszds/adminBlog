@@ -44,71 +44,67 @@ provide("requirement", {
 </script>
 
 <template>
-  <div>
-    <div class="mainTem">
-      <div class="topTool">
-        <Search :requirement="requirement" />
-        <ElButton v-if="popup" class="add" type="primary" @click="addToPop">{{
+  <div class="topTool">
+    <Search :requirement="requirement" />
+    <ElButton v-if="popup" class="add" type="primary" @click="addToPop">{{
           popup!.addName
-        }}</ElButton>
+    }}</ElButton>
+  </div>
+  <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
+  <!-- row-class-name="animate__duration animate__bounceInUp" 动画属性 -->
+  <ElTable
+    class="tableuser"
+    :data="state.tableData"
+    row-class-name="animate__duration "
+    style="width: 98%; height: 100%"
+  >
+    <template #empty>
+      <div class="empty">
+        <img src="@/assets/image/暂无文档.svg" alt="" />
+        <span>暂无数据</span>
       </div>
-      <!-- <div style="width: 735px;" v-if="state.formLoading"></div> -->
-      <ElTable
-        class="tableuser"
-        :data="state.tableData"
-        row-class-name="animate__duration animate__bounceInUp"
-        :stripe="true"
-        style="width: 98%"
+    </template>
+    <slot name="table"></slot>
+  </ElTable>
+  <div class="toolfooter" v-if="state.total">
+    <div class="example-pagination-block lzyColor">
+      <div class="example-demonstration"></div>
+      <el-pagination
+        size="small"
+        v-model:current-page="requirement.pages"
+        background
+        :page-count="state.total"
+        layout="prev, pager, next, jumper"
       >
-        <template #empty>
-          <div class="empty">
-            <img src="@/assets/image/暂无文档.svg" alt="" />
-            <span>暂无数据</span>
-          </div>
-        </template>
-        <slot name="table"></slot>
-      </ElTable>
-      <div class="toolfooter" v-if="state.total">
-        <div class="example-pagination-block lzyColor">
-          <div class="example-demonstration"></div>
-          <el-pagination
-            size="small"
-            v-model:current-page="requirement.pages"
-            background
-            :page-count="state.total"
-            layout="prev, pager, next, jumper"
-          >
-          </el-pagination>
-        </div>
-      </div>
+      </el-pagination>
     </div>
-    <div v-if="popup">
-      <ElDialog
-        v-if="popup"
-        class="articleDialog"
-        :close-on-press-escape="false"
-        v-model="popup.addVisible"
-        :before-close="handleClose"
-        :title="popup.addName"
-        :align-center="popup.alignCenter"
-        :width="popup.addWidth"
-        :top="popup.addTop"
-      >
-        <slot name="popupAdd" v-if="popup.addVisible"></slot>
-      </ElDialog>
-      <ElDialog
-        class="articleDialog"
-        :close-on-press-escape="false"
-        v-model="popup.modifyVisible"
-        :before-close="handleClose"
-        :title="popup.modifyName"
-        :align-center="popup.alignCenter"
-        :width="popup.modifyWidth"
-        :top="popup.modifyTop"
-      >
-        <slot name="popupModify" v-if="popup.modifyVisible"></slot>
-      </ElDialog>
-    </div>
+  </div>
+  <div v-if="popup">
+    <ElDialog
+      v-if="popup"
+      class="articleDialog"
+      :close-on-press-escape="false"
+      v-model="popup.addVisible"
+      :before-close="handleClose"
+      :title="popup.addName"
+      :align-center="popup.alignCenter"
+      :width="popup.addWidth"
+      :top="popup.addTop"
+    >
+      <slot name="popupAdd" v-if="popup.addVisible"></slot>
+    </ElDialog>
+    <ElDialog
+      class="articleDialog"
+      :close-on-press-escape="false"
+      v-model="popup.modifyVisible"
+      :before-close="handleClose"
+      :title="popup.modifyName"
+      :align-center="popup.alignCenter"
+      :width="popup.modifyWidth"
+      :top="popup.modifyTop"
+    >
+      <slot name="popupModify" v-if="popup.modifyVisible"></slot>
+    </ElDialog>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -120,7 +116,6 @@ provide("requirement", {
   align-items: center;
   margin-bottom: 10px;
   padding: 0 10px;
-  height: 50px;
   background-color: #fff;
   border-radius: 10px;
   gap: 20px;
@@ -131,7 +126,7 @@ div :deep(img[data-fancybox="gallery"]) {
   height: 72px;
   object-fit: cover;
   border-radius: 10px;
-  cursor: var(--linkCup);
+  cursor: pointer;
   transition: 0.1s ease-out;
   box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.5);
   border: 2px solid var(--selectionColor);

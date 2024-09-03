@@ -52,14 +52,14 @@ export default defineConfig(({ command, mode }): any => {
       host: '0.0.0.0',
       port: 1025,
       proxy: {
-        "/api": {
+        "/firstHonoApi": {
           // target: _baseUrl + ':8089',//这里是域名，不是完整地址
-          target: _baseUrl + ':1020',//这里是域名，不是完整地址
+          target: _baseUrl + ':2024',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域
-          rewrite: path => path.replace(/^\/api/, '')
+          rewrite: path => path.replace(/^\/firstHonoApi/, '')
         },
         "/adminPublic": {
-          target: _baseUrl + ':1020/public',//这里是域名，不是完整地址
+          target: _baseUrl + ':2024/static',//这里是域名，不是完整地址
           changeOrigin: true,//是否跨域
           rewrite: path => path.replace(/^\/adminPublic/, '')
         },

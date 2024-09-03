@@ -1,5 +1,5 @@
-import http from '@/http/http'
-import { ElNotification, dayjs } from 'element-plus'
+import http from '@/http'
+import { ElNotification, dayjs, ElMessage } from 'element-plus'
 
 
 // 此函数获取一个数组并将其拆分为更小的块
@@ -121,6 +121,21 @@ export function optimizeImage(file, quality): Promise<{ base64: string, fileComp
       };
     });
   });
+}
+
+//消息提醒
+
+export const setMession = (type: "success" | "warning" | "error" | "info" = "success", val: string, arg?) => {
+  ElMessage({
+    message: val,
+    type: type,
+    duration: 2000,
+    center: true,
+    showClose: true,
+    grouping: true,
+    plain: true,
+    ...arg
+  })
 }
 
 // 默认弹窗
@@ -318,6 +333,7 @@ export default {
   copyTip,//复制内容提示版权信息
   tipNotify,//提示通知
   LNotification,//提示弹窗
+  setMession,//消息提醒
   getCookie,//获取cookie
   setCookie,//设置cookie
   unique,//数组对象去重（区别单数组以及数组中嵌套一层对象）

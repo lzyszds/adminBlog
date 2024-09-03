@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { reactive, provide } from "vue";
 import SetRight from "@/components/SetRight.vue";
-import http from "@/http/http";
 import { ElTableColumn, dayjs } from "element-plus";
 
 import { useStore } from "@/store";
 import { Requirement } from "@/types/SetRightType";
 import { getComType } from "@/types/CommentType";
-import { LNotification } from "@/utils/utils";
+import { setMession } from "@/utils/utils";
+import { deleteComment, getCommentList } from "@/api/comment";
 const state = useStore();
 
 //页面配置
@@ -15,7 +15,7 @@ const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
   limit: 15, //每页显示条数
-  api: "/comment/getAllComment",
+  api: getCommentList,
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
@@ -27,15 +27,11 @@ const topCom = (_row: getComType) => {
 };
 //删除评论
 const _delete = async (row: getComType) => {
-  const res: any = await http<string>({
-    method: "post",
-    url: "/comment/deleteComment",
-    data: { ids: row.comment_id },
-  });
+  const res: any = await deleteComment<string>(row.comment_id);
   if (res.data === "删除成功") {
     state.handleCurrentChange(requirement);
   }
-  LNotification(res.data, 100000000, "top-right");
+  setMession(res.code === 200 ? "success" : "error", res.data);
 };
 provide("setRightProps", {
   requirement: requirement,
@@ -48,7 +44,7 @@ provide("setRightProps", {
       <ElTableColumn prop="" label="头像" width="65">
         <template #default="{ row }">
           <ElAvatar
-            :src="'/api/public' + row.head_img"
+            :src="'/adminPublic' + row.head_img"
             style="width: 40px; height: 40px"
           ></ElAvatar>
         </template>
@@ -73,12 +69,11 @@ provide("setRightProps", {
           </span>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="comment_id" label="评论id" width="100"></ElTableColumn>
-      <ElTableColumn prop="article_id" label="文章id" width="100"></ElTableColumn>
-      <ElTableColumn prop="ground_id" label="评论楼层" width="100"></ElTableColumn>
-      <ElTableColumn prop="reply_id" label="回复id" width="70"></ElTableColumn>
-      <ElTableColumn prop="user_ip" label="用户ip" width="160" show-overflow-tooltip>
-      </ElTableColumn>
+      <ElTableColumn prop="comment_id" label="评论id"></ElTableColumn>
+      <ElTableColumn prop="article_id" label="文章id"></ElTableColumn>
+      <ElTableColumn prop="ground_id" label="评论楼层"></ElTableColumn>
+      <ElTableColumn prop="reply_id" label="回复id"></ElTableColumn>
+      <ElTableColumn prop="user_ip" label="用户ip" show-overflow-tooltip> </ElTableColumn>
       <ElTableColumn fixed="right" label="操作" width="140">
         <template #default="scope">
           <!-- 如果当前评论不为一级评论，不给予置顶功能 -->

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import http from "@/http/http";
 import { hide } from "@/utils/loading";
 import { NowWeatherData, IWeather } from "@/types/nowWeatherData";
 import { useRouter } from "vue-router";
+import { getUserInfoToken } from "@/api/user";
+import { User } from "@/types/UserType";
 const router = useRouter();
 const historyRouter = useSessionStorage("historyRouter", "System"); // returns Ref<number>
 //左侧菜单栏
@@ -96,20 +97,13 @@ const changeComponent = async (item: Items) => {
 
 //处理用户详情数据
 const infoData: any = ref();
-let data: any = [];
-const res = (await http({
-  url: "/user/getUserInfoToken",
-  method: "get",
-})) as any; // httpData
+let { data }: any = await getUserInfoToken<User>();
 hide();
-data = res.data;
 //处理用户签名
 if (data.signature) {
-  if (data.signature.indexOf(",") == -1) data.signature = data.signature.split("，");
-  else
-    data.signature = data.signature
-      ? data.signature.split(",")
-      : "这个人很懒，什么都没留下";
+  if (typeof data.signature === "string") {
+    data.signature = data.signature.split("，");
+  }
 } else {
   data.signature = ["这个人很懒", "什么都没留下"];
 }
@@ -122,7 +116,7 @@ infoData.value = data;
     <div class="logo">Lzyszds</div>
     <div class="userinfo">
       <div class="headPortrait">
-        <img :src="'/api/public' + infoData.head_img" alt="" />
+        <img :src="'/adminPublic' + infoData.head_img" alt="" />
       </div>
       <h3>{{ infoData.uname }}</h3>
       <p v-for="(item, index) in infoData.signature" :key="index">「{{ item }} 」</p>
@@ -273,7 +267,7 @@ infoData.value = data;
       grid-template-columns: 7fr 9fr;
       align-items: center;
       padding: 5px 0px;
-      cursor: var(--linkCup);
+      cursor: pointer;
       transition: all 0.5s;
       user-select: none;
       position: relative;

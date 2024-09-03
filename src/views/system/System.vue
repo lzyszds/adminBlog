@@ -2,15 +2,12 @@
 import { useStore } from "@/store";
 import dayjs from "dayjs";
 import SortTab from "@/components/SortTab.vue";
+import { getAdminHomeData } from "@/api/toolkit";
 const loading = ref(true);
 const state = useStore();
-const { $axios } = window;
 const data: any = ref({});
-$axios({
-  method: "get",
-  url: "/common/getAdminHomeData",
-}).then((res) => {
-  data.value = res;
+getAdminHomeData().then((res) => {
+  data.value = res.data;
   loading.value = false;
   state.loading = false;
 });
@@ -83,7 +80,7 @@ console.log(1234);
                 />
               </div>
               <h4>欢迎访问</h4>
-              <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
+              <!-- <img src="/adminPublic/img/heard.jpg" alt="user" /> -->
             </div>
 
             <div class="active-calories">
@@ -152,7 +149,7 @@ console.log(1234);
                   class="image-container"
                   :class="'img-' + classNames[index]"
                 >
-                  <img :src="'/api/public' + item.cover_img" :alt="item.title" />
+                  <img :src="'/adminPublic' + item.cover_img" :alt="item.title" />
                   <div class="overlay">
                     <h3>{{ item.title }}</h3>
                   </div>
@@ -203,7 +200,7 @@ console.log(1234);
                 />
               </div>
               <h4>欢迎访问</h4>
-              <!-- <img src="/api/public/img/heard.jpg" alt="user" /> -->
+              <!-- <img src="/adminPublic/img/heard.jpg" alt="user" /> -->
             </div>
 
             <div class="active-calories">

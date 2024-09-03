@@ -12,6 +12,9 @@ export interface Article {
   modified_date: string,
   title: string,
 }
+
+
+
 export interface TagDataType {
   whether_use: string,
   name: string,

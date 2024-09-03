@@ -8,9 +8,6 @@
   --textcolor: #fe9600;
   --borderColor: #ffe14d;
   --delColor: #dc143c;
-  --normalCup: url('../icon/Normal.png'), auto;
-  --linkCup: url('../icon/Link.png'), auto;
-  --verticalCup: url('../icon/Vertical.png') 0 10, auto;
   --article-cover: linear-gradient(180deg, hsla(0, 0%, 98%, 0) 0, hsla(0, 0%, 98%, .013) 8.1%, hsla(0, 0%, 98%, .049) 15.5%, hsla(0, 0%, 98%, .104) 22.5%, hsla(0, 0%, 98%, .175) 29%, hsla(0, 0%, 98%, .259) 35.3%, hsla(0, 0%, 98%, .352) 41.2%, hsla(0, 0%, 98%, .45) 47.1%, hsla(0, 0%, 98%, .55) 52.9%, hsla(0, 0%, 98%, .648) 58.8%, hsla(0, 0%, 98%, .741) 64.7%, hsla(0, 0%, 98%, .825) 71%, hsla(0, 0%, 98%, .896) 77.5%, hsla(0, 0%, 98%, .951) 84.5%, hsla(0, 0%, 98%, .987) 91.9%, #fff);
   --broRadius: 9px;
   --breakpoint-sm: 576px;
@@ -56,6 +53,7 @@ html,
   margin: 0;
   padding: 0;
   min-width: 380px;
+  font-family: 'Red Hat Display';
 }
 
 a {
@@ -72,15 +70,10 @@ svg {
   display: initial;
 }
 
-button,
-a {
-  cursor: var(--linkCup) !important;
-}
 
 .decoration {
   font-family: 'almama';
   color: #fff;
-  cursor: var(--linkCup);
   text-shadow: 1px 3px 3px #000;
   transition: .6s;
   background: linear-gradient(#fff, #fff) no-repeat left 100%/0 2px;
@@ -189,21 +182,6 @@ body::-webkit-scrollbar-track {
   padding: 0 !important;
 }
 
-#app {
-  cursor: var(--normalCup)
-}
-
-#app a {
-  cursor: var(--linkCup)
-}
-
-#app input {
-  cursor: var(--verticalCup)
-}
-
-#app textarea {
-  cursor: var(--verticalCup)
-}
 
 html,
 body {

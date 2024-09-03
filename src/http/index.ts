@@ -1,7 +1,7 @@
 // 一、配置axios
 import axios, { AxiosResponse } from 'axios'
 import { ElMessageBox } from 'element-plus'
-import { getCookie } from '@/utils/utils'
+import { getCookie, setMession } from '@/utils/utils'
 /**
  * 在 Vue.js 中，使用 vue-router 来处理路由时，有时可能会遇到在响应拦截器中无法访问路由的情况。
  * 这通常是因为在拦截器中，路由对象（$route）可能还没有被创建，
@@ -27,7 +27,7 @@ export interface ResonseData<T> {
 }
 
 const instance = axios.create({
-  baseURL: window.location.origin,
+  baseURL: '/firstHonoApi/api', // api的base_url
   // timeout: 5000,
   withCredentials: true,//表示跨域请求时是否需要使用凭证
 })
@@ -104,18 +104,16 @@ export default async function http<T>(httpConfig: IHttpConfig): Promise<HttpReso
   // 判断是否为多部分请求
   const isMultipart = headers['Content-Type'] === 'multipart/form-data';
 
-  // 定义不需要前缀的端点
-  const noPrefixEndpoints = ['/getIp/info'];
-
-  // 如果需要前缀，添加前缀到URL
-  if (!noPrefixEndpoints.includes(url)) {
-    url = '/api' + url;
-  }
 
   try {
     const response = await instance({ method, url, data, headers });
+    if (response.data.code !== 200) {
+      setMession(response.data.msg, 'error')
+      return Promise.reject(response.data.message)
+    }
     return response.data as HttpResonse<T>; // 假设响应数据为getComType[]类型
-  } catch (error) {
+  } catch (error: any) {
+    setMession(error.message, 'error')
     return Promise.reject(error);
   }
 

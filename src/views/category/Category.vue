@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { deleteArticleCategory, getArticleCategory } from "@/api/article";
 import SetRight from "@/components/SetRight.vue";
 import { useStore } from "@/store";
 import { Requirement } from "@/types/SetRightType";
-import { LNotification } from "@/utils/utils";
+import { LNotification, setMession } from "@/utils/utils";
 
 const { $axios } = window;
 
@@ -15,7 +16,7 @@ const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
   limit: 15, //每页显示条数
-  api: "/article/getArticleTypeList",
+  api: getArticleCategory,
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
@@ -24,13 +25,9 @@ const edit = (row: any) => {
   console.log(`lzy  row:`, row);
 };
 const del = (id) => {
-  $axios<string>({
-    url: "/article/deleteArticleType",
-    method: "post",
-    data: { id },
-  }).then((res) => {
+  deleteArticleCategory<string>(id).then((res) => {
     state.handleCurrentChange(requirement);
-    LNotification(res, 2000);
+    setMession(res.code === 200 ? "success" : "error", res.data);
   });
 };
 
@@ -42,13 +39,7 @@ provide("setRightProps", {
 <template>
   <SetRight>
     <template #table>
-      <ElTableColumn
-        property="type_id"
-        label="id"
-        sortable
-        width="180"
-        align="center"
-      ></ElTableColumn>
+      <ElTableColumn property="type_id" label="id" sortable width="180"></ElTableColumn>
       <ElTableColumn prop="name" label="分类名"></ElTableColumn>
       <ElTableColumn label="权限" width="100px" align="center">
         <template #default="{ row }">

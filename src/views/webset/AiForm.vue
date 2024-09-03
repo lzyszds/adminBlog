@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ElNotification } from "element-plus";
+import http from "@/http/index";
 const emit = defineEmits(["switchMod"]);
 
 const { $axios } = window;
@@ -9,7 +10,7 @@ const form = reactive({
 });
 
 const submit = () => {
-  $axios({
+  http({
     url: "/aiService/addAiKey",
     method: "post",
     data: {
@@ -56,7 +57,7 @@ const submit = () => {
       border-radius: 10px;
       padding: 6px 10px;
       color: #fff;
-      font-family: "dindin";
+      font-family: "Red Hat Display";
     }
   }
   button {

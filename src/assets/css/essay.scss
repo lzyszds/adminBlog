@@ -7,15 +7,15 @@ pre {
   top: 0;
   left: -30px;
   width: 30px;
-  border-right: 1px solid #C3CCD0;
-  background-color: #1C1D21;
+  border-right: 1px solid #c3ccd0;
+  background-color: #1c1d21;
   text-align: center;
   padding: 0.5em 0;
 }
 
 .pre-numbering li {
   list-style: none;
-  color: #AAA;
+  color: #aaa;
   font-size: 1em;
 }
 
@@ -78,7 +78,7 @@ code {
 }
 
 .v-md-prism-language {
-  font-family: 'firaCode' !important;
+  font-family: "firaCode" !important;
 }
 
 .vuepress-markdown-body {
@@ -91,10 +91,9 @@ code {
     }
   }
 
-  &>div {
+  & > div {
     position: relative;
   }
-
 
   &:not(.custom) a:hover {
     text-decoration: none;
@@ -117,7 +116,7 @@ code {
     font-size: 1.3em;
     color: #000;
     font-weight: 600;
-    font-family: 'dindin';
+    font-family: "dindin";
   }
 
   h2 {
@@ -126,15 +125,14 @@ code {
     color: #000;
     font-size: 21px;
     font-weight: 600;
-    font-family: 'dindin';
+    font-family: "dindin";
 
     &::before {
       content: "#";
-      color: #FF6D6D;
+      color: #ff6d6d;
       margin-right: 20px;
     }
   }
-
 
   h3 {
     color: #222;
@@ -146,7 +144,6 @@ code {
       color: var(--themeColor);
       margin-right: 20px;
     }
-
   }
 
   h4 {
@@ -159,7 +156,6 @@ code {
       content: "~";
       color: var(--themeColor);
     }
-
   }
 
   & a,
@@ -167,7 +163,7 @@ code {
     color: var(--themeColor);
   }
 
-  a>.v-md-svg-outbound {
+  a > .v-md-svg-outbound {
     color: var(--themeColor);
     vertical-align: text-bottom;
     display: initial;
@@ -218,27 +214,26 @@ code {
   }
 
   /* 代码类型提示，右上角的 */
-  div[class*=v-md-pre-wrapper-]:before {
+  div[class*="v-md-pre-wrapper-"]:before {
     position: absolute;
     top: 0em;
     right: 1em;
     z-index: 3;
-    color: hsla(0, 0%, 100%, .4);
+    color: hsla(0, 0%, 100%, 0.4);
     font-size: 1.75rem;
   }
 
   .line-number,
   code,
   kbd {
-    font-family: 'firaCode' !important;
+    font-family: "firaCode" !important;
   }
 
   mark {
-
     padding: 0 5px;
     border-radius: 2px;
     font-size: 16px;
-    font-family: 'dindin';
+    font-family: "dindin";
 
     &.gray {
       background-color: #555;
@@ -274,14 +269,13 @@ code {
 }
 
 .dark {
-
   .vuepress-markdown-body {
     text-shadow: #21252b;
     background: var(--darkBgcolor);
     // box-shadow: 0px 0px 1px 4px #aaa inset;
     border: none;
 
-    &>div {
+    & > div {
       background: var(--darkBgcolor) !important;
     }
 
@@ -298,7 +292,7 @@ code {
       color: #fff;
     }
 
-    .v-md-plugin-tip>p,
+    .v-md-plugin-tip > p,
     .v-md-plugin-tip summary {
       color: #fff !important;
     }
@@ -330,7 +324,6 @@ code {
   }
 }
 
-
 .v-md-editor__toolbar-item--active,
 .v-md-editor__toolbar-item--active:hover,
 .v-md-editor__toolbar-item:hover {
@@ -341,7 +334,7 @@ code {
 .v-md-plugin-tip {
   border-radius: 10px;
   // display: flex;
-  font-family: 'dindin';
+  font-family: "dindin";
 }
 
 .v-md-plugin-tip.tip {
@@ -374,7 +367,7 @@ code {
     max-height: 1000px;
   }
 
-  &>p,
+  & > p,
   summary {
     color: #fff;
   }

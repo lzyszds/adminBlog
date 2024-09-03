@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { ElMessageBox, ElNotification } from "element-plus";
-import http, { HttpResonse } from "@/http/http";
+import { ElMessageBox, Tag } from "element-plus";
+import http, { HttpResonse } from "@/http";
 import toolbar from "@/utils/toolbar";
-import { optimizeImage, isEqual, toProxys, tipNotify } from "@/utils/utils";
+import { optimizeImage, isEqual, toProxys, tipNotify, setMession } from "@/utils/utils";
 import {
   TagDataType,
   Props,
   InformationTypes,
   ArticledataType,
 } from "@/types/ArticleType";
+import {
+  addArticleCategory,
+  articleAdd,
+  articleEditor,
+  getArticleCategory,
+  uploadArticleImg,
+} from "@/api/article";
+import { PaginatedResponse, Response } from "@/types/PublicType";
 // 获取数据
 const {
   value: { title, content, cover_img },
@@ -23,7 +31,7 @@ const information = reactive<InformationTypes>({
   html: props.data?.main,
   title: props.data?.title || "",
   cover: props.data?.cover_img
-    ? "/api/public" + props.data?.cover_img
+    ? "/adminPublic" + props.data?.cover_img
     : "/api/article/getRandArticleImg?time=" + new Date().getTime(),
 });
 
@@ -65,11 +73,8 @@ const submitForm = async () => {
   const data = setData(type);
   // 检查内容是否相同
   try {
-    const res = await http({
-      url: type === "modify" ? "/article/updateArticle" : "/article/addArticle",
-      method: "post",
-      data,
-    });
+    const res = type === "modify" ? await articleEditor(data) : await articleAdd(data);
+    console.log(`lzy  res:`, res);
     if (res.code === 200) {
       emitResult(type === "modify" ? "Mod" : "Add", res.data, false);
     } else {
@@ -107,25 +112,13 @@ const handleUploadImage = async (event, insertImage, files) => {
     // 对图片进行压缩
     const { fileCompress } = await optimizeImage(files[0], scale);
 
-    // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
-    let formData = new FormData();
-    formData.append("upload-image", fileCompress);
-
-    let headers = {
-      "Content-Type": "multipart/form-data",
-    };
-
-    // 此处即为向编辑框中插入的内容，url即为图片上传后返回的链接
-    const res = await http<string>({
-      method: "post",
-      url: "/article/uploadArticleImg",
-      data: formData,
-      headers,
-    });
+    // 上传图片
+    const res = await uploadArticleImg<string>(fileCompress);
+    console.log(`lzy  res:`, res);
 
     if (res.code === 200) {
       insertImage({
-        url: "/api/public" + res.data,
+        url: "/adminPublic" + res.data,
         desc: "点击放大",
       });
     }
@@ -154,14 +147,11 @@ function setData(type: "modify" | "add"): ArticledataType {
   console.log(information.html);
   const data = {
     title: information.title, // 文章标题
-    partial_content: document.querySelector(".vuepress-markdown-body")
-      ?.firstElementChild!.innerHTML!, // 文章开头第一段话
+    partial_content: document.querySelector(".vuepress-markdown-body")?.firstElementChild!
+      .innerHTML!, // 文章开头第一段话
     content: information.text, // 文章内容
     main: document.querySelector(".vuepress-markdown-body")?.innerHTML!, // 文章主体内容
-    cover_img: (information.cover || props.data?.cover_img)?.replace(
-      "/api/public",
-      ""
-    )!, // 文章封面图片
+    cover_img: (information.cover || props.data?.cover_img)?.replace("/adminPublic", "")!, // 文章封面图片
     aid: isModify ? props.data?.aid! : null, // 文章ID（修改时为当前文章ID，创建时为null）
     tags: tagDataTem.value, // 文章标签
   };
@@ -192,7 +182,7 @@ nextTick(() => {
         headers,
       }).then((res: HttpResonse<string>) => {
         if (res.code === 200) {
-          information.cover = "/api/public" + res.data;
+          information.cover = "/adminPublic" + res.data;
         } else {
           console.log(res.msg);
         }
@@ -218,11 +208,8 @@ const tagDataTem: any = ref(tagData.value);
 const tagList = ref<TagDataType[]>();
 // 获取标签列表
 try {
-  const result = await http<TagDataType[]>({
-    url: "/article/getArticleTypeList",
-    method: "get",
-  });
-  tagList.value = result.data;
+  const result = await getArticleCategory<Response<TagDataType>>();
+  tagList.value = result.data.data;
 } catch (e) {
   console.log(e);
 }
@@ -230,17 +217,13 @@ try {
 // 标签激活函数
 const tagActive = (tag) => {
   if (tagDataTem.value.includes(tag)) {
-    // 数量不能超过4个
+    // 如果存在则删除
+    tagDataTem.value.splice(tagDataTem.value.indexOf(tag), 1);
+  } else {
     if (tagDataTem.value.length >= 4) {
-      ElNotification({
-        title: "提示",
-        message: "最多只能选择4个标签",
-        type: "warning",
-      });
+      setMession("warning", "最多只能选择4个标签");
       return;
     }
-    tagDataTem.value = tagDataTem.value.filter((item) => item !== tag) as any;
-  } else {
     tagDataTem.value.push(tag);
   }
 };
@@ -275,21 +258,10 @@ const addArticleType = async () => {
   if (data?.includes(typeInput.value as any)) {
     return tagDataTem.value.push(typeInput.value);
   }
-  const result = await http<null>({
-    url: "/article/addArticleType",
-    method: "post",
-    data: {
-      name: typeInput.value,
-    },
-  });
-  if (result.code == 200) {
-    const { data } = await http<TagDataType[]>({
-      url: "/article/getArticleTypeList",
-      method: "get",
-    });
-    tipNotify("添加成功");
-    tagList.value = data;
-  }
+  await addArticleCategory({ name: typeInput.value });
+  const { data: tagData } = await getArticleCategory<Response<TagDataType>>();
+  tipNotify("添加成功");
+  tagList.value = tagData.data;
 };
 </script>
 
@@ -298,12 +270,7 @@ const addArticleType = async () => {
     <div class="headelement">
       <div class="markDowmInput">
         <span>类别：</span>
-        <el-popover
-          :width="380"
-          placement="bottom"
-          :visible="visible"
-          trigger="click"
-        >
+        <el-popover :width="380" placement="bottom" :visible="visible" trigger="click">
           <template #reference>
             <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
             <div class="boxType" @click="visible = true">
@@ -360,7 +327,7 @@ const addArticleType = async () => {
         :left-toolbar="orderTool"
         @save="saveToInformationStorage"
         @upload-image="handleUploadImage"
-        :height="(tableheight! * 0.9) + 'px'"
+        height="95%"
         :toolbar="toolbar"
       >
       </v-md-editor>
@@ -376,6 +343,7 @@ const addArticleType = async () => {
 
 <style lang="scss" scoped>
 .headelement {
+  height: 70vh;
   & .v-md-editor {
     box-shadow: 1px 1px 5px 1px #0000001a;
   }
@@ -402,7 +370,7 @@ const addArticleType = async () => {
       position: relative;
       height: 85%;
       margin-right: 30px;
-      cursor: var(--linkCup);
+      cursor: pointer;
 
       #coverFile {
         display: none;
@@ -450,7 +418,7 @@ const addArticleType = async () => {
       white-space: nowrap;
       margin: 0 30px 0 0;
       line-height: 40px;
-      cursor: var(--linkCup);
+      cursor: pointer;
 
       &:deep(.el-tag.el-tag--info) {
         background-color: var(--themeColor);
@@ -463,7 +431,7 @@ const addArticleType = async () => {
   }
 
   .fa-folder-open {
-    cursor: var(--linkCup);
+    cursor: pointer;
   }
 
   :deep(.v-md-editor__menu)::-webkit-scrollbar {
@@ -535,7 +503,7 @@ const addArticleType = async () => {
     background-color: #fff;
     color: #000;
     user-select: none;
-    cursor: var(--linkCup);
+    cursor: pointer;
     border: 2px solid #000;
 
     &.tag-active {

@@ -10,6 +10,6 @@ export interface User {
   head_img: string,
   setHeadImg?: string,
   date?: any,
-  signature: string,
+  signature: string | string[],
 }
 

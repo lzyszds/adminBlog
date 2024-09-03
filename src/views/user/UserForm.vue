@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { ElNotification, FormInstance, FormRules } from "element-plus";
+import { addUser, editUser, getAvatar, uploadAvatar } from "@/api/user";
+import { setMession } from "@/utils/utils";
 const emit = defineEmits(["switchMod"]);
 const props = defineProps({
   type: String,
   data: Object,
 });
-
-const { $axios } = window;
 
 // const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>();
@@ -68,32 +68,11 @@ const operateUser = async () => {
   }, {});
 
   try {
-    const res = await $axios({
-      url: isAdd ? "/user/addUser" : "/user/updateUser",
-      method: "post",
-      data: diffData,
-    });
-    if (res.code === 200) {
-      ElNotification({
-        title: "成功",
-        message: isAdd ? "用户添加成功" : "用户修改成功",
-        type: "success",
-      });
-      emit("switchMod", false, isAdd);
-    } else {
-      ElNotification({
-        title: "失败",
-        message: isAdd ? "用户添加失败" : "用户修改失败",
-        type: "error",
-      });
-      emit("switchMod", true, isAdd);
-    }
+    const res = await (isAdd ? addUser<string>(diffData) : editUser<string>(diffData));
+    setMession(res.code === 200 ? "success" : "error", res.data);
+    emit("switchMod", res.code !== 200, isAdd);
   } catch (e) {
-    ElNotification({
-      title: "失败",
-      message: isAdd ? "用户添加失败" : "用户修改失败",
-      type: "error",
-    });
+    setMession("error", isAdd ? "用户添加失败" : "用户修改失败");
     emit("switchMod", true, isAdd);
   }
 };
@@ -120,16 +99,7 @@ const handleExceed = async () => {
   timer = true;
   ruleForm.value.head_img = "/img/load.gif";
   // 给随机图片添加时间戳 防止缓存 保证每次都是新的图片
-  const { data } = await $axios({
-    url: "/user/getRandHeadImg",
-    method: "get",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    data: {
-      time: Date.now(),
-    },
-  });
+  const { data } = await getAvatar();
   ruleForm.value.head_img = data;
   setTimeout(() => {
     timer = false;
@@ -153,16 +123,8 @@ const submitUpload = () => {
     //下面是将blob转换为file 用于上传
     let formData = new FormData();
     formData.append("head-img", xFile.files[0]);
-    let headers = {
-      "Content-Type": "multipart/form-data",
-    };
     //给后台上传头像图片，并获取后台返回新的图片地址
-    const res = await $axios({
-      url: "/user/uploadHead",
-      method: "post",
-      headers: headers,
-      data: formData,
-    });
+    const res = await uploadAvatar(formData);
     if (res.code === 200) {
       // const objectURL = URL.createObjectURL(blob);
       ruleForm.value.head_img = res.data; //显示的头像blob转化为可图片显示的src
@@ -187,11 +149,7 @@ const submitUpload = () => {
   >
     <!-- 修改用户信息标签 -->
     <div class="headelement">
-      <ElAvatar
-        v-ImgLoading
-        :size="100"
-        :src="'/api/public' + ruleForm.head_img"
-      >
+      <ElAvatar v-ImgLoading :size="100" :src="'/adminPublic' + ruleForm.head_img">
       </ElAvatar>
       <div class="upload-demo">
         <div class="fileBtn">
@@ -209,9 +167,7 @@ const submitUpload = () => {
               />
             </form>
           </div>
-          <ElButton class="recommended" @click="handleExceed">
-            系统推荐
-          </ElButton>
+          <ElButton class="recommended" @click="handleExceed"> 系统推荐 </ElButton>
         </div>
         <div
           class="el-upload__tip text-red"
@@ -227,10 +183,7 @@ const submitUpload = () => {
     <ElFormItem label="UserName(账号)" prop="username">
       <ElInput v-model="ruleForm.username" />
     </ElFormItem>
-    <ElFormItem
-      label="PassWord(密码)"
-      :prop="props.type == 'add' ? 'password' : ''"
-    >
+    <ElFormItem label="PassWord(密码)" :prop="props.type == 'add' ? 'password' : ''">
       <ElInput
         v-model="ruleForm.password"
         type="password"
@@ -257,11 +210,7 @@ const submitUpload = () => {
         disabled
       />
     </ElFormItem>
-    <ElFormItem
-      class="pertextarea"
-      style="flex-direction: column"
-      prop="delivery"
-    >
+    <ElFormItem class="pertextarea" style="flex-direction: column" prop="delivery">
       <ElInput
         v-model="ruleForm.signature"
         :autosize="{ minRows: 4, maxRows: 4 }"
@@ -269,15 +218,10 @@ const submitUpload = () => {
       />
     </ElFormItem>
     <ElFormItem>
-      <ElButton
-        class="card-button"
-        type="primary"
-        @click="submitForm(ruleFormRef)"
+      <ElButton class="card-button" type="primary" @click="submitForm(ruleFormRef)"
         >Create</ElButton
       >
-      <ElButton class="card-button" @click="resetForm(ruleFormRef)"
-        >Reset</ElButton
-      >
+      <ElButton class="card-button" @click="resetForm(ruleFormRef)">Reset</ElButton>
     </ElFormItem>
   </ElForm>
 </template>
@@ -351,14 +295,14 @@ const submitUpload = () => {
       }
 
       .ui_button {
-        cursor: var(--linkCup) !important;
+        cursor: pointer !important;
       }
 
       .fileInput {
         position: absolute;
         top: 0;
         left: 0;
-        cursor: var(--linkCup) !important;
+        cursor: pointer !important;
         display: none;
       }
     }

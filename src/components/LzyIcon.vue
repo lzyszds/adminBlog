@@ -22,7 +22,7 @@ const props = defineProps<Props>();
 
 <style lang="scss" scoped>
 .LzyIcon {
-  cursor: var(--linkCup);
+  cursor: pointer;
   vertical-align: text-bottom;
 }
 </style>

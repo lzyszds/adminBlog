@@ -9,8 +9,7 @@ import UserForm from "@/views/user/UserForm.vue";
 import { useStore } from "@/store";
 import { Popup, Requirement } from "@/types/SetRightType";
 import { LNotification } from "@/utils/utils";
-console.log(1233145);
-const { $axios } = window;
+import { deleteUser, getUserList } from "@/api/user";
 
 const state = useStore();
 //页面配置
@@ -18,14 +17,14 @@ const requirement = reactive<Requirement>({
   search: "", //搜索内容
   pages: 1, //当前页数
   limit: 11, //每页显示条数
-  api: "/user/getUserList",
+  api: getUserList,
 });
 //自动加载数据
 await state.handleCurrentChange(requirement);
 
 //设置头像图片
 const setheadImg = (headImg: User["setHeadImg"]) => {
-  return "/api/public" + headImg;
+  return "/adminPublic" + headImg;
 };
 
 //屁用没有，但是必须写，不然排序不了 使用模板的table列
@@ -43,13 +42,7 @@ const modifyThe = (event: User) => {
 
 //删除用户
 const _delete = async (event) => {
-  const res = await $axios({
-    url: "/user/deleteUser",
-    method: "post",
-    data: {
-      uid: event.uid,
-    },
-  });
+  const res = await deleteUser(event.uid);
   LNotification(res.msg!);
   state.handleCurrentChange(requirement);
 };
@@ -138,12 +131,7 @@ provide("setRightProps", {
           </div>
         </template>
       </ElTableColumn>
-      <ElTableColumn
-        label="上一次登陆时间"
-        sortable
-        :sort-method="formatter"
-        width="160"
-      >
+      <ElTableColumn label="上一次登陆时间" sortable :sort-method="formatter" width="160">
         <template #default="{ row }">
           <div class="svgTem">
             <LzyIcon name="memory:calendar-month"></LzyIcon>
@@ -162,9 +150,7 @@ provide("setRightProps", {
       <ElTableColumn fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <div class="tool">
-            <ElButton type="primary" size="small" @click="modifyThe(row)"
-              >修改</ElButton
-            >
+            <ElButton type="primary" size="small" @click="modifyThe(row)">修改</ElButton>
             <ElPopconfirm
               width="220"
               @confirm="_delete(row)"

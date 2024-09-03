@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia'
-import http, { ResonseData } from "@/http/http";
+import { PaginatedResponse } from '@/types/PublicType'
 import { tipNotify } from '@/utils/utils'
 import dayjs from 'dayjs';
 import { Requirement } from '@/types/SetRightType';
-
-
 
 export const useStore = defineStore('main', {
   state: () => {
@@ -46,12 +44,8 @@ export const useStore = defineStore('main', {
       const { limit, search, api } = requirement
       /* 此处有一个巨大的坑，接口如果没有返回toal就会导致此处的方法初始触发两次。 */
       requirement.pages = val ?? requirement.pages
-      const pagePara = `${api}?pages=${requirement.pages}&limit=${limit}&search=${search}`
-      const { code, data, msg } = await http<ResonseData<T>>({
-        url: pagePara,
-        method: 'get',
-      })
-      console.log(!Array.isArray(data));
+      const pagePara = `?pages=${requirement.pages}&limit=${limit}&search=${search}`
+      const { code, data, msg } = await api(pagePara) as PaginatedResponse<T>
       //如果 data.data 不是数组， 
       if (!Array.isArray(data)) {
         if (data.total == 0) {
