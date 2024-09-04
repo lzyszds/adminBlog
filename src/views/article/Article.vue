@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref, reactive, provide } from "vue";
 import SetRight from "@/components/SetRight.vue";
-import http from "@/http";
 import { LNotification, setMession } from "@/utils/utils";
 import { ElTableColumn, dayjs } from "element-plus";
 import { articleDelete, articleDetail, articleList } from "@/api/article";
 
 import { ElNotification } from "element-plus";
 import { ArticleMultipleDataType, Article } from "@/types/ArticleType";
-import { PaginatedResponse } from "@/types/PublicType";
 import ArticleForm from "@/views/article/ArticleForm.vue";
 
 import { useStore } from "@/store";
@@ -109,7 +107,7 @@ provide("setRightProps", {
       ></ElTableColumn>
       <!-- <ElTableColumn property="uname" label="作者" width="80" show-overflow-tooltip>
       </ElTableColumn> -->
-      <!-- <ElTableColumn label="文章封面" width="180" align="center">
+      <ElTableColumn label="文章封面" width="180" align="center">
         <template #default="{ row }">
           <div>
             <img
@@ -121,7 +119,7 @@ provide("setRightProps", {
             />
           </div>
         </template>
-      </ElTableColumn> -->
+      </ElTableColumn>
       <ElTableColumn
         property="title"
         label="文章标题"
@@ -162,9 +160,7 @@ provide("setRightProps", {
       <ElTableColumn property="tags" label="类型" sortable>
         <template #default="{ row }">
           <div class="tags">
-            <el-tag type="info" v-for="(item, index) in row.tags" :key="index">{{
-              item
-            }}</el-tag>
+            <ElTag type="info" v-for="item in row.tags">{{ item }}</ElTag>
           </div>
         </template>
       </ElTableColumn>
