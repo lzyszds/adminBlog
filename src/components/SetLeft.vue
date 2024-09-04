@@ -261,7 +261,10 @@ infoData.value = data;
 
   .list {
     margin-top: 30px;
-
+    font-size: clamp(12px, 0.5vh, 16px);
+    height: clamp(100px, 30vh, 300px);
+    overflow: hidden;
+    overflow-y: auto;
     .list_item {
       display: grid;
       grid-template-columns: 7fr 9fr;

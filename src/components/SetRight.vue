@@ -123,7 +123,7 @@ provide("requirement", {
 
 div :deep(img[data-fancybox="gallery"]) {
   width: 150px;
-  height: 72px;
+  height: 40px;
   object-fit: cover;
   border-radius: 10px;
   cursor: pointer;
