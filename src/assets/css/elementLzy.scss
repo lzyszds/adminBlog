@@ -67,10 +67,7 @@
     padding: 0 !important;
   }
 
-  .el-table--striped
-    .el-table__body
-    tr.el-table__row--striped
-    td.el-table__cell {
+  .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
     background: #5161ce10 !important;
   }
 
@@ -89,7 +86,7 @@
     color: #fff;
   }
 
-  .el-message-box__btns > .el-button:hover {
+  .el-message-box__btns>.el-button:hover {
     transform: scale(1.1);
     background-color: var(--themeColor);
     color: #fff;
@@ -248,3 +245,5 @@
     box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
   }
 }
+
+

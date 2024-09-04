@@ -1,6 +1,7 @@
 import http from '@/http'
-import { ElNotification, dayjs, ElMessage } from 'element-plus'
+import { ElNotification, dayjs, ElMessage, } from 'element-plus'
 
+import type { ElMessageBoxOptions, MessageBoxState } from 'element-plus'
 
 // 此函数获取一个数组并将其拆分为更小的块
 export function splitArray(array: any, size) {
@@ -125,13 +126,12 @@ export function optimizeImage(file, quality): Promise<{ base64: string, fileComp
 
 //消息提醒
 
-export const setMession = (type: "success" | "warning" | "error" | "info" = "success", val: string, arg?) => {
+export const setMession = (type: MessageBoxState["type"], val: string, arg?) => {
   ElMessage({
     message: val,
     type: type,
     duration: 2000,
     center: true,
-    showClose: true,
     grouping: true,
     plain: true,
     ...arg

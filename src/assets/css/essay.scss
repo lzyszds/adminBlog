@@ -1,7 +1,9 @@
 pre {
   position: relative;
 }
-
+.v-md-textarea-editor textarea{
+  border-radius: 10px;
+}
 .pre-numbering {
   position: absolute;
   top: 0;

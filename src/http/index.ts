@@ -108,12 +108,12 @@ export default async function http<T>(httpConfig: IHttpConfig): Promise<HttpReso
   try {
     const response = await instance({ method, url, data, headers });
     if (response.data.code !== 200) {
-      setMession(response.data.msg, 'error')
+      setMession('error', response.data.msg)
       return Promise.reject(response.data.message)
     }
     return response.data as HttpResonse<T>; // 假设响应数据为getComType[]类型
   } catch (error: any) {
-    setMession(error.message, 'error')
+    setMession('error', error.msg)
     return Promise.reject(error);
   }
 

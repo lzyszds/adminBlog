@@ -69,18 +69,8 @@ const popup = reactive<Popup>({
 const switchMod = async (arr: { flag: boolean; data: any; type: "修改" | "新增" }) => {
   console.log(`lzy  arr:`, arr);
   arr.type == "修改" ? (popup.modifyVisible = arr.flag) : (popup.addVisible = arr.flag);
-  if (arr.flag) {
-    return ElNotification({
-      title: arr.type + "失败",
-      message: arr.type + "文章",
-      type: "error",
-    });
-  }
-  ElNotification({
-    title: arr.type + "成功",
-    message: arr.data,
-    type: "success",
-  });
+  setMession(!arr.flag ? "success" : "error", arr.data + "文章");
+
   await state.handleCurrentChange(requirement);
 };
 

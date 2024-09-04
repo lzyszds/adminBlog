@@ -32,7 +32,7 @@ const information = reactive<InformationTypes>({
   title: props.data?.title || "",
   cover: props.data?.cover_img
     ? "/adminPublic" + props.data?.cover_img
-    : "/api/article/getRandArticleImg?time=" + new Date().getTime(),
+    : "/firstHonoApi/api/article/getRandArticleImg?time=" + new Date().getTime(),
 });
 
 const message = h("p", null, [h("span", null, "是否继续完成上次内容?")]);
@@ -256,6 +256,9 @@ const addArticleType = async () => {
   });
   //判断当前输入的类型是否已经存在 如果不存在 则添加
   if (data?.includes(typeInput.value as any)) {
+    if (tagDataTem.value.includes(typeInput.value as any)) {
+      return setMession("warning", "该标签已存在");
+    }
     return tagDataTem.value.push(typeInput.value);
   }
   await addArticleCategory({ name: typeInput.value });
@@ -270,7 +273,13 @@ const addArticleType = async () => {
     <div class="headelement">
       <div class="markDowmInput">
         <span>类别：</span>
-        <el-popover :width="380" placement="bottom" :visible="visible" trigger="click">
+        <ElPopover
+          :width="380"
+          placement="bottom"
+          :visible="visible"
+          trigger="click"
+          transition="el-zoom-in-top"
+        >
           <template #reference>
             <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
             <div class="boxType" @click="visible = true">
@@ -311,7 +320,7 @@ const addArticleType = async () => {
               </div>
             </div>
           </template>
-        </el-popover>
+        </ElPopover>
         <span>封面图片：</span>
         <div @click="coverUpdate" class="coverImg">
           <img :src="information.cover" alt="" />
@@ -525,7 +534,30 @@ const addArticleType = async () => {
       border-radius: 5px;
       margin-left: 10px;
       margin-bottom: 3px;
+      border: 2px solid #000;
     }
   }
+}
+</style>
+
+<!-- 修改自定义elementPlus 动画 -->
+<style lang="scss">
+.el-popper {
+  animation-duration: 0.5s; /* 你可以调整这个值 */
+  animation-fill-mode: both;
+}
+.el-zoom-in-top-enter-active,
+.el-zoom-in-top-leave-active {
+  opacity: 1;
+  animation: zoomInDown 0.5s;
+  transform: none;
+  transition: var(--el-transition-md-fade);
+}
+
+.el-zoom-in-top-enter,
+.el-zoom-in-top-leave-active {
+  opacity: 0;
+  transform: none;
+  animation: zoomOutDown 0.5s;
 }
 </style>
