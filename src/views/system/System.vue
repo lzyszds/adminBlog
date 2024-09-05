@@ -290,9 +290,13 @@ console.log(1234);
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap");
 
-#content::after {
-  opacity: 0;
-  width: 0;
+#content {
+  display: block;
+
+  &::after {
+    opacity: 0;
+    width: 0;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -321,13 +325,18 @@ console.log(1234);
   margin: 15px;
   padding: 20px;
   border-radius: 15px;
+  overflow: hidden;
 }
 
-.activities h1 {
-  margin: 0 0 20px;
-  font-size: 1.4rem;
-  font-weight: 700;
+.activities{
+  width:100%
+  h1 {
+    margin: 0 0 20px;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
 }
+
 
 .activity-container {
   display: grid;
@@ -862,7 +871,7 @@ console.log(1234);
     }
   }
 }
-
+ 
 @media (max-width: 1310px) {
   .personal-bests-container {
     grid-template-rows: repeat(3, 98px);

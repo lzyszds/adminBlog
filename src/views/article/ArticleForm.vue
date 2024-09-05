@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElMessageBox, Tag } from "element-plus";
+import { ElMessageBox } from "element-plus";
 import http, { HttpResonse } from "@/http";
 import toolbar from "@/utils/toolbar";
 import { optimizeImage, isEqual, toProxys, tipNotify, setMession } from "@/utils/utils";
@@ -16,7 +16,7 @@ import {
   getArticleCategory,
   uploadArticleImg,
 } from "@/api/article";
-import { PaginatedResponse, Response } from "@/types/PublicType";
+import { Response } from "@/types/PublicType";
 // 获取数据
 const {
   value: { title, content, cover_img },
@@ -109,7 +109,7 @@ const handleUploadImage = async (event, insertImage, files) => {
   const scale = files[0].size < 300 * 1024 ? 1 : 0.5;
 
   try {
-    // 对图片进行压缩
+    // 对图片进行压 缩
     const { fileCompress } = await optimizeImage(files[0], scale);
 
     // 上传图片
