@@ -1,28 +1,19 @@
 <script setup lang="ts">
-import { ElNotification } from "element-plus";
-import http from "@/http/index";
+import { setAiKey } from "@/api/openAi";
+import { setMession } from "@/utils/utils";
 const emit = defineEmits(["switchMod"]);
 
-const { $axios } = window;
 const form = reactive({
   keyName: "",
   keyValue: "",
 });
 
 const submit = () => {
-  http({
-    url: "/aiService/addAiKey",
-    method: "post",
-    data: {
-      keyName: form.keyName,
-      keyValue: form.keyValue,
-    },
+  setAiKey({
+    keyName: form.keyName,
+    keyValue: form.keyValue,
   }).then((res) => {
-    ElNotification({
-      title: "成功",
-      message: "添加成功",
-      type: "success",
-    });
+    setMession(res.code == 200 ? "success" : "error", res.msg!);
     emit("switchMod", false, "isAdd");
   });
 };

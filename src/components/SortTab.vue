@@ -66,6 +66,7 @@ useEventListener("resize", () => {
   let myChart = echarts.getInstanceByDom(
     document.getElementById("main") as HTMLDivElement
   );
+  console.log("🚀 ~ useEventListener ~ myChart:", myChart)
   myChart!.resize();
 });
 </script>
@@ -77,7 +78,7 @@ useEventListener("resize", () => {
 <style lang="scss" scoped>
 .main {
   overflow: hidden;
-  width: 450px;
+  width: auto;
   height: calc(100% - 35px);
   margin-top: 10px;
   position: relative;

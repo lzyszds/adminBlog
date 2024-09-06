@@ -329,7 +329,8 @@ console.log(1234);
 }
 
 .activities{
-  width:100%
+  width:100%;
+  overflow: hidden;
   h1 {
     margin: 0 0 20px;
     font-size: 1.4rem;
@@ -341,7 +342,7 @@ console.log(1234);
 .activity-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 175px);
+  grid-template-rows: repeat(2, calc(1fr - 10px));
   column-gap: 10px;
   overflow: hidden;
 }
@@ -437,7 +438,7 @@ console.log(1234);
 
 .left-bottom {
   display: grid;
-  grid-template-columns: 55% 40%;
+  grid-template-columns: 55% 45%;
   gap: 20px;
 }
 
@@ -1029,7 +1030,7 @@ console.log(1234);
   }
 
   .left-content {
-    grid-template-rows: 350px 1fr;
+    grid-template-rows: max-content;
     padding: 30px 20px 20px;
   }
 

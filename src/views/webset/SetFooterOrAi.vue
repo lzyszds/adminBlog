@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const { $axios } = window;
 import LzyBtn from "@/components/LzyBtn.vue";
-import { LNotification } from "@/utils/utils";
-const aiKeyData = await $axios({
-  url: "/aiService/getAiKeysList",
-  method: "get",
-});
+import { LNotification, setMession } from "@/utils/utils";
+import { addFooterInfo, getFooterInfo } from "@/api/system";
+import { getAiKeysList } from "@/api/openAi";
+
+const aiKeyData = await getAiKeysList<[]>();
 
 const footerRefData = ref(); //页脚数据
 
@@ -18,10 +18,7 @@ const footerNewForm = reactive({
 }); //页脚新表单
 
 async function getFooterInfoList() {
-  footerRefData.value = await $axios({
-    url: "/system/getFooterInfo",
-    method: "get",
-  });
+  footerRefData.value = await getFooterInfo();
 }
 getFooterInfoList();
 
@@ -33,17 +30,13 @@ const append = (data: any) => {
   }
 };
 function addFormFooter() {
-  $axios({
-    url: "/system/addFooterInfo",
-    method: "post",
-    data: {
-      footer_type: footerNewForm.footer_type,
-      footer_content: footerNewForm.footer_content,
-      footer_url: footerNewForm.footer_url,
-      footer_order: footerNewForm.footer_order,
-    },
+  addFooterInfo({
+    footer_type: footerNewForm.footer_type,
+    footer_content: footerNewForm.footer_content,
+    footer_url: footerNewForm.footer_url,
+    footer_order: footerNewForm.footer_order,
   }).then(async (res) => {
-    LNotification(res, 2000, "bottom-right", "success");
+    setMession(res.code == 200 ? "success" : "error", res.msg!);
     await getFooterInfoList();
     footerVisible.value = false;
   });
@@ -86,7 +79,7 @@ const getLevel = (data: any) => {
     <div class="setAikey">
       <h3 class="header">AiKey设置</h3>
       <ElTable
-        :data="[...aiKeyData, ...aiKeyData, ...aiKeyData]"
+        :data="[...aiKeyData.data]"
         style="width: 100%; max-height: 420px; overflow-y: auto; border-radius: 10px"
       >
         <ElTableColumn prop="keyName" label="AiKey" width="100">

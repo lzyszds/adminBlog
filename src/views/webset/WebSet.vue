@@ -3,17 +3,12 @@ import { useStore } from "@/store";
 import SetLoadGif from "./SetLoadGif.vue";
 import SetSystem from "./SetSystem.vue";
 import SetFooterOrAi from "./SetFooterOrAi.vue";
-import { LNotification } from "@/utils/utils";
+import { setMession } from "@/utils/utils";
 import { WebSystemType } from "@/types/WebSetType";
+import { getSystemConfig, updateSystemConfig } from "@/api/system";
 const state = useStore();
 
-const { $axios } = window;
-
-const result: WebSystemType[] = await $axios({
-  url: "/system/getSystemConfig?type=admin",
-  method: "get",
-});
-console.log(`lzy  result:`, result);
+const result = await getSystemConfig<WebSystemType[]>();
 setTimeout(() => {
   state.loading = false;
 }, 1000);
@@ -21,21 +16,12 @@ setTimeout(() => {
 //更新系统配置
 const updateSystemData = async (key: string, val: string, id: number) => {
   try {
-    const resoult = await $axios({
-      url: "/system/updateSystemConfig",
-      method: "post",
-      data: {
-        config_id: id,
-        config_key: key,
-        config_value: val,
-      },
+    const resoult = await updateSystemConfig<string>({
+      config_id: id,
+      config_key: key,
+      config_value: val,
     });
-    return LNotification(
-      resoult,
-      2000,
-      "top-right",
-      resoult.indexOf("失败") >= 0 ? "error" : "success"
-    );
+    return setMession(resoult.code == 200 ? "success" : "error", resoult.msg!);
   } catch (err) {}
 };
 </script>
@@ -43,8 +29,8 @@ const updateSystemData = async (key: string, val: string, id: number) => {
 <template>
   <div class="webset-container">
     <h3>系统配置</h3>
-    <SetLoadGif :result="result" @updateSystemData="updateSystemData" />
-    <SetSystem :result="result" @updateSystemData="updateSystemData" />
+    <SetLoadGif :result="result.data" @updateSystemData="updateSystemData" />
+    <SetSystem :result="result.data" @updateSystemData="updateSystemData" />
     <SetFooterOrAi />
   </div>
 </template>

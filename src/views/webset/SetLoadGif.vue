@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { WebDataType, WebSystemType } from "@/types/WebSetType";
+import { getSystemLoadImages } from "@/api/system";
 
-const { $axios } = window;
 const { result } = defineProps<{
   result: WebSystemType[];
 }>();
 
 const emit = defineEmits(["updateSystemData"]);
 
-const loadGifList = await $axios({
-  url: "/system/getSystemLoadImages",
-  method: "get",
-});
+const loadGifList = await getSystemLoadImages<string[]>();
 
 const webData = reactive<WebDataType>(
   result.reduce((acc, cur) => {
@@ -31,12 +28,12 @@ const handleLoadGif = async (val: string) => {
   <div class="setLoadGif">
     <div class="loadGifList">
       <div
-        v-for="(item, index) in loadGifList"
+        v-for="(item, index) in loadGifList.data"
         :key="index"
         :class="['loadGifItem', { active: item === webData.load_animation_gif }]"
         @click="handleLoadGif(item)"
       >
-        <img :src="'/api' + item" alt="" />
+        <img :src="'/firstHonoApi' + item" alt="" />
       </div>
     </div>
   </div>
