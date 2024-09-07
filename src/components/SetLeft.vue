@@ -34,9 +34,9 @@ const items: Items[] = [
     component: "Category",
   },
   {
-    name: "邮箱消息",
+    name: "任务队列",
     uicon: '<i class="iconfont">&#xe64d;</i>',
-    component: "EmailMessage",
+    component: "Plantask",
   },
   {
     name: "友链管理",
@@ -60,7 +60,9 @@ const items: Items[] = [
   {
     name: "前往首页",
     uicon: '<i class="iconfont">&#xe60b;</i>',
-    component: "Home",
+    handle: () => {
+      window.open("http://localhost:1024/");
+    },
   },
 ];
 

@@ -9,6 +9,13 @@ export const getAdminHomeData = <T>(): Promise<HttpResonse<T>> => {
   });
 }
 
+//获取天气api
+export const getWeather = <T>(): Promise<HttpResonse<T>> => {
+  return http({
+    url: "/toolkit/getWeather",
+    method: "get",
+  });
+}
 
 
 

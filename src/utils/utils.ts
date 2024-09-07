@@ -41,15 +41,8 @@ export function timeAgo(time) {
  * @returns {Promise<any>} IP天气信息
  */
 export async function getIpWeather(): Promise<any> {
-  let headers = {
-    'Content-Type': 'multipart/form-data',
-  };
   try {
-    const response = await http({
-      url: '/common/ipConfig',
-      method: 'get', // 请求方式
-      headers: headers, // 请求头
-    });
+    const response = await getWeather()
     if (response.msg === 'success' || response.message === "success") {
       return response.data;
     } else {
@@ -153,6 +146,7 @@ export const LNotification = (val: string, time: number = 2000, postion: any = '
 
 // 复制内容提示版权信息
 import { useEventListener } from "@vueuse/core";
+import { getWeather } from '@/api/toolkit';
 
 export const copyTip = () => {
   useEventListener(window, 'keydown', e => {

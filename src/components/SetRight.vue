@@ -56,7 +56,7 @@ provide("requirement", {
     class="tableuser"
     :data="state.tableData"
     row-class-name="animate__duration "
-    style="width: 98%; height: 100%"
+    style="width: 98%; height: calc(100% - 30px)"
   >
     <template #empty>
       <div class="empty">

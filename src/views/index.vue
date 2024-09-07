@@ -5,6 +5,7 @@ import Article from "@/views/article/Article.vue";
 import Comment from "@/views/comment/Comment.vue";
 import User from "@/views/user/User.vue";
 import Category from "@/views/category/Category.vue";
+import Plantask from "@/views/plantask/Plantask.vue";
 import System from "@/views/system/System.vue";
 import WebSet from "@/views/webset/WebSet.vue";
 import Undefined from "@/views/undefined/Undefined.vue";
@@ -42,6 +43,7 @@ const components = {
   Article,
   User,
   Category,
+  Plantask,
   Undefined,
   WebSet,
 };
@@ -96,10 +98,10 @@ watch(
         <SetLeft :currentView="currentView" />
       </Suspense>
     </div>
-    <div class="content" id="content" v-zyloading="state.loading">
-      <Suspense>
+    <Suspense>
+      <div class="content" id="content" v-zyloading="state.loading">
         <component :is="components[currentView]" />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   </div>
 </template>

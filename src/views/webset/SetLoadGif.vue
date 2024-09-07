@@ -74,7 +74,7 @@ const handleLoadGif = async (val: string) => {
         object-fit: cover;
         border-radius: 10px;
         cursor: pointer;
-        border: 2px solid transparent;
+        border: 3px solid transparent;
       }
       &:hover {
         img {
@@ -84,7 +84,7 @@ const handleLoadGif = async (val: string) => {
       &.active {
         img {
           filter: blur(0);
-          border: 2px solid var(--themeColor);
+          border: 3px solid #000;
         }
       }
     }

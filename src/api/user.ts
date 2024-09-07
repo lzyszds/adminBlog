@@ -1,6 +1,16 @@
 
 import http, { HttpResonse } from "@/http";
 
+//登陆
+export const login = <T>(params): Promise<HttpResonse<T>> => {
+  return http<T>({
+    url: "/users/login",
+    method: "post",
+    data: params,
+  });
+}
+
+
 //获取用户token详情
 export const getUserInfoToken = <T>(): Promise<HttpResonse<T>> => {
   return http<T>({

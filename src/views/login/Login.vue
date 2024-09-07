@@ -10,6 +10,7 @@ import { show } from "@/utils/loading";
 import { dayjs } from "element-plus";
 import http from "@/http";
 import { useRouter } from "vue-router";
+import { login } from "@/api/user";
 const router = useRouter();
 //进入页面先判断是否登陆着,localStorage.getItem('token')是登陆时候存的token
 if (localStorage.getItem("lzy_token")) {
@@ -52,11 +53,7 @@ const submitForm = useThrottleFn(async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.validate(async (valid, fields) => {
       if (valid) {
-        const res = await http<string>({
-          url: "/user/login",
-          method: "post",
-          data: ruleForm,
-        });
+        const res = await login<string>(ruleForm);
         setTimeout(() => {
           if (res.code === 200) {
             show();

@@ -279,6 +279,7 @@ const addArticleType = async () => {
           :visible="visible"
           trigger="click"
           transition="el-zoom-in-top"
+          popper-class="zypopover"
         >
           <template #reference>
             <!-- <el-tooltip class="box-item" @click="visible = true" effect="dark" content="点击分类选择" placement="top"> -->
@@ -480,84 +481,86 @@ const addArticleType = async () => {
   }
 }
 
-.el-popper.is-light > .typePopover {
-  .item-search {
-    display: flex;
-    border-bottom: 2px solid var(--themeColor);
+.el-popper.is-light {
+  & > .typePopover {
+    .item-search {
+      display: flex;
+      border-bottom: 2px solid var(--themeColor);
 
-    input {
-      width: 100%;
-      border: none;
-      padding-bottom: 5px;
+      input {
+        width: 100%;
+        border: none;
+        padding-bottom: 5px;
 
-      &:focus {
-        outline: none;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button {
+        border: none;
+        background-color: var(--themeColor);
+        color: #fff;
+        width: 60px;
+        border-radius: 5px;
+        margin-left: 10px;
+        margin-bottom: 3px;
       }
     }
 
-    button {
-      border: none;
-      background-color: var(--themeColor);
-      color: #fff;
-      width: 60px;
-      border-radius: 5px;
-      margin-left: 10px;
-      margin-bottom: 3px;
-    }
-  }
-
-  &:deep(.el-tag.el-tag--info) {
-    margin-top: 10px;
-    margin-left: 4px;
-    background-color: #fff;
-    color: #000;
-    user-select: none;
-    cursor: pointer;
-    border: 2px solid #000;
-
-    &.tag-active {
-      background-color: var(--themeColor);
-      color: #fff;
-    }
-  }
-
-  .item-tool {
-    text-align: right;
-    margin-top: 10px;
-    padding-top: 10px;
-
-    button {
-      border: none;
-      background-color: var(--themeColor);
-      color: #fff;
-      width: 60px;
-      border-radius: 5px;
-      margin-left: 10px;
-      margin-bottom: 3px;
+    &:deep(.el-tag.el-tag--info) {
+      margin-top: 10px;
+      margin-left: 4px;
+      background-color: #fff;
+      color: #000;
+      user-select: none;
+      cursor: pointer;
       border: 2px solid #000;
+
+      &.tag-active {
+        background-color: var(--themeColor);
+        color: #fff;
+      }
+    }
+
+    .item-tool {
+      text-align: right;
+      margin-top: 10px;
+      padding-top: 10px;
+
+      button {
+        border: none;
+        background-color: var(--themeColor);
+        color: #fff;
+        width: 60px;
+        border-radius: 5px;
+        margin-left: 10px;
+        margin-bottom: 3px;
+        border: 2px solid #000;
+      }
     }
   }
 }
 </style>
 
-<!-- 修改自定义elementPlus 动画 -->
 <style lang="scss">
-.el-popper {
+.zypopover {
   animation-duration: 0.5s; /* 你可以调整这个值 */
   animation-fill-mode: both;
-}
-.el-zoom-in-top-enter-active,
-.el-zoom-in-top-leave-active {
-  opacity: 1;
-  animation: zoomInDown 0.5s;
-  transform: none;
-  transition: var(--el-transition-md-fade);
-}
+  /*修改自定义elementPlus 动画*/
+  &.el-zoom-in-top-enter-active,
+  &.el-zoom-in-top-leave-active {
+    opacity: 1;
+    animation: zoomInDown 0.5s;
+    transform: none;
+    transition: var(--el-transition-md-fade);
+  }
 
-.el-zoom-in-top-enter,
-.el-zoom-in-top-leave-active {
-  opacity: 0;
-  transform: none;
-  animation: zoomOutDown 0.5s;
+  &.el-zoom-in-top-enter,
+  &.el-zoom-in-top-leave-active {
+    opacity: 0;
+    transform: none;
+    animation: zoomOutDown 0.5s;
+  }
 }
 </style>
