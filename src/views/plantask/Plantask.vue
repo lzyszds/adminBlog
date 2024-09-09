@@ -14,16 +14,16 @@ const handleClick = (tab: any) => {
 </script>
 
 <template>
-  <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-    <el-tab-pane label="邮箱任务" name="email">
+  <ElTabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <ElTabPane label="邮箱任务" name="email">
       <Email />
-    </el-tab-pane>
-    <el-tab-pane label="其他任务" name="sqlBackups">
+    </ElTabPane>
+    <ElTabPane label="其他任务" name="sqlBackups">
       <SqlBackups />
-    </el-tab-pane>
+    </ElTabPane>
     <!-- <el-tab-pane label="Role" name="third">Role</el-tab-pane>
     <el-tab-pane label="Task" name="fourth">Task</el-tab-pane> -->
-  </el-tabs>
+  </ElTabs>
   <div class="plantask"></div>
 </template>
 

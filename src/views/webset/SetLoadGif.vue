@@ -41,36 +41,21 @@ const handleLoadGif = async (val: string) => {
 
 <style lang="scss" scoped>
 .setLoadGif {
-  border: 3px solid var(--themeColor);
-  border-radius: 10px;
-  padding: 15px;
   position: relative;
   overflow-y: auto;
+  height: 100%;
+  padding: 20px;
 
-  &::before {
-    content: "图片懒加载动画选择";
-    display: block;
-    clear: both;
-    position: absolute;
-    z-index: 99;
-    top: 0px;
-    left: 5px;
-    background-color: #fff;
-    padding: 0 5px;
-    max-width: 180px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   .loadGifList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(130px, 1fr));
     gap: 10px;
 
     .loadGifItem {
       img {
         width: 100%;
-        height: 100px;
+        height: 130px;
         object-fit: cover;
         border-radius: 10px;
         cursor: pointer;

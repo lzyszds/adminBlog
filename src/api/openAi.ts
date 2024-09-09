@@ -12,8 +12,7 @@ export const getAiKeysList = <T>(): Promise<HttpResonse<T>> => {
 
 
 //设置ai key
-
-export const setAiKey = <T>(data: object): Promise<HttpResonse<T>> => {
+export const addAiKeyApi = <T>(data: object): Promise<HttpResonse<T>> => {
      return http({
           url: "/aiService/addAiKey",
           method: "post",

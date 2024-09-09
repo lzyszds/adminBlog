@@ -44,3 +44,12 @@ export const addFooterInfo = <T>(data: object): Promise<HttpResonse<T>> => {
           data,
      })
 }
+// 更新底部信息
+export const updateFooterInfo = <T>(data: object): Promise<HttpResonse<T>> => {
+     return http({
+          url: "/system/updateFooterInfo",
+          method: "post",
+          data,
+     })
+}
+

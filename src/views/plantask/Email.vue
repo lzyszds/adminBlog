@@ -139,5 +139,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
     margin-top: 20px;
     width: 200px;
   }
+  :deep(textarea) {
+    height: calc(50vh - 20px);
+  }
 }
 </style>

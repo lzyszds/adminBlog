@@ -1,11 +1,7 @@
 <script setup lang="ts">
-const { $axios } = window;
 import LzyBtn from "@/components/LzyBtn.vue";
 import { LNotification, setMession } from "@/utils/utils";
-import { addFooterInfo, getFooterInfo } from "@/api/system";
-import { getAiKeysList } from "@/api/openAi";
-
-const aiKeyData = await getAiKeysList<[]>();
+import { addFooterInfo, getFooterInfo, updateFooterInfo } from "@/api/system";
 
 const footerRefData = ref(); //页脚数据
 
@@ -52,13 +48,9 @@ const remove = (node: Node, data: any) => {
 };
 
 const save = async (data) => {
-  const result = await $axios({
-    url: "/system/updateFooterInfo",
-    method: "post",
-    data: data,
-  });
+  const result = await updateFooterInfo(data);
   if (result.code === 200) {
-    LNotification(result.message, 2000, "bottom-right", "success");
+    LNotification(result.msg!, 2000, "bottom-right", "success");
   }
 };
 
@@ -76,29 +68,6 @@ const getLevel = (data: any) => {
 
 <template>
   <div class="setFooterOrAi">
-    <div class="setAikey">
-      <h3 class="header">AiKey设置</h3>
-      <ElTable
-        :data="[...aiKeyData.data]"
-        style="width: 100%; max-height: 420px; overflow-y: auto; border-radius: 10px"
-      >
-        <ElTableColumn prop="keyName" label="AiKey" width="100">
-          <template #default="scope">
-            <ElInput v-model="scope.row.keyName" size="small" />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn prop="keyValue" label="AiValue">
-          <template #default="scope">
-            <ElInput v-model="scope.row.keyValue" size="small" />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn prop="操作" width="80px">
-          <template #default>
-            <ElButton size="small">删除</ElButton>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-    </div>
     <div class="setFooter">
       <h3 class="header">页脚数据设置</h3>
       <ElDialog v-model="footerVisible" :show-close="false" width="500">
@@ -201,20 +170,6 @@ const getLevel = (data: any) => {
     padding: 10px;
     background-color: var(--themeColor);
     color: #fff;
-  }
-  .setAikey {
-    width: 50%;
-    border: 3px solid var(--themeColor);
-    border-radius: 10px 0 0 10px;
-    /* 隐藏滚动条 */
-    ::-webkit-scrollbar {
-      display: none !important;
-      width: 0 !important;
-      height: 0 !important;
-    }
-    .ElTable {
-      border-radius: 10px;
-    }
   }
   .setFooter {
     width: 50%;
